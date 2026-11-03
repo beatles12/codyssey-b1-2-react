@@ -1,0 +1,113 @@
+/* 프로젝트 카드·목록·상세·폼 스타일. B1-1 Work 카드 디자인을 계승합니다. */
+
+.project-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.project-card {
+  position: relative;
+  min-height: 320px;
+  padding: 170px 20px 22px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--surface);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease;
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-6px);
+  border-color: var(--lavender);
+  box-shadow: var(--shadow);
+}
+
+.project-visual {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  right: 15px;
+  display: grid;
+  height: 135px;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #faf8fd, #f0ebf8);
+}
+
+[data-theme="dark"] .project-visual {
+  background: linear-gradient(145deg, #26232e, #211f27);
+}
+
+.project-visual img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transition: transform 0.35s ease;
+}
+
+.project-card:hover .project-visual img {
+  transform: scale(1.03);
+}
+
+.project-initial {
+  color: var(--lavender-deep);
+  font-size: 2.6rem;
+  font-weight: 500;
+  letter-spacing: -0.05em;
+}
+
+.project-card-number {
+  color: var(--lavender-deep);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.project-card h3 {
+  margin-top: 9px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  word-break: keep-all;
+}
+
+.project-summary {
+  margin: 7px 0 12px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.6;
+}
+
+.project-card-link {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  border-radius: 17px;
+  color: transparent;
+  font-size: 0;
+}
+
+.project-card-link::after {
+  content: "→";
+  position: absolute;
+  right: 19px;
+  bottom: 20px;
+  color: var(--lavender-deep);
+  font-size: 0.95rem;
+}
+
+.project-card-link:focus-visible {
+  outline: 2px solid var(--lavender-deep);
+  outline-offset: -3px;
+}
+
+html[lang="en"] .project-summary {
+  font-size: 0.78rem;
+}
+
+@media (min-width: 768px) {
+  .project-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}

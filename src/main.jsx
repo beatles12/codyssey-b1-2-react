@@ -5,6 +5,8 @@ import App from "./App.jsx";
 import AppProviders from "./AppProviders.jsx";
 import "./styles/global.css";
 import "./styles/ui.css";
+import "./styles/home.css";
+import "./styles/project.css";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

@@ -241,8 +241,16 @@ ol {
   margin-bottom: 52px;
 }
 
+.section-label span {
+  color: var(--lavender-deep);
+  font-size: 0.61rem;
+  font-weight: 700;
+}
+
 .section-heading .eyebrow {
-  margin-bottom: 0;
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.61rem;
 }
 
 .section-heading h1,
@@ -251,6 +259,7 @@ ol {
   font-weight: 500;
   line-height: 1.4;
   letter-spacing: -0.05em;
+  white-space: pre-line;
   word-break: keep-all;
 }
 

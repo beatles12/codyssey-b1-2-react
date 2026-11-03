@@ -1,15 +1,30 @@
+import AboutSection from "../components/home/AboutSection.jsx";
+import GithubSection from "../components/home/GithubSection.jsx";
+import RevealSection from "../components/ui/RevealSection.jsx";
 import SectionHeading from "../components/ui/SectionHeading.jsx";
+import useLanguage from "../hooks/useLanguage.js";
 
-/** "/about" 소개 화면. */
+/** "/about" 소개 화면: 자기소개, 네 가지 역할(기획·교육·AI·창업), GitHub 기록. */
 function AboutPage() {
+  const { about } = useLanguage().messages;
+
   return (
-    <section className="page-section">
-      <SectionHeading
-        eyebrow="ABOUT"
-        title="사람을 이해하는 마음에서 좋은 서비스가 시작됩니다."
-        description="교육, 상담, 서비스 기획 경험을 바탕으로 AI와 웹 개발을 배우며 아이디어가 실제 제품으로 이어지는 과정을 만들어가고 있습니다."
-      />
-    </section>
+    <>
+      <AboutSection headingAs="h1" />
+      <RevealSection id="roles" className="skills">
+        <SectionHeading eyebrow="ROLES" title={about.rolesTitle} as="h2" />
+        <div className="skill-grid">
+          {about.roles.map((role, index) => (
+            <article key={role.title} className="skill-card">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{role.title}</h3>
+              <p>{role.text}</p>
+            </article>
+          ))}
+        </div>
+      </RevealSection>
+      <GithubSection />
+    </>
   );
 }
 
