@@ -7,9 +7,9 @@
 | 항목 | 상태 |
 | --- | --- |
 | 공식 요구사항 코드 구현 | ✅ 전부 구현 (미구현 0) |
-| 자동 테스트 | ✅ 145개 통과 / 실패 0 (가짜 API) |
+| 자동 테스트 | ✅ 171개 통과 / 실패 0 (가짜 API) |
 | 브라우저 실전 검증 | ✅ 46/46 통과 (가짜 API, PC·태블릿·모바일) |
-| SQL 파일 | ✅ 로컬 PostgreSQL 모의 환경에서 실행·권한 확인 / ⏳ 실제 Supabase 미실행 |
+| SQL 파일 | ✅ 로컬 PostgreSQL 모의 환경에서 실행·권한 확인 (위험한 설정에서도 실제 데이터 보존 확인) / ⏳ 실제 Supabase 미실행 |
 | 실제 Supabase CRUD·로그인·RLS | ⏳ 직접 설정 후 확인 필요 |
 | Vercel 배포 | ⏳ 승인·설정 필요 |
 | main 브랜치 | 없음 (작업은 `claude/epic-clarke-mmra67` 브랜치에만 있음) |
@@ -18,7 +18,7 @@
 
 1. **5분 둘러보기** (아래 3번) — Supabase 없이도 대부분의 화면을 볼 수 있습니다
 2. **[OWNER_CHECKLIST.md](OWNER_CHECKLIST.md)** 따라 하기 — Supabase 설정 → SQL → 관리자 → `.env` → 실제 테스트 → 배포
-3. 결과(특히 `05_verify_rls.sql` 결과)를 Claude에게 알려 주기
+3. 결과(특히 `05_verify_rls.sql`의 ERROR 상자 내용)를 Claude에게 알려 주기
 
 ## 3. 5분 둘러보기 (Supabase 없이)
 

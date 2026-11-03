@@ -176,7 +176,7 @@ describe("등록 화면 (/projects/new)", () => {
     await user.click(screen.getByRole("button", { name: /등록하기/ }));
 
     expect(screen.getByRole("button", { name: "저장 중..." })).toBeDisabled();
-    expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({ title: "학습 기록 앱", category: "education" }));
+    expect(api.createProject).toHaveBeenCalledWith(expect.objectContaining({ title: "학습 기록 앱", category: "education" }), expect.any(String));
     finishSave({ ...aiProject, id: "new-id" });
 
     expect(await screen.findByRole("heading", { level: 1, name: "학습 기록 앱" })).toBeInTheDocument();
@@ -196,6 +196,50 @@ describe("등록 화면 (/projects/new)", () => {
 
     expect(await screen.findByRole("alert")).toHaveTextContent("권한이 없습니다.");
     expect(screen.getByLabelText(/TITLE/)).toHaveValue("제목");
+  });
+});
+
+describe("시간 초과 뒤 다시 저장 (중복 등록 방지)", () => {
+  it("첫 저장이 시간 초과돼도, 다시 저장할 때 같은 id를 보낸다", async () => {
+    api.createProject.mockRejectedValueOnce(new AppError("timeout")).mockResolvedValueOnce({ ...aiProject, id: "new-id" });
+    api.fetchProjectById.mockResolvedValue({ ...aiProject, id: "new-id" });
+    const user = userEvent.setup();
+    renderAt("/projects/new");
+    await screen.findByLabelText(/TITLE/);
+
+    await user.type(screen.getByLabelText(/TITLE/), "제목");
+    await user.type(screen.getByLabelText(/SUMMARY/), "요약");
+    await user.type(screen.getByLabelText(/DESCRIPTION/), "설명");
+    await user.click(screen.getByRole("button", { name: /등록하기/ }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("다시 저장해도 중복으로 등록되지 않습니다.");
+    await user.click(screen.getByRole("button", { name: /등록하기/ }));
+
+    expect(await screen.findByRole("heading", { level: 1, name: aiProject.title })).toBeInTheDocument();
+    const [firstCall, secondCall] = api.createProject.mock.calls;
+    expect(firstCall[1]).toMatch(/^[0-9a-f-]{36}$/);
+    expect(secondCall[1]).toBe(firstCall[1]);
+  });
+
+  it("등록 화면을 새로 열면 새 id를 쓴다", async () => {
+    api.createProject.mockRejectedValue(new AppError("timeout"));
+    const user = userEvent.setup();
+    const fill = async () => {
+      await user.type(await screen.findByLabelText(/TITLE/), "제목");
+      await user.type(screen.getByLabelText(/SUMMARY/), "요약");
+      await user.type(screen.getByLabelText(/DESCRIPTION/), "설명");
+      await user.click(screen.getByRole("button", { name: /등록하기/ }));
+      await screen.findByRole("alert");
+    };
+
+    const first = renderAt("/projects/new");
+    await fill();
+    first.unmount();
+    renderAt("/projects/new");
+    await fill();
+
+    const [firstCall, secondCall] = api.createProject.mock.calls;
+    expect(secondCall[1]).not.toBe(firstCall[1]);
   });
 });
 

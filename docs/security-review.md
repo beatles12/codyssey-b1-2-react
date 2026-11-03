@@ -40,37 +40,64 @@
 | 확인 | 결과 |
 | --- | --- |
 | 01 → 02 → 03 → 04 순서 실행 | 오류 없음 |
-| 01·02 다시 실행 (멱등성) | 오류 없음 |
-| 05 블록 A (방문자) | 조회 4건, 삭제 시 `permission denied for table projects` |
-| 05 블록 B (일반 로그인) | is_admin `false`, 삭제 0, 수정 0, 등록 시 `new row violates row-level security policy` |
-| 05 블록 C (관리자) | is_admin `true`, 등록·수정·삭제 각 1행, rollback 후 데이터 4건 그대로 |
+| 01·02 다시 실행 (멱등성), 예전 01로 만든 표에 새 01 실행(주소 제약 교체) | 오류 없음, 새 제약 적용 |
+| 이미지 주소 19가지 예시: JS 검사 vs DB 제약 | 결과 19/19 일치 (`//example.com`, `/\example.com` 모두 거절) |
+| 같은 id로 두 번 등록 | 두 번째는 `23505 duplicate key` → 앱은 수정으로 처리 |
+
+`05_verify_rls.sql`을 일부러 **안전한 설정과 위험한 설정**에서 모두 실행했습니다. 모든 경우에 실제 프로젝트 4건은 그대로였고 시험용 행도 남지 않았습니다.
+
+| 설정 | 05 결과 첫 줄 | 실제 데이터 |
+| --- | --- | --- |
+| 정상 (02 적용) | ✅ RLS 점검 통과 — 방문자·일반 계정 쓰기 차단, 관리자 등록·수정·삭제 성공 | 4건 → 4건 |
+| 방문자에게 모든 권한 + "누구나 쓰기" 정책 | ❌ 실패 6건 (방문자·일반 계정 삭제·수정·등록 허용됨) | 4건 → 4건 |
+| 권한은 정상, 정책만 "누구나 쓰기" | ❌ 실패 3건 (일반 계정 쓰기 허용됨) | 4건 → 4건 |
+| 관리자 미등록 | ❌ 실패 4건 (관리자 is_admin false) | 4건 → 4건 |
+| RLS 꺼짐 | 시작 전에 중단 "RLS가 꺼져 있습니다" | 4건 → 4건 |
+| 파일 일부(DELETE 한 줄)만 선택 실행 | 문법 오류로 아무 일도 일어나지 않음 | 4건 → 4건 |
 
 **한계**: Supabase의 실제 `auth` 스키마, PostgREST(API 서버), JWT 검증, 대시보드 설정(회원가입 OFF 등)은 흉내 내지 못했습니다. 그래서 이 결과는 "SQL 문법과 정책 논리가 의도대로 동작한다"는 근거일 뿐, 실제 서비스 보안의 증명이 아닙니다.
 
 ## 4. 사용자별 실제 테스트 절차 (직접 해야 함)
 
-### 4-1. SQL로 (Supabase SQL Editor)
+> **안전 원칙**: 어떤 시험도 실제 프로젝트를 대상으로 하지 않습니다. 조건 없는 삭제·수정(`id=not.is.null`, `delete from projects;` 같은 것)은 절대 실행하지 마세요. 설정이 잘못되어 있으면 그 명령이 정말로 모든 데이터를 지웁니다.
 
-`supabase/05_verify_rls.sql`의 블록 A·B·C를 **하나씩 선택해서** 실행하고 3번 표와 같은지 비교합니다. (OWNER_CHECKLIST 5-3단계)
+### 4-1. SQL로 (Supabase SQL Editor) — 가장 안전, 먼저 하세요
 
-### 4-2. 브라우저로 — 방문자가 API를 직접 부르는 상황
+1. `supabase/05_verify_rls.sql`의 `admin_email`을 내 관리자 이메일로 바꿉니다.
+2. **파일 전체**를 붙여넣고 Run 합니다.
+3. 빨간 ERROR 상자 안의 첫 줄이 `✅ RLS 점검 통과`이면 성공입니다. (ERROR는 시험용 변경을 되돌리기 위한 정상 동작)
 
-1. 로그아웃 상태로 배포 사이트(또는 localhost) 열기
-2. **F12** → **Console** 탭
-3. 아래를 붙여넣고 Enter (URL·키는 `.env`의 값, 이 문서에 적지 마세요)
+이 파일은 스스로 만든 `__rls_test__` 시험용 행만 건드리고, 끝나면 전부 취소합니다. 실제 프로젝트 개수를 시험 전·후로 비교해 함께 보여줍니다.
+
+### 4-2. (선택) 브라우저로 — 방문자가 API를 직접 부르는 상황
+
+실제 API 서버(PostgREST)까지 포함해 확인하고 싶을 때만 합니다. **시험용 프로젝트 1개만** 대상으로 합니다.
+
+1. 관리자로 로그인해 제목이 `RLS 시험용 (지워져도 됨)`인 프로젝트를 **새로** 등록합니다.
+2. 그 상세 화면 주소 끝의 id(36자, 예: `…/projects/1a2b3c4d-…`)를 복사합니다.
+3. **로그아웃**한 뒤 **F12** → **Console** 탭
+4. 아래를 붙여넣고 세 칸을 채운 뒤 Enter (URL·키는 `.env`의 값. 이 문서나 GitHub에 적지 마세요)
 
 ```js
 const url = "여기에_VITE_SUPABASE_URL";
 const key = "여기에_VITE_SUPABASE_ANON_KEY";
-const res = await fetch(`${url}/rest/v1/projects?id=not.is.null`, {
-  method: "DELETE",
-  headers: { apikey: key, Authorization: `Bearer ${key}`, Prefer: "return=representation" },
-});
-console.log(res.status, await res.text());
+const testId = "여기에_시험용_프로젝트_id";
+if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(testId)) {
+  throw new Error("시험용 프로젝트 id(36자)를 정확히 넣으세요. 아무 요청도 보내지 않고 중단합니다.");
+}
+const target = `${url}/rest/v1/projects?id=eq.${testId}`;
+const headers = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json", Prefer: "return=representation" };
+const del = await fetch(target, { method: "DELETE", headers });
+console.log("삭제 시도:", del.status, await del.text());
+const patch = await fetch(target, { method: "PATCH", headers, body: JSON.stringify({ summary: "rls-check" }) });
+console.log("수정 시도:", patch.status, await patch.text());
 ```
 
-- **정상(차단됨)**: `401`/`403` 상태와 `permission denied` 메시지, 또는 `[]`(0행)
-- **위험**: 프로젝트 목록이 담긴 응답이 오고 Table Editor에서 데이터가 사라짐 → 즉시 `02_policies.sql` 다시 실행
+- **정상(차단됨)**: 두 줄 모두 `401` 또는 `403`과 `permission denied`, 또는 `200 []`(0행)
+- **위험**: 응답에 시험용 프로젝트 내용이 담겨 옴 → 시험용 1건만 영향받습니다. 즉시 `02_policies.sql`을 다시 실행하고 4-1을 다시 하세요.
+- 시험 후 앱에서 시험용 프로젝트가 그대로 있는지 확인하고, 관리자로 로그인해 삭제합니다.
+
+`testId` 검사 줄 덕분에 id를 비우거나 잘못 넣으면 요청이 나가지 않습니다. 필터는 항상 `id=eq.<시험용 id>` 하나만 씁니다.
 
 ### 4-3. 관리자가 아닌 계정
 
@@ -81,11 +108,13 @@ console.log(res.status, await res.text());
 
 ### 결과가 다를 때
 
-| 증상 | 원인 | 해결 |
+| 05 결과 | 원인 | 해결 |
 | --- | --- | --- |
-| 블록 A에서 삭제가 성공함 | 02를 실행하지 않았거나 중간에 실패 | 02 다시 실행 후 Table Editor에서 RLS enabled 확인 |
-| 블록 B에서 insert 성공 | 정책이 `is_admin()` 없이 만들어짐 | 02 다시 실행 (기존 정책을 지우고 다시 만듦) |
-| 블록 C에서 is_admin false | 03 이메일이 다름 | 03의 이메일을 Users 화면과 똑같이 |
+| "RLS가 꺼져 있습니다" | 02 미실행 | 02 실행 후 다시 |
+| `[방문자] … ❌ 허용됨` | 02의 권한 줄(`revoke`/`grant`)이 빠지거나 다른 정책이 추가됨 | 02 다시 실행. Table Editor → projects → Policies에 02에 없는 정책이 있으면 삭제 |
+| `[일반 계정] … ❌ 허용됨` | `is_admin()` 조건이 없는 정책이 있음 | 위와 같음 |
+| `[관리자] ⚠ … 찾지 못해` | `admin_email` 오타 | Users 화면의 이메일을 그대로 복사 |
+| `[관리자] is_admin ❌ false` | 03 미실행 또는 다른 이메일로 등록 | 03 실행 |
 | 관리자 로그인 후 화면에 "관리자 권한이 없는 계정" | 위와 같음, 또는 `is_admin` 함수 없음(02 미실행) | 03 / 02 실행 |
 
 ## 5. 프런트엔드 점검 결과
@@ -98,8 +127,10 @@ console.log(res.status, await res.text());
 | 관리자 확인 실패(함수 없음·네트워크) | 관리자가 아닌 것으로 처리 (안전한 쪽으로 실패) | 같은 테스트 |
 | 로그아웃 후 | 버튼 사라짐, 보호 화면 접근 시 로그인으로 | 같은 테스트 |
 | 연속 클릭으로 중복 저장·삭제 | 실행 중 잠금(`useProjectActions`의 `isRunningRef`) | 테스트 + 브라우저 더블클릭 확인 |
+| 시간 초과 뒤 다시 저장 → 중복 등록 | 등록 화면이 id를 한 번 만들어 재시도에도 같은 id 사용. 이미 저장돼 있으면(`23505`) 그 행을 수정 | `projectsApi.test.js`, `projectPages.test.jsx`, 로컬 DB에서 오류 코드 확인 |
+| 시간 초과 뒤 다시 삭제 | 행이 이미 없으면 성공으로 처리, 남아 있으면 권한 오류 | `projectsApi.test.js` |
 | HTML·스크립트 삽입 | React가 글자로만 표시(`<script>`가 실행되지 않음), `dangerouslySetInnerHTML` 사용 없음 | `securityHardening.test.jsx` |
-| `javascript:` 링크·이미지 | 표시 단계에서 차단(`toSafeLinkUrl`, `toSafeImageUrl`) + 폼 검사 + DB CHECK 제약 | 테스트, `01_schema.sql` |
+| `javascript:` 링크·이미지, `//외부주소` 이미지 | 표시 단계에서 차단(`toSafeLinkUrl`, `toSafeImageUrl`) + 폼 검사 + DB CHECK 제약 (JS와 같은 규칙) | `request.test.js`, `schemaSync.test.js`, `01_schema.sql` |
 | 응답 없음 | 15초 뒤 오류 안내(무한 로딩 방지) | `request.test.js`, `projectsApi.test.js` |
 
 ## 6. 비밀값 노출 검사
@@ -122,6 +153,7 @@ git log -p --all | findstr /R "eyJ sb_secret_ service_role"
 ## 7. 남은 위험과 권장 사항
 
 1. **실제 RLS 미검증** — 4번 절차를 반드시 실행
-2. 시간 초과(15초) 뒤에도 실제 요청은 계속될 수 있어, 늦게 저장이 완료될 수 있음 → 안내 문구로 "목록에서 확인 후 다시 시도" 안내
+2. 시간 초과(15초)는 화면의 기다림만 끝내고 실제 요청은 취소하지 않습니다. 그래서 늦게 저장이 완료될 수 있습니다.
+   등록은 같은 id 재사용으로 중복이 생기지 않지만, **등록 화면을 닫았다가 새로 열어 다시 등록**하면 새 id가 만들어져 같은 내용이 2건이 될 수 있습니다 → 시간 초과 안내가 뜨면 같은 화면에서 다시 저장하거나, 목록을 먼저 확인하세요.
 3. Supabase 무료 플랜은 1주일 사용이 없으면 일시정지될 수 있음 → 제출·평가 전 대시보드에서 상태 확인
 4. 관리자 비밀번호는 길고 고유하게, 가능하면 Supabase 계정에 2단계 인증 설정

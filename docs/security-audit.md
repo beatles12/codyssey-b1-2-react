@@ -37,6 +37,6 @@ npm audit --omit=dev   # 실제 사이트에 들어가는 패키지만 검사 (0
 - [ ] `npm audit` 재확인, 수정판이 있으면 반영 후 테스트 통과
 - [ ] `.env`가 Git에 올라가지 않았는지 확인 (`git ls-files | grep .env` → `.env.example`만 나와야 함)
 - [ ] 코드에 Supabase `service_role` 키·관리자 비밀번호가 없는지 확인
-- [ ] Supabase RLS 활성화: `05_verify_rls.sql` 블록 A·B·C와 [security-review.md](security-review.md) 4번 절차로 **실제로 시험**
+- [ ] Supabase RLS 활성화: `05_verify_rls.sql` 파일 전체 실행 결과가 `✅ RLS 점검 통과`인지 **실제로 시험** ([security-review.md](security-review.md) 4장, 실제 데이터를 지우는 조건 없는 삭제 시험은 하지 않기)
 - [ ] Supabase Auth 공개 회원가입 비활성화
 - [ ] Vercel 환경변수 등록 후 배포 URL에서 CRUD 확인

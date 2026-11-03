@@ -42,7 +42,7 @@ npm run dev
 | `npm run build` | 배포용 파일을 `dist/`에 생성 |
 | `npm run preview` | 빌드 결과를 로컬에서 확인 |
 
-## 4. 자동 테스트 구성 (145개, 20개 파일)
+## 4. 자동 테스트 구성 (171개, 20개 파일)
 
 > 자동 테스트는 **실제 Supabase·GitHub·Formspree에 요청하지 않습니다.** 가짜(Mock) 데이터와 가짜 응답으로 화면 흐름을 검증합니다. (`src/test/setup.js`가 실제 네트워크 요청을 막습니다.) 실제 서버 연결은 [OWNER_CHECKLIST.md](OWNER_CHECKLIST.md) 5단계에서 따로 확인합니다.
 
@@ -57,14 +57,14 @@ npm run dev
 | `src/components/home/GithubSection.test.jsx` | GitHub 로딩·성공·실패·재시도·빈 상태 |
 | `src/lib/githubApi.test.js` | 저장소 정렬·필터 |
 | `src/pages/HomePage.test.jsx` | 홈 섹션 순서, 영어 전환 |
-| `src/lib/projectsApi.test.js` | 가짜 Supabase로 CRUD 요청 모양·오류·RLS 0행 감지·시간 초과 |
+| `src/lib/projectsApi.test.js` | 가짜 Supabase로 CRUD 요청 모양·오류·RLS 0행 감지·시간 초과, 같은 id 재등록 시 수정 처리(중복 방지), 이미 삭제된 행 재삭제 |
 | `src/lib/projectForm.test.js` | 필수값·글자 수·URL·이미지 주소 검사, 폼 ↔ 데이터 변환 |
-| `src/lib/schemaSync.test.js` | **SQL 테이블 열 ↔ React 코드 필드·분류·글자 수 일치** |
-| `src/lib/request.test.js` | 15초 시간 제한, 안전한 링크·이미지 주소 판별 |
+| `src/lib/schemaSync.test.js` | **SQL 테이블 열 ↔ React 코드 필드·분류·글자 수·주소 형식 규칙 일치** |
+| `src/lib/request.test.js` | 15초 시간 제한, 안전한 링크·이미지 주소 판별(`//외부주소` 거절), 새 프로젝트 UUID 생성 |
 | `src/lib/errors.test.js` | 오류 → 안내 문구 변환 |
 | `src/lib/supabaseClient.test.js`, `src/lib/authApi.test.js` | `.env`가 없을 때 안내 동작 |
 | `src/hooks/projectHooks.test.jsx` | useProjects / useProject / useProjectActions 상태 변화 |
-| `src/pages/projectPages.test.jsx` | 목록 필터, 상세, 삭제 확인, 등록 검사·미리보기·저장 중, 수정 |
+| `src/pages/projectPages.test.jsx` | 목록 필터, 상세, 삭제 확인, 등록 검사·미리보기·저장 중, 시간 초과 뒤 재저장 시 같은 id, 수정 |
 | `src/pages/authFlow.test.jsx` | 방문자 제한, 보호 라우트, 로그인 성공·실패, 로그아웃 |
 | `src/pages/securityHardening.test.jsx` | 관리자 아닌 계정, 로그아웃 후 차단, 연속 클릭, HTML·`javascript:` 삽입, 영어 공통 문구 |
 
@@ -89,7 +89,7 @@ npm run dev
 - [ ] 수정 → 바뀐 내용 반영 + 알림
 - [ ] 삭제 → 확인 창 → 목록에서 사라짐 + 알림
 - [ ] 로그아웃 → 관리 버튼 사라짐
-- [ ] SQL `05_verify_rls.sql` 블록 A·B·C → [security-review.md](security-review.md) 3번 표와 같은 결과
+- [ ] SQL `05_verify_rls.sql` 파일 전체 실행 → ERROR 상자 첫 줄 `✅ RLS 점검 통과`
 
 ## 6. 브라우저 실전 검증 기록 (가짜 API 사용)
 

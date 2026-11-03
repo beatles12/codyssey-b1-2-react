@@ -61,7 +61,9 @@ ProjectListPage 화면에 나타남
          └ ProjectCreatePage.handleSubmit
              └ useProjectActions.create(input)   ← isSubmitting = true (버튼 비활성화)
                  │                                   이미 실행 중이면 무시 (더블클릭 방지)
-                 └ createProject ─ insert(toRow(input)).select().single()   (15초 제한)
+                 └ createProject(input, projectId) ─ insert({ id, ...toRow(input) })   (15초 제한)
+                     │  projectId는 화면이 열릴 때 한 번 만든 UUID → 다시 저장해도 같은 id
+                     │  같은 id가 이미 있으면(늦게 저장된 이전 시도) 그 행을 수정 → 중복 등록 없음
                      ├ 성공: showToast("프로젝트를 등록했습니다.") ─► navigate(/projects/새id)
                      └ 실패: error = "errors.permission" 등 ─► 폼 위 빨간 상자, 입력값 유지
 ```

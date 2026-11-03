@@ -102,21 +102,21 @@ npm run dev
 
 ## 8. (선택) 예시 데이터 넣기
 
-`supabase/04_seed.sql`을 SQL Editor에서 실행하면 B1-1의 프로젝트 4개가 들어갑니다. 설명은 B1-1에 있던 내용뿐이므로 화면에서 직접 보완하세요.
+9단계(권한 시험)를 통과한 뒤 `supabase/04_seed.sql`을 SQL Editor에서 실행하면 B1-1의 프로젝트 4개가 들어갑니다. 설명은 B1-1에 있던 내용뿐이므로 화면에서 직접 보완하세요.
 
 ## 9. 권한 차단 시험하기 (꼭 해 보세요)
 
-### SQL로 시험
+### SQL로 시험 (가장 먼저, 실제 데이터 넣기 전에)
 
-`supabase/05_verify_rls.sql`의 블록 A(방문자)·B(일반 로그인)·C(관리자)를 **하나씩 선택해서** 실행합니다. 각 블록은 `rollback`으로 끝나 데이터가 바뀌지 않습니다.
+1. `supabase/05_verify_rls.sql`의 `admin_email`을 관리자 이메일로 바꿉니다.
+2. **파일 전체**를 SQL Editor에 붙여넣고 Run 합니다.
+3. 빨간 ERROR 상자 첫 줄이 `✅ RLS 점검 통과`이면 성공입니다.
 
-| 블록 | 정상 결과 |
-| --- | --- |
-| A | 조회 개수 → `permission denied for table projects` 오류 |
-| B | is_admin false, 삭제 0, 수정 0 → `violates row-level security policy` 오류 |
-| C | is_admin true, 등록·수정·삭제 각 1 |
+- 이 ERROR는 시험 중 만든 변경을 되돌리기 위한 정상 동작입니다.
+- 파일은 스스로 만든 `__rls_test__` 행만 대상으로 하고, 시험 하나마다 즉시 되돌린 뒤 마지막에 전체를 취소합니다. 설정이 잘못되어 있어도 실제 프로젝트는 바뀌지 않습니다.
+- 결과 읽는 법·고치는 법: [security-review.md](security-review.md) 4장
 
-(작업 환경의 로컬 PostgreSQL 모의 실행에서는 위와 같았지만, 실제 Supabase에서는 아직 실행하지 않았습니다. 자세한 내용: [security-review.md](security-review.md))
+(작업 환경의 로컬 PostgreSQL 모의 실행에서 안전한 설정·위험한 설정 모두 확인했지만, 실제 Supabase에서는 아직 실행하지 않았습니다.)
 
 ### 화면으로 시험
 
@@ -125,7 +125,7 @@ npm run dev
 | 1 | 로그아웃 상태로 `/projects` | 목록이 보이고 "새 프로젝트 등록" 버튼은 없음 |
 | 2 | 로그아웃 상태로 `/projects/new` 주소 직접 입력 | 로그인 화면으로 이동 |
 | 3 | `/login`에서 관리자 로그인 | "관리자로 로그인했습니다." 알림, 헤더에 New·Logout |
-| 4 | 등록 → 상세 → 수정 → 삭제 | 각 단계 성공 알림, 목록에 반영 |
+| 4 | 시험용 프로젝트를 새로 등록 → 상세 → 수정 → 그 프로젝트만 삭제 | 각 단계 성공 알림, 목록에 반영 |
 | 5 | 로그아웃 | 상세 화면에서 수정·삭제 버튼이 사라짐 |
 
 ## 10. 배포(Vercel) 때 할 일 — 승인 후 진행
@@ -141,6 +141,7 @@ npm run dev
 
 | 증상 | 원인과 해결 |
 | --- | --- |
+| 이미지 주소 저장 시 `violates check constraint "projects_image_url_check"` | `https://…` 전체 주소 또는 `/images/파일명`만 가능 (`//…`로 시작하는 주소·공백·`?` 불가) |
 | "Supabase 연결 정보가 없습니다" | `.env` 파일 이름·위치(프로젝트 최상위)·변수 이름 확인 후 개발 서버 재시작 |
 | 목록이 계속 비어 있음 | 데이터가 없는 것이 정상일 수 있음. Table Editor에서 행 확인 |
 | 로그인 시 "이메일 또는 비밀번호가 올바르지 않습니다" | 5단계 계정의 이메일·비밀번호 확인, Auto Confirm 여부 확인 |

@@ -96,9 +96,9 @@ codyssey-b1-2-react/
 | --- | --- | --- | --- |
 | `fetchProjects()` | 없음 | `Promise<Project[]>` (최신순) | Supabase 오류 / `config` |
 | `fetchProjectById(id)` | id (uuid 문자열) | `Promise<Project>` | 없으면 `notFound` |
-| `createProject(project)` | 저장용 프로젝트 객체 | `Promise<Project>` (id 포함) | RLS 거절 시 `42501` |
-| `updateProject(id, project)` | id, 저장용 객체 | `Promise<Project>` | 바뀐 행 0개면 `notChanged` |
-| `deleteProject(id)` | id | `Promise<void>` | 지운 행 0개면 `notChanged` |
+| `createProject(project, id)` | 저장용 객체, 등록 화면이 만든 UUID | `Promise<Project>` | RLS 거절 시 `42501`. 같은 id가 이미 있으면(`23505`, 시간 초과된 이전 시도) 새로 만들지 않고 그 행을 수정 |
+| `updateProject(id, project)` | id, 저장용 객체 | `Promise<Project>` | 0행이고 행이 있으면 `notChanged`(권한), 없으면 `notFound` |
+| `deleteProject(id)` | id | `Promise<void>` | 0행이고 행이 남아 있으면 `notChanged`(권한). 이미 없으면 성공(재시도 안전) |
 | `fromRow(row)` / `toRow(project)` | DB 행 / 화면 객체 | 서로 변환 | — |
 
 > 모든 함수는 `withTimeout`으로 감싸 15초 안에 응답이 없으면 `timeout` 오류를 던집니다.
@@ -126,7 +126,8 @@ codyssey-b1-2-react/
 | `sendContactMessage(values)` | → `Promise<void>` | Formspree 전송 |
 | `getSession / onAuthStateChange / signInWithPassword / signOut` | Supabase Auth 감싸기 | 미설정이면 방문자로 동작 |
 | `checkIsAdmin()` | → `Promise<boolean>` | DB 함수 `is_admin()` 호출. 관리 버튼 표시 여부에 사용 |
-| `withTimeout(promise, ms)` | → 같은 결과 또는 15초 뒤 `timeout` 오류 | `lib/request.js`. 무한 로딩 방지 |
+| `withTimeout(promise, ms)` | → 같은 결과 또는 15초 뒤 `timeout` 오류 | `lib/request.js`. 무한 로딩 방지 (실제 요청은 취소하지 않음 → 위 id 재사용으로 중복 방지) |
+| `createProjectId()` | → UUID v4 문자열 | `lib/id.js`. https가 아닌 주소에서도 동작 |
 | `toSafeLinkUrl / toSafeImageUrl` | 주소 → 안전하면 그대로, 아니면 `""` | `javascript:` 같은 위험한 주소 표시 차단 |
 
 ### 호출 관계 (등록 예시)

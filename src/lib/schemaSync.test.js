@@ -29,6 +29,15 @@ describe("SQL 스키마 ↔ React 코드 일치", () => {
     Object.keys(EMPTY_PROJECT_FORM).forEach(field => expect(project).toHaveProperty(field));
   });
 
+  it("주소 형식 규칙이 validators.js 와 같다", () => {
+    const validators = readFileSync(resolve(process.cwd(), "src/lib/validators.js"), "utf8");
+    expect(validators).toContain("const URL_PATTERN = /^https?:\\/\\/\\S+$/i;");
+    expect(validators).toContain("const SITE_PATH_PATTERN = /^\\/[A-Za-z0-9_.~%-][A-Za-z0-9_.~%/-]*$/;");
+    expect(schema).toContain("github_url ~* '^https?://[^[:space:]]+$'");
+    expect(schema).toContain("demo_url ~* '^https?://[^[:space:]]+$'");
+    expect(schema).toContain("image_url ~* '^https?://[^[:space:]]+$' or image_url ~ '^/[A-Za-z0-9_.~%-][A-Za-z0-9_.~%/-]*$'");
+  });
+
   it("분류 값과 글자 수 제한이 같다", () => {
     const sqlCategories = schema.match(/category in \(([^)]+)\)/)[1].match(/'([a-z]+)'/g).map(value => value.slice(1, -1));
     expect(sqlCategories).toEqual(CATEGORIES);

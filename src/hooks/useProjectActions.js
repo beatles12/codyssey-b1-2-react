@@ -28,7 +28,7 @@ function useProjectActions() {
     }
   }, []);
 
-  const create = useCallback(input => run(() => createProject(input)), [run]);
+  const create = useCallback((input, id) => run(() => createProject(input, id)), [run]);
   const update = useCallback((id, input) => run(() => updateProject(id, input)), [run]);
   const remove = useCallback(id => run(() => deleteProject(id).then(() => true)), [run]);
   const clearError = useCallback(() => setError(""), []);

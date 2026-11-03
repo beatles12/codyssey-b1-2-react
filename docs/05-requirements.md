@@ -89,7 +89,7 @@
 
 ### A12. 제출 중 상태 표시
 - **함수·컴포넌트**: `useProjectActions().isSubmitting` → `Button isLoading` ("저장 중...", 비활성화)
-- **추가 보호**: 실행 중 잠금으로 더블클릭해도 1번만 요청
+- **추가 보호**: 실행 중 잠금으로 더블클릭해도 1번만 요청. 시간 초과 뒤 다시 저장해도 같은 id를 보내 중복 등록이 생기지 않음
 - **테스트**: `projectPages.test.jsx` "저장 중에는", `securityHardening.test.jsx` "연속 클릭 방지"
 
 ### A13. 요청 실패를 화면에 표시
@@ -134,10 +134,10 @@
 
 | # | 요구사항 | 준비된 것 | 지금까지 확인 | 남은 확인 (사용자) |
 | --- | --- | --- | --- | --- |
-| B1 | Supabase 원격 데이터 기준 **목록·상세 조회** | `projectsApi.fetchProjects/fetchProjectById`, `01_schema.sql` | 가짜 Supabase 응답 테스트, SQL 로컬 모의 실행 | OWNER_CHECKLIST 5-1 |
-| B2 | 원격 **등록·수정** (폼 → 제출 → 이동) | `createProject/updateProject` | 가짜 API 브라우저 확인 | OWNER_CHECKLIST 5-2 (4~7) |
-| B3 | 원격 **삭제** → 목록 갱신 | `deleteProject` | 가짜 API 브라우저 확인 | OWNER_CHECKLIST 5-2 (8) |
-| B4 | 보너스: **Supabase Auth 로그인** + RLS 권한 | `authApi`, `02_policies.sql`, `05_verify_rls.sql` | 가짜 로그인 브라우저 확인, RLS 로컬 모의 실행 | OWNER_CHECKLIST 3·5-3 |
+| B1 | Supabase 원격 데이터 기준 **목록·상세 조회** | `projectsApi.fetchProjects/fetchProjectById`, `01_schema.sql` | 가짜 Supabase 응답 테스트, SQL 로컬 모의 실행 | OWNER_CHECKLIST 5-2 |
+| B2 | 원격 **등록·수정** (폼 → 제출 → 이동) | `createProject/updateProject` | 가짜 API 브라우저 확인 | OWNER_CHECKLIST 5-3 (4~7) |
+| B3 | 원격 **삭제** → 목록 갱신 | `deleteProject` | 가짜 API 브라우저 확인 | OWNER_CHECKLIST 5-3 (8~9) |
+| B4 | 보너스: **Supabase Auth 로그인** + RLS 권한 | `authApi`, `02_policies.sql`, `05_verify_rls.sql` | 가짜 로그인 브라우저 확인, RLS 로컬 모의 실행(안전·위험 설정 모두) | OWNER_CHECKLIST 3·5-1 |
 | B5 | **외부 접속 가능한 배포 URL** | `vercel.json`, 빌드 성공 | 로컬 빌드·미리보기 | OWNER_CHECKLIST 6 |
 | B6 | **배포 URL에서 CRUD 모두 동작** (환경변수 누락 없음) | 환경변수 안내 | — | OWNER_CHECKLIST 6-7 |
 
@@ -157,7 +157,7 @@
 | 프로젝트 내용은 한 언어로만 저장 (화면 문구만 KR/EN) | `title_en` 등 영어 칸 추가 |
 | 이미지는 URL 입력만 | Supabase Storage 업로드 |
 | 목록을 한 번에 모두 조회, 캐시 없음 | 데이터가 많아지면 페이지 나누기·캐시 도구 |
-| 시간 초과 후에도 실제 요청은 계속될 수 있음 | 요청 취소(AbortController) 연결 |
+| 시간 초과 후에도 실제 요청은 계속될 수 있음 (등록은 id 재사용으로 중복 방지, 단 등록 화면을 새로 열면 새 id) | 요청 취소(AbortController) 연결 |
 | GitHub API는 IP당 시간당 60회 제한 | 결과를 잠시 저장 |
 | ESLint 개발 의존성 경고 6건(사이트 미포함) | 수정판이 나오면 업데이트 |
 | 코딩 가이드라인 원본 미수령 | 받으면 전체 재점검 |
