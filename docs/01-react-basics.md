@@ -1,6 +1,6 @@
 # 01. React 핵심 개념 — 이 프로젝트 코드로 배우기
 
-> 읽는 순서: START_HERE → **01(이 문서)** → 02 구조 → 03 데이터 흐름 → 04 실행·테스트 → 05 요구사항
+> 읽는 순서: START_HERE → 00 개요 → **01(이 문서)** → 02 구조 → 03 데이터 흐름 → 04 실행·테스트 → 05 요구사항
 
 ## 1. React와 기존 JavaScript(B1-1)의 차이
 
@@ -179,7 +179,7 @@ AppProviders
 └ ThemeProvider      → useTheme()     : mode, theme, toggleTheme, selectAutoTheme
   └ LanguageProvider → useLanguage()  : language, t, messages, toggleLanguage
     └ ToastProvider  → useToast()     : showToast(message, type)
-      └ AuthProvider → useAuth()      : user, isLoading, signIn, signOut
+      └ AuthProvider → useAuth()      : user, isAdmin, isLoading, signIn, signOut
         └ App (모든 페이지)
 ```
 
@@ -196,7 +196,7 @@ AppProviders
 | `useAsyncData(loadData)` | data, isLoading, error, reload | 로딩·오류·재시도·늦은 응답 무시 로직을 한 곳에만 작성 |
 | `useProjects()` | projects, isLoading, error, reload | 홈 Work와 목록 페이지가 같은 데이터를 씀 |
 | `useProject(id)` | project, isLoading, error, reload | 상세·수정 페이지가 같은 방식으로 한 건을 씀 |
-| `useProjectActions()` | create, update, remove, isSubmitting, error | 등록·수정·삭제의 "저장 중 / 실패" 처리가 같음 |
+| `useProjectActions()` | create, update, remove, isSubmitting, error | 등록·수정·삭제의 "저장 중 / 실패 / 연속 클릭 잠금" 처리가 같음 |
 | `useGithubRepos()` | repos, isLoading, error, reload | GitHub API를 화면 코드와 분리 |
 | `useInView()` | [ref, isInView] | 등장 효과·타이핑 시작 시점을 여러 섹션이 공유 |
 | `useTypingEffect(text, isActive)` | 지금까지 타이핑된 문자열 | B1-1 타이핑 리듬을 React 방식으로 |

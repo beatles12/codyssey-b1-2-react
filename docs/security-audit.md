@@ -6,7 +6,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 발견일 | 2026-11-03 (1단계). 2단계·7단계 완료 후(Supabase 라이브러리 추가 후) 다시 확인 — 변화 없음 |
+| 발견일 | 2026-11-03 (1단계). 2단계·7단계·최종 품질 검증 때 다시 확인 — 변화 없음 |
 | 결과 | moderate 6건, high/critical 0건 |
 | 원인 패키지 | `minimatch` (< 11.0.1) — ReDoS(정규식 서비스 거부) 가능성, [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) |
 | 경로 | `eslint` → `@eslint/config-array` → `minimatch` (나머지 5건은 이 체인에 딸린 eslint 관련 패키지) |
@@ -21,7 +21,7 @@ npm audit
 npm audit --omit=dev   # 실제 사이트에 들어가는 패키지만 검사 (0건이어야 함)
 ```
 
-## 2. 비밀값 점검 (7단계 완료 시점)
+## 2. 비밀값 점검 (최종 품질 검증 시점, 전체 커밋 기록 포함)
 
 | 항목 | 결과 |
 | --- | --- |
@@ -37,6 +37,6 @@ npm audit --omit=dev   # 실제 사이트에 들어가는 패키지만 검사 (0
 - [ ] `npm audit` 재확인, 수정판이 있으면 반영 후 테스트 통과
 - [ ] `.env`가 Git에 올라가지 않았는지 확인 (`git ls-files | grep .env` → `.env.example`만 나와야 함)
 - [ ] 코드에 Supabase `service_role` 키·관리자 비밀번호가 없는지 확인
-- [ ] Supabase RLS 활성화: 방문자는 조회만, 관리자만 등록·수정·삭제 가능한지 **실제로 시험**
+- [ ] Supabase RLS 활성화: `05_verify_rls.sql` 블록 A·B·C와 [security-review.md](security-review.md) 4번 절차로 **실제로 시험**
 - [ ] Supabase Auth 공개 회원가입 비활성화
 - [ ] Vercel 환경변수 등록 후 배포 URL에서 CRUD 확인

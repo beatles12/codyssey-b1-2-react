@@ -86,7 +86,7 @@ codyssey-b1-2-react/
 
 ### 레이아웃·인증
 
-`Layout`(공통 틀, 주소 변경 시 스크롤), `Header`(메뉴·관리자 메뉴), `DisplayControls`(KR/EN·Auto·Dark), `Footer`, `BackToTopButton`, `ProtectedRoute`
+`Layout`(공통 틀, 주소 변경 시 스크롤), `Header`(메뉴·관리자 메뉴), `DisplayControls`(KR/EN·Auto·Dark), `Footer`, `BackToTopButton`, `ProtectedRoute`(방문자 → 로그인, 관리자 아님 → 권한 없음)
 
 ## 4. 주요 함수: 입력값 · 반환값 · 호출 관계
 
@@ -100,6 +100,8 @@ codyssey-b1-2-react/
 | `updateProject(id, project)` | id, 저장용 객체 | `Promise<Project>` | 바뀐 행 0개면 `notChanged` |
 | `deleteProject(id)` | id | `Promise<void>` | 지운 행 0개면 `notChanged` |
 | `fromRow(row)` / `toRow(project)` | DB 행 / 화면 객체 | 서로 변환 | — |
+
+> 모든 함수는 `withTimeout`으로 감싸 15초 안에 응답이 없으면 `timeout` 오류를 던집니다.
 
 > 왜 `notChanged`가 필요한가요? Supabase는 RLS가 **수정·삭제**를 막으면 오류 대신 "0개 바뀜"으로 응답합니다. 그래서 0개면 직접 오류로 바꿔 사용자에게 알립니다.
 
@@ -123,6 +125,9 @@ codyssey-b1-2-react/
 | `fetchGithubRepos()` | → 카드 모양 저장소 4개 | 선호 저장소 우선, 포크 제외 |
 | `sendContactMessage(values)` | → `Promise<void>` | Formspree 전송 |
 | `getSession / onAuthStateChange / signInWithPassword / signOut` | Supabase Auth 감싸기 | 미설정이면 방문자로 동작 |
+| `checkIsAdmin()` | → `Promise<boolean>` | DB 함수 `is_admin()` 호출. 관리 버튼 표시 여부에 사용 |
+| `withTimeout(promise, ms)` | → 같은 결과 또는 15초 뒤 `timeout` 오류 | `lib/request.js`. 무한 로딩 방지 |
+| `toSafeLinkUrl / toSafeImageUrl` | 주소 → 안전하면 그대로, 아니면 `""` | `javascript:` 같은 위험한 주소 표시 차단 |
 
 ### 호출 관계 (등록 예시)
 

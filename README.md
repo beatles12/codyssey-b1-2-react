@@ -14,7 +14,8 @@ B1-1 개인 포트폴리오(순수 HTML·CSS·JS)를 **React SPA**로 재구성�
 | 항목 | 상태 |
 | --- | --- |
 | 화면·라우팅·상태 관리·폼·인증 코드 | 구현 완료 |
-| 자동 테스트 | 118개 통과 (Mock 데이터 기준) |
+| 자동 테스트 | 145개 통과 (Mock 데이터 기준) |
+| 브라우저 실전 검증 | 46/46 통과 (가짜 API, PC·태블릿·모바일) |
 | 실제 Supabase 연결 | ⏳ 사용자 설정 필요 → [docs/supabase-setup.md](docs/supabase-setup.md) |
 | 배포 | ⏳ 승인 후 |
 
@@ -69,7 +70,7 @@ Supabase 연결: `.env.example`을 복사해 `.env`를 만들고 `VITE_SUPABASE_
 - **CRUD**: Supabase `projects` 테이블 등록·조회·수정·삭제, 삭제 확인 창, 성공 알림
 - **폼 UX**: 필수값·글자 수·URL 검사, 필드별 오류, 저장 중 버튼 비활성화, 실패 사유 표시, 실시간 미리보기 카드
 - **상태 UI**: 로딩·오류(다시 시도)·빈 상태를 `DataStatus` 하나로 통일
-- **관리자 인증**: Supabase Auth 로그인, `ProtectedRoute`, 방문자에게 관리 버튼 숨김, **RLS로 DB에서 실제 차단**
+- **관리자 인증**: Supabase Auth 로그인, `ProtectedRoute`, DB 함수 `is_admin()`으로 관리자만 관리 버튼 표시, **RLS로 DB에서 실제 차단**
 - **B1-1 계승**: KR/EN 전환, Light/Dark/Auto 테마, 타이핑·등장 효과, GitHub API, 문의 폼, 반응형, 라벤더 디자인·시루 일러스트
 
 ## 폴더 구조
@@ -106,10 +107,13 @@ docs/               초보자용 기술 설명서
 | 문서 | 내용 |
 | --- | --- |
 | [START_HERE](docs/START_HERE.md) | 가장 먼저 확인할 것 |
+| [OWNER_CHECKLIST](docs/OWNER_CHECKLIST.md) | 직접 해야 할 설정만 순서대로 (Windows 초보자용) |
+| [00 개요](docs/00-overview.md) | B1-1과 차이, React 선택 이유, 구조도, 30초 설명 |
 | [01 React 기초](docs/01-react-basics.md) | React vs JS, props / state / useEffect, Context, 커스텀 훅 |
 | [02 구조](docs/02-structure.md) | 폴더·컴포넌트 역할, 함수 입력·반환·호출 관계 |
 | [03 데이터 흐름](docs/03-data-flow.md) | 이벤트 → 상태 → 화면, CRUD·로그인 흐름, 30초 설명 |
 | [04 실행·테스트](docs/04-run-and-test.md) | 실행 방법, 테스트 구성, 확인 체크리스트 |
 | [05 요구사항](docs/05-requirements.md) | 공식 요구사항별 구현 위치·검증 여부·한계 |
 | [Supabase 설정](docs/supabase-setup.md) | DB·관리자·RLS·Vercel 설정 순서 |
+| [보안 검토](docs/security-review.md) | 관리자 권한·RLS 검토, 사용자별 직접 테스트 절차 |
 | [보안 점검](docs/security-audit.md) | 의존성 경고, 비밀값 점검, 배포 전 체크리스트 |

@@ -108,8 +108,15 @@ npm run dev
 
 ### SQL로 시험
 
-`supabase/05_verify_rls.sql`을 실행합니다. 마지막 `rollback` 덕분에 데이터는 바뀌지 않습니다.
-`delete` 결과가 **0행**이면 방문자 삭제가 막힌 것입니다.
+`supabase/05_verify_rls.sql`의 블록 A(방문자)·B(일반 로그인)·C(관리자)를 **하나씩 선택해서** 실행합니다. 각 블록은 `rollback`으로 끝나 데이터가 바뀌지 않습니다.
+
+| 블록 | 정상 결과 |
+| --- | --- |
+| A | 조회 개수 → `permission denied for table projects` 오류 |
+| B | is_admin false, 삭제 0, 수정 0 → `violates row-level security policy` 오류 |
+| C | is_admin true, 등록·수정·삭제 각 1 |
+
+(작업 환경의 로컬 PostgreSQL 모의 실행에서는 위와 같았지만, 실제 Supabase에서는 아직 실행하지 않았습니다. 자세한 내용: [security-review.md](security-review.md))
 
 ### 화면으로 시험
 
@@ -140,3 +147,11 @@ npm run dev
 | 관리자로 로그인했는데 "변경되지 않았습니다…" | `03_register_admin.sql`의 이메일을 바꾸지 않았거나 실행하지 않음 → `admin_users`에 행이 있는지 확인 |
 | "권한이 없습니다" (등록 시) | 위와 같음. RLS가 등록을 거절한 것 |
 | 배포 사이트에서만 동작 안 함 | Vercel 환경변수 누락 → 등록 후 **Redeploy** |
+| 관리자로 로그인했는데 "관리자 권한이 없는 계정" | `03_register_admin.sql` 미실행·이메일 오타, 또는 `02_policies.sql` 미실행(`is_admin` 함수 없음) |
+| `permission denied for function is_admin` | 02의 `grant execute … to authenticated` 줄이 빠짐 → 02 다시 실행 |
+| "relation public.projects does not exist" (앱 화면) | 01 미실행, 또는 다른 Supabase 프로젝트의 URL을 넣음 |
+| 목록이 비고 오류도 없음 (데이터는 있는데) | RLS는 켜졌는데 SELECT 정책이 없음 → 02 다시 실행 |
+| 새 키 형식(`sb_publishable_…`) | anon 키 자리에 그대로 넣으면 됨. `sb_secret_…`은 절대 넣지 않기 |
+| Data API에 표가 안 보임 | Project Settings → Data API에서 `public` 스키마가 노출(Exposed)되어 있는지 확인 |
+| 무료 프로젝트 일시정지(Paused) | 대시보드에서 **Restore** — 평가 전 미리 확인 |
+| 이미지가 안 보임 | `/images/...`는 이 사이트의 `public/images` 파일만 가능. 외부 이미지는 `https://` 전체 주소 |

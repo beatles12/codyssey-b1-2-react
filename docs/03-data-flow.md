@@ -60,7 +60,8 @@ ProjectListPage 화면에 나타남
      └ onSubmit(toProjectInput(values))
          └ ProjectCreatePage.handleSubmit
              └ useProjectActions.create(input)   ← isSubmitting = true (버튼 비활성화)
-                 └ createProject ─ insert(toRow(input)).select().single()
+                 │                                   이미 실행 중이면 무시 (더블클릭 방지)
+                 └ createProject ─ insert(toRow(input)).select().single()   (15초 제한)
                      ├ 성공: showToast("프로젝트를 등록했습니다.") ─► navigate(/projects/새id)
                      └ 실패: error = "errors.permission" 등 ─► 폼 위 빨간 상자, 입력값 유지
 ```
@@ -89,6 +90,8 @@ anon 키 + (로그인 시) 사용자 토큰  ───►   PostgREST API
 - 화면에서 버튼을 숨기는 것(`user &&`)은 **편의 기능**입니다.
 - **실제 차단은 RLS**: 방문자가 개발자 도구로 삭제 요청을 직접 보내도 DB가 0행 처리합니다.
 - 관리자 = `admin_users` 표에 등록된 계정. 공개 회원가입은 꺼 둡니다.
+- 화면의 `isAdmin`도 같은 DB 함수 `is_admin()`으로 확인하므로, 관리자가 아닌 계정에는 관리 버튼이 보이지 않습니다. 그래도 최종 판단은 DB가 합니다.
+- 자세한 검토: [security-review.md](security-review.md)
 
 ## 5. 로그인 흐름
 
@@ -98,7 +101,10 @@ anon 키 + (로그인 시) 사용자 토큰  ───►   PostgREST API
      └ LoginPage: 이메일·비밀번호 검사 ─► signIn() ─► Supabase Auth
          ├ 실패: "이메일 또는 비밀번호가 올바르지 않습니다."
          └ 성공: onAuthStateChange ─► AuthContext session 변경
-                 ─► 알림 + navigate(from) ─► 원래 가려던 /projects/new
+                 ─► checkIsAdmin() ─► DB 함수 is_admin() ─► isAdmin true/false
+                 ─► 알림 + navigate(from) ─► ProtectedRoute 다시 검사
+                      ├ isAdmin true  ─► 원래 가려던 /projects/new
+                      └ isAdmin false ─► "관리자 권한이 없는 계정입니다." 
 ```
 
 ## 6. 동료에게 30초 설명
