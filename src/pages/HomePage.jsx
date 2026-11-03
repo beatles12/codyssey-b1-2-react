@@ -1,6 +1,7 @@
 import AboutSection from "../components/home/AboutSection.jsx";
 import ContactSection from "../components/home/ContactSection.jsx";
 import ExpertiseSection from "../components/home/ExpertiseSection.jsx";
+import FeaturedProjects from "../components/home/FeaturedProjects.jsx";
 import HeroSection from "../components/home/HeroSection.jsx";
 import WorkSection from "../components/home/WorkSection.jsx";
 
@@ -11,7 +12,9 @@ function HomePage() {
       <HeroSection />
       <AboutSection number="02" />
       <ExpertiseSection number="03" />
-      <WorkSection number="04" />
+      <WorkSection number="04">
+        <FeaturedProjects />
+      </WorkSection>
       <ContactSection number="05" />
     </>
   );

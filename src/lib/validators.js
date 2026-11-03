@@ -13,6 +13,11 @@ export function isOptionalUrl(value) {
   return !value.trim() || URL_PATTERN.test(value.trim());
 }
 
+/** 비어 있거나 http(s):// 주소, 또는 사이트 안 경로("/images/a.png")면 통과한다. */
+export function isOptionalImageUrl(value) {
+  return isOptionalUrl(value) || /^\/\S+$/.test(value.trim());
+}
+
 /** 문의 폼(name, email, message)을 검사한다. */
 export function validateContact({ name, email, message }) {
   const errors = {};

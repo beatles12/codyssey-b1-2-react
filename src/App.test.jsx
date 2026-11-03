@@ -1,21 +1,31 @@
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App.jsx";
+import * as api from "./lib/projectsApi.js";
+import { mockProjects } from "./test/mockProjects.js";
 import { renderWithProviders } from "./test/renderWithProviders.jsx";
 
+vi.mock("./lib/projectsApi.js");
+
+const [firstProject] = mockProjects;
 const renderAt = route => renderWithProviders(<App />, { route });
 
 describe("라우팅", () => {
+  beforeEach(() => {
+    api.fetchProjects.mockResolvedValue(mockProjects);
+    api.fetchProjectById.mockResolvedValue(firstProject);
+  });
+
   it.each([
     ["/", "불편함 속에서 서비스는 시작됩니다."],
     ["/about", "사람을 이해하는 마음에서 좋은 서비스가 시작됩니다."],
     ["/projects", "Projects"],
     ["/projects/new", "새 프로젝트 등록"],
-    ["/projects/42", "프로젝트 #42"],
-    ["/projects/42/edit", "프로젝트 #42 수정"],
-  ])("%s 경로에서 해당 페이지를 보여준다", (path, title) => {
+    [`/projects/${firstProject.id}`, firstProject.title],
+    [`/projects/${firstProject.id}/edit`, "프로젝트 수정"],
+  ])("%s 경로에서 해당 페이지를 보여준다", async (path, title) => {
     renderAt(path);
-    expect(screen.getByRole("heading", { level: 1, name: title })).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { level: 1, name: title })).toBeInTheDocument();
   });
 
   it("없는 주소는 Not Found 페이지를 보여준다", () => {

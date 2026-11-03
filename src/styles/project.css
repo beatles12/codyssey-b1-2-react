@@ -111,3 +111,192 @@ html[lang="en"] .project-summary {
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   }
 }
+
+/* 목록 도구 줄 */
+.list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 24px;
+}
+
+.list-count {
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+/* 상세 */
+.back-link {
+  margin-bottom: 36px;
+}
+
+.detail-header h1 {
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.05em;
+  word-break: keep-all;
+}
+
+.detail-summary {
+  max-width: 640px;
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.detail-image {
+  width: 100%;
+  max-height: 420px;
+  margin-top: 40px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--soft);
+  object-fit: contain;
+}
+
+.detail-body {
+  display: grid;
+  gap: 32px;
+  margin-top: 40px;
+}
+
+.detail-description {
+  color: var(--text);
+  font-size: 0.92rem;
+  line-height: 1.95;
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+.detail-meta {
+  align-self: start;
+  padding: 18px 22px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--surface);
+}
+
+.detail-meta dl > div {
+  display: grid;
+  grid-template-columns: 70px 1fr;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.detail-meta dt {
+  color: var(--lavender-deep);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.detail-meta dd {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.detail-meta .link-row {
+  margin-top: 18px;
+}
+
+/* 폼 */
+.project-form-layout {
+  display: grid;
+  gap: 36px;
+}
+
+.project-form {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.form-row {
+  display: grid;
+  column-gap: 18px;
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-hint {
+  color: var(--light);
+  font-size: 0.62rem;
+}
+
+.form-alert {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid var(--danger);
+  border-radius: 10px;
+  color: var(--danger);
+  font-size: 0.78rem;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.checkbox-field input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--lavender-deep);
+}
+
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 28px;
+}
+
+.project-preview {
+  align-self: start;
+}
+
+.preview-hint {
+  margin-top: 12px;
+  color: var(--light);
+  font-size: 0.7rem;
+}
+
+@media (min-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .detail-body {
+    grid-template-columns: 1fr 320px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .project-form-layout {
+    grid-template-columns: 1fr 320px;
+  }
+
+  .project-preview {
+    position: sticky;
+    top: 110px;
+  }
+}

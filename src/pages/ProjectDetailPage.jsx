@@ -1,17 +1,70 @@
-import { useParams } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import ProjectDetail from "../components/project/ProjectDetail.jsx";
 import Button from "../components/ui/Button.jsx";
-import SectionHeading from "../components/ui/SectionHeading.jsx";
+import ConfirmDialog from "../components/ui/ConfirmDialog.jsx";
+import DataStatus from "../components/ui/DataStatus.jsx";
+import useLanguage from "../hooks/useLanguage.js";
+import useProject from "../hooks/useProject.js";
+import useProjectActions from "../hooks/useProjectActions.js";
+import useToast from "../hooks/useToast.js";
 
-/** "/projects/:id" 상세 화면. 주소의 :id 값을 useParams로 읽는다. */
+/** "/projects/:id" 상세 화면. 삭제는 확인 창을 거친 뒤 실행하고 성공하면 목록으로 이동한다. */
 function ProjectDetailPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { t } = useLanguage();
+  const showToast = useToast();
+  const { project, isLoading, error, reload } = useProject(id);
+  const { remove, isSubmitting, error: actionError } = useProjectActions();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
+  const handleDelete = async () => {
+    const isDeleted = await remove(id);
+    setIsConfirmOpen(false);
+    if (!isDeleted) return;
+    showToast(t("projects.deleted"));
+    navigate("/projects");
+  };
+
+  const actions = (
+    <>
+      <Button to={`/projects/${id}/edit`}>{t("projects.edit")}</Button>
+      <Button variant="danger" onClick={() => setIsConfirmOpen(true)}>
+        {t("projects.delete")}
+      </Button>
+    </>
+  );
 
   return (
     <section className="page-section">
-      <SectionHeading eyebrow="PROJECT DETAIL" title={`프로젝트 #${id}`} />
-      <Button to={`/projects/${id}/edit`} icon="→">
-        수정하기
-      </Button>
+      <div className="back-link">
+        <Button to="/projects" icon="←">
+          {t("projects.back")}
+        </Button>
+      </div>
+      {actionError && (
+        <p className="form-alert" role="alert">
+          {t(actionError)}
+        </p>
+      )}
+      <DataStatus
+        isLoading={isLoading}
+        error={t(error)}
+        onRetry={error === "errors.notFound" ? undefined : reload}
+        loadingMessage={t("projects.loading")}
+      >
+        {project && <ProjectDetail project={project} actions={actions} />}
+      </DataStatus>
+      <ConfirmDialog
+        open={isConfirmOpen}
+        title={t("projects.deleteTitle")}
+        message={t("projects.deleteMessage", { title: project?.title })}
+        confirmLabel={t("projects.delete")}
+        isLoading={isSubmitting}
+        onConfirm={handleDelete}
+        onCancel={() => setIsConfirmOpen(false)}
+      />
     </section>
   );
 }

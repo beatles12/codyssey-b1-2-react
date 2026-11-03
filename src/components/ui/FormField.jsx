@@ -4,6 +4,7 @@
  * @param {"input"|"textarea"|"select"} [as] 입력칸 종류
  * @param {{value: string, label: string}[]} [options] select 선택지
  * @param {string} [error] 비어 있지 않으면 입력칸 아래에 오류로 표시
+ * @param {string} [hint] 라벨 오른쪽 보조 문구 (예: 글자 수)
  */
 function FormField({
   label,
@@ -17,6 +18,7 @@ function FormField({
   placeholder,
   options = [],
   rows = 4,
+  hint,
 }) {
   const id = `field-${name}`;
   const errorId = `${id}-error`;
@@ -33,10 +35,13 @@ function FormField({
 
   return (
     <div className="form-field">
-      <label htmlFor={id}>
-        {label}
-        {required && <span className="required-mark"> *</span>}
-      </label>
+      <div className="field-label-row">
+        <label htmlFor={id}>
+          {label}
+          {required && <span className="required-mark"> *</span>}
+        </label>
+        {hint && <span className="field-hint">{hint}</span>}
+      </div>
 
       {as === "textarea" && <textarea rows={rows} {...fieldProps} />}
       {as === "select" && (

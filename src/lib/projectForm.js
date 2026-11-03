@@ -1,5 +1,5 @@
 // 프로젝트 폼 값(문자열 위주)과 저장용 프로젝트 객체 사이의 변환, 그리고 입력값 검사.
-import { isOptionalUrl } from "./validators.js";
+import { isOptionalImageUrl, isOptionalUrl } from "./validators.js";
 
 export const CATEGORIES = ["planning", "education", "ai", "startup", "development"];
 export const TITLE_MAX = 60;
@@ -54,8 +54,9 @@ export function validateProjectForm(values) {
   else if (summary.length > SUMMARY_MAX) errors.summary = "validation.summaryTooLong";
   if (!values.description.trim()) errors.description = "validation.descriptionRequired";
   if (!CATEGORIES.includes(values.category)) errors.category = "validation.categoryRequired";
-  ["githubUrl", "demoUrl", "imageUrl"].forEach(field => {
+  ["githubUrl", "demoUrl"].forEach(field => {
     if (!isOptionalUrl(values[field])) errors[field] = "validation.urlInvalid";
   });
+  if (!isOptionalImageUrl(values.imageUrl)) errors.imageUrl = "validation.imageUrlInvalid";
   return errors;
 }

@@ -21,8 +21,12 @@ describe("projectForm", () => {
     expect(errors).toEqual({ title: "validation.titleTooLong", summary: "validation.summaryTooLong", githubUrl: "validation.urlInvalid" });
   });
 
-  it("올바른 폼은 오류가 없다", () => {
-    expect(validateProjectForm({ ...validForm, demoUrl: "https://demo.example.com" })).toEqual({});
+  it("올바른 폼은 오류가 없다 (이미지는 사이트 안 경로도 허용)", () => {
+    expect(validateProjectForm({ ...validForm, demoUrl: "https://demo.example.com", imageUrl: "/images/budget.png" })).toEqual({});
+  });
+
+  it("이미지 주소가 형식에 맞지 않으면 오류를 낸다", () => {
+    expect(validateProjectForm({ ...validForm, imageUrl: "budget.png" }).imageUrl).toBe("validation.imageUrlInvalid");
   });
 
   it("기술 스택 문자열을 공백·중복 없이 배열로 바꾼다", () => {
