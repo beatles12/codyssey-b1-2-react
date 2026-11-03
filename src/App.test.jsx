@@ -1,0 +1,63 @@
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router-dom";
+import App from "./App.jsx";
+
+function renderAt(path) {
+  return render(
+    <MemoryRouter initialEntries={[path]}>
+      <App />
+    </MemoryRouter>,
+  );
+}
+
+describe("라우팅", () => {
+  beforeAll(() => {
+    window.scrollTo = vi.fn();
+  });
+
+  it.each([
+    ["/", "불편함 속에서 서비스는 시작됩니다."],
+    ["/about", "사람을 이해하는 마음에서 좋은 서비스가 시작됩니다."],
+    ["/projects", "Projects"],
+    ["/projects/new", "새 프로젝트 등록"],
+    ["/projects/42", "프로젝트 #42"],
+    ["/projects/42/edit", "프로젝트 #42 수정"],
+  ])("%s 경로에서 해당 페이지를 보여준다", (path, title) => {
+    renderAt(path);
+    expect(screen.getByRole("heading", { level: 1, name: title })).toBeInTheDocument();
+  });
+
+  it("없는 주소는 Not Found 페이지를 보여준다", () => {
+    renderAt("/no-such-page");
+    expect(screen.getByRole("heading", { name: "페이지를 찾을 수 없습니다." })).toBeInTheDocument();
+  });
+
+  it("모든 페이지에 공통 헤더와 푸터가 있다", () => {
+    renderAt("/about");
+    expect(screen.getByRole("navigation", { name: "주요 메뉴" })).toBeInTheDocument();
+    expect(screen.getByRole("contentinfo")).toBeInTheDocument();
+  });
+
+  it("네비게이션 링크를 누르면 페이지가 바뀐다", async () => {
+    const user = userEvent.setup();
+    renderAt("/");
+
+    await user.click(screen.getByRole("link", { name: "Work" }));
+
+    expect(screen.getByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
+  });
+
+  it("메뉴 버튼을 누르면 모바일 메뉴가 열리고 닫힌다", async () => {
+    const user = userEvent.setup();
+    renderAt("/");
+    const toggle = screen.getByRole("button", { name: "메뉴 열기" });
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(document.querySelector("#nav-menu")).toHaveClass("active");
+
+    await user.click(toggle);
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+  });
+});
