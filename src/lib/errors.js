@@ -16,6 +16,7 @@ export function toErrorKey(error) {
 
   if (code === "config") return "errors.config";
   if (code === "notFound" || code === "PGRST116" || code === "22P02") return "errors.notFound";
+  if (code === "notChanged") return "errors.notChanged";
   if (code === "permission" || code === "42501" || status === 401 || status === 403) return "errors.permission";
   if (code === "invalid_credentials" || message.includes("Invalid login credentials")) return "errors.invalidLogin";
   if (/failed to fetch|networkerror|load failed/i.test(message)) return "errors.network";

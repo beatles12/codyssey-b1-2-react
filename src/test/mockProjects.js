@@ -1,0 +1,36 @@
+// 테스트용 가짜 프로젝트 데이터. 실제 DB와 같은 화면용(camelCase) 모양이다.
+
+export const mockProjects = [
+  {
+    id: "11111111-1111-1111-1111-111111111111",
+    title: "시간 관리 도우미",
+    summary: "하루 일정을 AI로 정리해 주는 서비스",
+    description: "바쁜 직장인의 일정 정리 불편을 해결합니다.",
+    category: "ai",
+    techStack: ["React", "Supabase"],
+    role: "기획 · 개발",
+    period: "2026.09 – 2026.11",
+    githubUrl: "https://github.com/example/time",
+    demoUrl: "",
+    imageUrl: "",
+    isFeatured: true,
+    createdAt: "2026-11-01T00:00:00Z",
+    updatedAt: "2026-11-01T00:00:00Z",
+  },
+  {
+    id: "22222222-2222-2222-2222-222222222222",
+    title: "코딩 교육 커리큘럼",
+    summary: "초보자를 위한 8주 웹 개발 과정",
+    description: "처음 배우는 사람도 따라올 수 있도록 단계별로 설계했습니다.",
+    category: "education",
+    techStack: ["HTML", "CSS"],
+    role: "교육 설계",
+    period: "2026",
+    githubUrl: "",
+    demoUrl: "",
+    imageUrl: "",
+    isFeatured: false,
+    createdAt: "2026-10-01T00:00:00Z",
+    updatedAt: "2026-10-01T00:00:00Z",
+  },
+];
