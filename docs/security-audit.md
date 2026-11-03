@@ -6,7 +6,7 @@
 
 | 항목 | 내용 |
 | --- | --- |
-| 발견일 | 2026-11-03 (1단계), 2단계에서 다시 확인 — 변화 없음 |
+| 발견일 | 2026-11-03 (1단계). 2단계·7단계 완료 후(Supabase 라이브러리 추가 후) 다시 확인 — 변화 없음 |
 | 결과 | moderate 6건, high/critical 0건 |
 | 원인 패키지 | `minimatch` (< 11.0.1) — ReDoS(정규식 서비스 거부) 가능성, [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249) |
 | 경로 | `eslint` → `@eslint/config-array` → `minimatch` (나머지 5건은 이 체인에 딸린 eslint 관련 패키지) |
@@ -21,7 +21,17 @@ npm audit
 npm audit --omit=dev   # 실제 사이트에 들어가는 패키지만 검사 (0건이어야 함)
 ```
 
-## 2. 배포 전 체크리스트
+## 2. 비밀값 점검 (7단계 완료 시점)
+
+| 항목 | 결과 |
+| --- | --- |
+| 코드에 Supabase URL·키 | 없음. `import.meta.env.VITE_SUPABASE_*`로만 읽음 |
+| 코드에 비밀번호 | 없음. 관리자 비밀번호는 Supabase 대시보드에서만 설정 |
+| `service_role` 키 사용 | 없음 |
+| Formspree 폼 ID `mvkzqbrk` | 코드에 기본값으로 있음. B1-1 공개 사이트에 이미 노출된 **공개 식별자**이며 비밀키가 아님. `VITE_FORMSPREE_ID`로 바꿀 수 있음 |
+| `.env` 커밋 여부 | `.gitignore`로 제외, `.env.example`만 커밋 |
+
+## 3. 배포 전 체크리스트
 
 - [ ] `npm audit --omit=dev` 결과 0건
 - [ ] `npm audit` 재확인, 수정판이 있으면 반영 후 테스트 통과
