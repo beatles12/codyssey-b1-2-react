@@ -14,6 +14,7 @@ function GithubSection() {
     <RevealSection id="github" className="projects">
       <SectionHeading eyebrow={t("github.eyebrow")} title={t("github.title")} description={t("github.description")} as="h2" />
       <DataStatus
+        retryLabel={t("common.retry")}
         isLoading={isLoading}
         error={error && t("github.error")}
         isEmpty={repos.length === 0}

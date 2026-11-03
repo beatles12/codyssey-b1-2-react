@@ -309,3 +309,15 @@ html[lang="en"] .project-summary {
   border-radius: var(--radius);
   background: var(--surface);
 }
+
+/* 띄어쓰기 없는 긴 제목·주소도 카드·화면 밖으로 넘치지 않게 줄바꿈 */
+.project-card h3,
+.project-summary,
+.detail-header h1,
+.detail-summary,
+.detail-description,
+.detail-meta dd,
+.dialog p,
+.form-alert {
+  overflow-wrap: anywhere;
+}

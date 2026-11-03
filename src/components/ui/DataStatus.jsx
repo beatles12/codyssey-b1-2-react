@@ -9,19 +9,21 @@ import EmptyState from "./EmptyState.jsx";
  * @param {string|null} error 오류 문구. 없으면 null
  * @param {boolean} [isEmpty] 데이터가 비었는지
  * @param {() => void} [onRetry] 오류 화면의 다시 시도 동작
+ * @param {string} [retryLabel] 다시 시도 버튼 글자
  */
 function DataStatus({
   isLoading,
   error,
   isEmpty = false,
   onRetry,
+  retryLabel,
   loadingMessage,
   emptyMessage,
   emptyAction,
   children,
 }) {
   if (isLoading) return <LoadingState message={loadingMessage} />;
-  if (error) return <ErrorState message={error} onRetry={onRetry} />;
+  if (error) return <ErrorState message={error} onRetry={onRetry} retryLabel={retryLabel} />;
   if (isEmpty) return <EmptyState message={emptyMessage} action={emptyAction} />;
   return children;
 }

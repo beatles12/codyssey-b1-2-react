@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import TagList from "../ui/TagList.jsx";
+import { toSafeImageUrl } from "../../lib/validators.js";
 
 /**
  * B1-1 Work 카드 모양의 프로젝트 카드. 목록·홈·GitHub·미리보기에서 함께 쓴다.
@@ -13,7 +14,8 @@ import TagList from "../ui/TagList.jsx";
  */
 function ProjectCard({ project, index, label, href, isExternal = false, linkLabel }) {
   const [failedImage, setFailedImage] = useState("");
-  const { title, summary, techStack = [], imageUrl = "" } = project;
+  const { title, summary, techStack = [] } = project;
+  const imageUrl = toSafeImageUrl(project.imageUrl);
   const showImage = Boolean(imageUrl) && failedImage !== imageUrl;
   const number = String(index + 1).padStart(2, "0");
   const linkName = `${title} ${linkLabel ?? ""}`.trim();

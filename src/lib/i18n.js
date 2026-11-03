@@ -4,6 +4,11 @@ export const LANGUAGES = ["ko", "en"];
 
 export const translations = {
   ko: {
+    common: {
+      retry: "다시 시도",
+      cancel: "취소",
+      closeToast: "알림 닫기",
+    },
     nav: {
       home: "홈으로 이동",
       about: "About",
@@ -162,6 +167,7 @@ export const translations = {
       githubUrl: "GITHUB URL",
       demoUrl: "DEMO URL",
       imageUrl: "IMAGE URL",
+      imageUrlPlaceholder: "https://... 또는 /images/budget.png",
       isFeatured: "홈 화면 대표 프로젝트로 표시",
       submitCreate: "등록하기",
       submitUpdate: "수정 완료",
@@ -188,6 +194,8 @@ export const translations = {
       config: "Supabase 연결 정보가 없습니다. .env 파일에 VITE_SUPABASE_URL과 VITE_SUPABASE_ANON_KEY를 설정해 주세요. (docs/supabase-setup.md 참고)",
       permission: "권한이 없습니다. 관리자 계정으로 로그인했는지 확인해 주세요.",
       notFound: "프로젝트를 찾을 수 없습니다.",
+      timeout: "서버 응답이 너무 늦어 요청을 마치지 못했습니다. 저장·삭제 중이었다면 목록에서 반영 여부를 확인한 뒤 다시 시도해 주세요.",
+      notAdmin: "관리자 권한이 없는 계정입니다. supabase/03_register_admin.sql로 관리자 등록이 되어 있는지 확인해 주세요.",
       notChanged: "변경되지 않았습니다. 관리자 권한이 있는지, 이미 삭제된 프로젝트가 아닌지 확인해 주세요.",
       network: "네트워크에 연결할 수 없습니다. 인터넷 연결을 확인해 주세요.",
       invalidLogin: "이메일 또는 비밀번호가 올바르지 않습니다.",
@@ -214,6 +222,11 @@ export const translations = {
     },
   },
   en: {
+    common: {
+      retry: "Try again",
+      cancel: "Cancel",
+      closeToast: "Close notification",
+    },
     nav: {
       home: "Go to home",
       about: "About",
@@ -372,6 +385,7 @@ export const translations = {
       githubUrl: "GITHUB URL",
       demoUrl: "DEMO URL",
       imageUrl: "IMAGE URL",
+      imageUrlPlaceholder: "https://... or /images/budget.png",
       isFeatured: "Feature on the home page",
       submitCreate: "Create",
       submitUpdate: "Save changes",
@@ -398,6 +412,8 @@ export const translations = {
       config: "Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env file. (see docs/supabase-setup.md)",
       permission: "Permission denied. Please make sure you are logged in as the admin.",
       notFound: "Project not found.",
+      timeout: "The server took too long to respond. If you were saving or deleting, check the list before trying again.",
+      notAdmin: "This account does not have admin rights. Check that it is registered with supabase/03_register_admin.sql.",
       notChanged: "Nothing was changed. Check that you have admin rights and the project still exists.",
       network: "Cannot reach the network. Please check your connection.",
       invalidLogin: "Incorrect email or password.",

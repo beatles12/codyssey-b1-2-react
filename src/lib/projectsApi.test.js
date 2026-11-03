@@ -77,6 +77,19 @@ describe("projectsApi CRUD (가짜 Supabase)", () => {
     await expect(fetchProjects()).rejects.toMatchObject({ code: "42501" });
   });
 
+  it("응답이 15초 넘게 없으면 timeout 오류로 끝난다 (무한 로딩 방지)", async () => {
+    vi.useFakeTimers();
+    const query = {};
+    ["select", "order"].forEach(method => (query[method] = vi.fn(() => query)));
+    query.then = () => {};
+    getSupabase.mockReturnValue({ from: vi.fn(() => query) });
+
+    const assertion = expect(fetchProjects()).rejects.toMatchObject({ code: "timeout" });
+    await vi.advanceTimersByTimeAsync(15000);
+    await assertion;
+    vi.useRealTimers();
+  });
+
   it("Supabase 설정이 없으면 config 오류가 전달된다", async () => {
     getSupabase.mockImplementation(() => {
       throw new AppError("config");

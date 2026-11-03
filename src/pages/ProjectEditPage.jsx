@@ -28,6 +28,7 @@ function ProjectEditPage() {
     <section className="page-section">
       <SectionHeading eyebrow={t("projects.editEyebrow")} title={t("projects.editTitle")} />
       <DataStatus
+        retryLabel={t("common.retry")}
         isLoading={isLoading}
         error={t(error)}
         onRetry={error === "errors.notFound" ? undefined : reload}

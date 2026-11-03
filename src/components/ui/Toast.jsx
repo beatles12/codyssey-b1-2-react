@@ -7,8 +7,9 @@ import { useEffect } from "react";
  * @param {"success"|"error"} [type] 성공/실패 색상
  * @param {() => void} onClose 닫을 때 호출 (부모가 message를 비운다)
  * @param {number} [duration] 자동으로 닫히기까지 걸리는 시간(ms)
+ * @param {string} [closeLabel] 닫기 버튼의 화면 낭독기용 이름
  */
-function Toast({ message, type = "success", onClose, duration = 3000 }) {
+function Toast({ message, type = "success", onClose, duration = 3000, closeLabel = "알림 닫기" }) {
   useEffect(() => {
     if (!message) return undefined;
 
@@ -21,7 +22,7 @@ function Toast({ message, type = "success", onClose, duration = 3000 }) {
   return (
     <div className={`toast toast-${type}`} role={type === "error" ? "alert" : "status"}>
       <p>{message}</p>
-      <button type="button" aria-label="알림 닫기" onClick={onClose}>
+      <button type="button" aria-label={closeLabel} onClick={onClose}>
         ×
       </button>
     </div>

@@ -1,14 +1,18 @@
 import Button from "../ui/Button.jsx";
 import TagList from "../ui/TagList.jsx";
 import useLanguage from "../../hooks/useLanguage.js";
+import { toSafeImageUrl, toSafeLinkUrl } from "../../lib/validators.js";
 
 /**
- * 프로젝트 한 개의 모든 정보를 보여주는 상세 화면 본문.
+ * 프로젝트 한 개의 모든 정보를 보여주는 상세 화면 본문. 링크·이미지는 안전한 주소일 때만 표시한다.
  * @param {object} project 보여줄 프로젝트
  * @param {React.ReactNode} [actions] 수정·삭제 버튼 자리 (관리자에게만 전달)
  */
 function ProjectDetail({ project, actions }) {
   const { t } = useLanguage();
+  const imageUrl = toSafeImageUrl(project.imageUrl);
+  const githubUrl = toSafeLinkUrl(project.githubUrl);
+  const demoUrl = toSafeLinkUrl(project.demoUrl);
   const meta = [
     { label: t("projects.role"), value: project.role },
     { label: t("projects.period"), value: project.period },
@@ -25,7 +29,7 @@ function ProjectDetail({ project, actions }) {
         {actions && <div className="detail-actions">{actions}</div>}
       </header>
 
-      {project.imageUrl && <img className="detail-image" src={project.imageUrl} alt={project.title} />}
+      {imageUrl && <img className="detail-image" src={imageUrl} alt={project.title} />}
 
       <div className="detail-body">
         <p className="detail-description">{project.description}</p>
@@ -47,13 +51,13 @@ function ProjectDetail({ project, actions }) {
             )}
           </dl>
           <div className="link-row">
-            {project.githubUrl && (
-              <Button href={project.githubUrl} icon="↗">
+            {githubUrl && (
+              <Button href={githubUrl} icon="↗">
                 {t("projects.github")}
               </Button>
             )}
-            {project.demoUrl && (
-              <Button href={project.demoUrl} icon="↗">
+            {demoUrl && (
+              <Button href={demoUrl} icon="↗">
                 {t("projects.demo")}
               </Button>
             )}

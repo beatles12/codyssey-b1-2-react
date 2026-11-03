@@ -17,6 +17,7 @@ function FeaturedProjects() {
 
   return (
     <DataStatus
+        retryLabel={t("common.retry")}
       isLoading={isLoading}
       error={t(error)}
       isEmpty={featured.length === 0}

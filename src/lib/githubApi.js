@@ -1,3 +1,5 @@
+import { withTimeout } from "./request.js";
+
 // GitHub 공개 API에서 저장소 목록을 가져와 프로젝트 카드 모양으로 바꾼다. (B1-1 설정 계승)
 
 const GITHUB_USERNAME = "beatles12";
@@ -51,7 +53,7 @@ export function toRepoCard(repo) {
 
 /** 공개 저장소 중 포크·보관 저장소를 빼고 최대 4개를 가져온다. */
 export async function fetchGithubRepos() {
-  const response = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`);
+  const response = await withTimeout(fetch(`https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=100`));
   if (!response.ok) throw new Error(`GitHub API ${response.status}`);
 
   const repos = await response.json();

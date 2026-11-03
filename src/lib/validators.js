@@ -18,6 +18,16 @@ export function isOptionalImageUrl(value) {
   return isOptionalUrl(value) || /^\/\S+$/.test(value.trim());
 }
 
+/** 화면에 링크로 걸어도 안전한 http(s) 주소만 돌려준다. 아니면 빈 문자열. (javascript: 등 차단) */
+export function toSafeLinkUrl(value) {
+  return value && URL_PATTERN.test(value.trim()) ? value.trim() : "";
+}
+
+/** 이미지로 써도 안전한 주소(http(s) 또는 사이트 안 경로)만 돌려준다. 아니면 빈 문자열. */
+export function toSafeImageUrl(value) {
+  return value && isOptionalImageUrl(value) ? value.trim() : "";
+}
+
 /** 문의 폼(name, email, message)을 검사한다. */
 export function validateContact({ name, email, message }) {
   const errors = {};

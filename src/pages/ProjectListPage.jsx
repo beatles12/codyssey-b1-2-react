@@ -15,7 +15,7 @@ const ALL = "all";
 /** "/projects" 목록 화면. 분류 필터(state)를 바꾸면 보이는 카드가 바로 바뀐다. 등록 버튼은 관리자에게만 보인다. */
 function ProjectListPage() {
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { isAdmin } = useAuth();
   const { projects, isLoading, error, reload } = useProjects();
   const [category, setCategory] = useState(ALL);
   const visibleProjects = useMemo(
@@ -26,7 +26,7 @@ function ProjectListPage() {
     value,
     label: value === ALL ? t("projects.all") : t(`categories.${value}`),
   }));
-  const createButton = user && (
+  const createButton = isAdmin && (
     <Button variant="primary" to="/projects/new" icon="+">
       {t("projects.create")}
     </Button>
@@ -36,6 +36,7 @@ function ProjectListPage() {
     <section className="page-section">
       <SectionHeading eyebrow={t("projects.eyebrow")} title={t("projects.title")} description={t("projects.description")} />
       <DataStatus
+        retryLabel={t("common.retry")}
         isLoading={isLoading}
         error={t(error)}
         isEmpty={projects.length === 0}

@@ -242,6 +242,33 @@ describe("ConfirmDialog", () => {
     expect(baseProps.onCancel).toHaveBeenCalledTimes(2);
   });
 
+  it("열리면 창으로 포커스가 가고, Tab은 창 안에서만 돌며, 닫히면 원래 버튼으로 돌아온다", async () => {
+    function Example() {
+      const [open, setOpen] = useState(false);
+      return (
+        <>
+          <button onClick={() => setOpen(true)}>열기</button>
+          <ConfirmDialog {...baseProps} open={open} cancelLabel="Cancel" onCancel={() => setOpen(false)} />
+        </>
+      );
+    }
+    const user = userEvent.setup();
+    render(<Example />);
+    const opener = screen.getByRole("button", { name: "열기" });
+
+    await user.click(opener);
+    expect(screen.getByRole("dialog")).toHaveFocus();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
+    await user.tab();
+    await user.tab();
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(opener).toHaveFocus();
+  });
+
   it("진행 중이면 버튼이 비활성화되고 Esc로 닫히지 않는다", async () => {
     render(<ConfirmDialog {...baseProps} open isLoading />);
 

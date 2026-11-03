@@ -11,12 +11,12 @@ const NAV_ITEMS = [
   { to: "/projects", labelKey: "nav.work" },
 ];
 
-/** 로고·메뉴·설정 버튼을 담은 상단 헤더. 관리자로 로그인하면 New·Logout 메뉴가 생긴다. */
+/** 로고·메뉴·설정 버튼을 담은 상단 헤더. 로그인하면 Logout, 관리자면 New 메뉴가 생긴다. */
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isScrolled = useScrolled(60);
   const { t } = useLanguage();
-  const { user, signOut } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const showToast = useToast();
   const navigate = useNavigate();
 
@@ -52,19 +52,19 @@ function Header() {
               {t("nav.contact")}
             </Link>
           </li>
+          {isAdmin && (
+            <li>
+              <NavLink to="/projects/new" onClick={closeMenu}>
+                {t("nav.newProject")}
+              </NavLink>
+            </li>
+          )}
           {user && (
-            <>
-              <li>
-                <NavLink to="/projects/new" onClick={closeMenu}>
-                  {t("nav.newProject")}
-                </NavLink>
-              </li>
-              <li>
-                <button className="nav-button" type="button" onClick={handleLogout}>
-                  {t("nav.logout")}
-                </button>
-              </li>
-            </>
+            <li>
+              <button className="nav-button" type="button" onClick={handleLogout}>
+                {t("nav.logout")}
+              </button>
+            </li>
           )}
         </ul>
         <div className="nav-actions">

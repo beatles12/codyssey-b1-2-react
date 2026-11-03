@@ -1,4 +1,5 @@
 // Supabase Auth(로그인) 호출을 감싼 함수. Supabase 설정이 없으면 "로그인 안 됨" 상태로 동작한다.
+import { withTimeout } from "./request.js";
 import { getSupabase, isSupabaseConfigured } from "./supabaseClient.js";
 
 /** 저장된 로그인 세션을 가져온다. 없으면 null. */
@@ -14,6 +15,13 @@ export function onAuthStateChange(callback) {
   if (!isSupabaseConfigured) return () => {};
   const { data } = getSupabase().auth.onAuthStateChange((_event, session) => callback(session));
   return () => data.subscription.unsubscribe();
+}
+
+/** 지금 로그인한 계정이 admin_users에 등록된 관리자인지 DB 함수(is_admin)로 확인한다. */
+export async function checkIsAdmin() {
+  const { data, error } = await withTimeout(getSupabase().rpc("is_admin"));
+  if (error) throw error;
+  return data === true;
 }
 
 /** 이메일·비밀번호로 로그인한다. 실패하면 오류를 던진다. */

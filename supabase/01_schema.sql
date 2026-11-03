@@ -2,6 +2,9 @@
 -- 01. projects 테이블 만들기
 -- Supabase 대시보드 > SQL Editor 에 붙여넣고 [Run]을 누릅니다.
 -- 여러 번 실행해도 안전하도록 if not exists / or replace를 사용했습니다.
+-- 열 이름·글자 수 제한·분류 값은 React 코드(src/lib/projectsApi.js, projectForm.js)와 같아야 합니다.
+-- (src/lib/schemaSync.test.js가 자동으로 비교합니다)
+-- 링크 주소는 http(s)만 허용해 javascript: 같은 위험한 주소가 저장되지 않게 합니다.
 -- =============================================================
 
 create table if not exists public.projects (
@@ -13,9 +16,9 @@ create table if not exists public.projects (
   tech_stack  text[] not null default '{}',
   role        text,
   period      text,
-  github_url  text,
-  demo_url    text,
-  image_url   text,
+  github_url  text check (github_url is null or github_url ~* '^https?://'),
+  demo_url    text check (demo_url is null or demo_url ~* '^https?://'),
+  image_url   text check (image_url is null or image_url ~* '^(https?://|/)'),
   is_featured boolean not null default false,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()

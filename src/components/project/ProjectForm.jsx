@@ -71,7 +71,7 @@ function ProjectForm({ initialValues = EMPTY_PROJECT_FORM, submitLabel, onSubmit
           <FormField label={t("form.githubUrl")} type="url" placeholder="https://github.com/..." {...fieldProps("githubUrl")} />
           <FormField label={t("form.demoUrl")} type="url" placeholder="https://..." {...fieldProps("demoUrl")} />
         </div>
-        <FormField label={t("form.imageUrl")} placeholder="https://... 또는 /images/budget.png" {...fieldProps("imageUrl")} />
+        <FormField label={t("form.imageUrl")} placeholder={t("form.imageUrlPlaceholder")} {...fieldProps("imageUrl")} />
         <label className="checkbox-field">
           <input type="checkbox" name="isFeatured" checked={values.isFeatured} onChange={handleChange} />
           {t("form.isFeatured")}

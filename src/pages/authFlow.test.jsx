@@ -75,7 +75,7 @@ describe("로그인 화면 (/login)", () => {
   });
 
   it("보호된 화면에서 왔다면 로그인 성공 후 그 화면으로 돌아간다", async () => {
-    const changeSession = setMockSession(null);
+    const changeSession = setMockSession(null, { isAdmin: true });
     let finishLogin;
     authApi.signInWithPassword.mockImplementation(() => new Promise(resolve => (finishLogin = resolve)));
     const user = userEvent.setup();

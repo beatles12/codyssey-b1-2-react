@@ -15,7 +15,7 @@ function ProjectDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
-  const { user } = useAuth();
+  const { isAdmin } = useAuth();
   const showToast = useToast();
   const { project, isLoading, error, reload } = useProject(id);
   const { remove, isSubmitting, error: actionError } = useProjectActions();
@@ -29,7 +29,7 @@ function ProjectDetailPage() {
     navigate("/projects");
   };
 
-  const actions = user && (
+  const actions = isAdmin && (
     <>
       <Button to={`/projects/${id}/edit`}>{t("projects.edit")}</Button>
       <Button variant="danger" onClick={() => setIsConfirmOpen(true)}>
@@ -51,6 +51,7 @@ function ProjectDetailPage() {
         </p>
       )}
       <DataStatus
+        retryLabel={t("common.retry")}
         isLoading={isLoading}
         error={t(error)}
         onRetry={error === "errors.notFound" ? undefined : reload}
@@ -63,6 +64,8 @@ function ProjectDetailPage() {
         title={t("projects.deleteTitle")}
         message={t("projects.deleteMessage", { title: project?.title })}
         confirmLabel={t("projects.delete")}
+        cancelLabel={t("common.cancel")}
+        loadingLabel={t("projects.deleting")}
         isLoading={isSubmitting}
         onConfirm={handleDelete}
         onCancel={() => setIsConfirmOpen(false)}
