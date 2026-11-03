@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { to: "/projects", label: "Work" },
 ];
 
+/** 로고·메뉴를 담은 상단 헤더. 모바일에서는 메뉴 열림 여부를 state로 관리한다. */
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isScrolled = useScrolled();

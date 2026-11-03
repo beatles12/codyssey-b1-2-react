@@ -1,5 +1,6 @@
-import SectionHeading from "../components/SectionHeading.jsx";
+import SectionHeading from "../components/ui/SectionHeading.jsx";
 
+/** "/about" 소개 화면. */
 function AboutPage() {
   return (
     <section className="page-section">

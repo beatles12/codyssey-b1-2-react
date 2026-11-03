@@ -8,6 +8,7 @@ import ProjectCreatePage from "./pages/ProjectCreatePage.jsx";
 import ProjectEditPage from "./pages/ProjectEditPage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
 
+/** 주소(URL)와 페이지 컴포넌트를 연결한다. 모든 페이지는 Layout 안에서 그려진다. */
 function App() {
   return (
     <Routes>

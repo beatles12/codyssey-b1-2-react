@@ -1,5 +1,6 @@
 const GITHUB_URL = "https://github.com/beatles12";
 
+/** 저작권·GitHub 링크·맨 위로 버튼을 담은 하단 영역. */
 function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 

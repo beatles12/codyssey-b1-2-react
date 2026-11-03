@@ -1,0 +1,269 @@
+/* 재사용 UI 컴포넌트(src/components/ui) 스타일. B1-1의 버튼·폼·필터 모양을 계승합니다. */
+
+/* Button */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  padding: 11px 19px;
+  border: 1px solid var(--line-strong);
+  border-radius: 24px;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: transform 0.28s ease, box-shadow 0.28s ease, border-color 0.28s ease,
+    background 0.28s ease;
+}
+
+.button span {
+  color: var(--lavender-deep);
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-3px);
+  border-color: var(--lavender);
+  box-shadow: 0 10px 24px rgba(80, 67, 105, 0.08);
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.button-primary {
+  border-color: var(--lavender-deep);
+  background: var(--lavender-deep);
+  color: #fff;
+}
+
+.button-primary span {
+  color: #fff;
+}
+
+.button-primary:hover:not(:disabled) {
+  box-shadow: 0 12px 28px rgba(143, 124, 198, 0.2);
+}
+
+.button-danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.button-danger span {
+  color: var(--danger);
+}
+
+.button-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+}
+
+/* FormField */
+.form-field {
+  margin-bottom: 18px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--light);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.required-mark {
+  color: var(--lavender-deep);
+}
+
+.form-field input,
+.form-field textarea,
+.form-field select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 9px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.58);
+  font-size: 0.85rem;
+}
+
+[data-theme="dark"] .form-field input,
+[data-theme="dark"] .form-field textarea,
+[data-theme="dark"] .form-field select {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.form-field input:focus,
+.form-field textarea:focus,
+.form-field select:focus {
+  border-color: var(--lavender-deep);
+}
+
+.form-field [aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.error-message {
+  min-height: 16px;
+  margin-top: 4px;
+  color: var(--danger);
+  font-size: 0.68rem;
+}
+
+/* Loading / Error / Empty */
+.state-box {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 56px 20px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--soft);
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.state-error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--line-strong);
+  border-top-color: var(--lavender-deep);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* FilterBar */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.filter-button {
+  padding: 6px 13px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.68rem;
+  transition: transform 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+
+.filter-button:hover,
+.filter-button.active {
+  border-color: var(--lavender);
+  background: var(--lavender-pale);
+  color: var(--text);
+}
+
+.filter-button:hover {
+  transform: translateY(-2px);
+}
+
+/* TagList */
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.tag-list li {
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  color: var(--muted);
+  font-size: 0.62rem;
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: calc(100% - 32px);
+  padding: 12px 14px 12px 20px;
+  border: 1px solid var(--lavender);
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 0.8rem;
+  transform: translateX(-50%);
+  animation: toast-in 0.3s ease;
+}
+
+.toast-error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.toast button {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 12px);
+  }
+}
+
+/* ConfirmDialog */
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(21, 21, 25, 0.45);
+}
+
+.dialog {
+  width: min(100%, 400px);
+  padding: 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  outline: none;
+}
+
+.dialog h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.dialog p {
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 24px;
+}
