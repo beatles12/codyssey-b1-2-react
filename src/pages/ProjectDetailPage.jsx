@@ -4,16 +4,18 @@ import ProjectDetail from "../components/project/ProjectDetail.jsx";
 import Button from "../components/ui/Button.jsx";
 import ConfirmDialog from "../components/ui/ConfirmDialog.jsx";
 import DataStatus from "../components/ui/DataStatus.jsx";
+import useAuth from "../hooks/useAuth.js";
 import useLanguage from "../hooks/useLanguage.js";
 import useProject from "../hooks/useProject.js";
 import useProjectActions from "../hooks/useProjectActions.js";
 import useToast from "../hooks/useToast.js";
 
-/** "/projects/:id" 상세 화면. 삭제는 확인 창을 거친 뒤 실행하고 성공하면 목록으로 이동한다. */
+/** "/projects/:id" 상세 화면. 수정·삭제 버튼은 관리자에게만 보이고, 삭제는 확인 창을 거친 뒤 실행한다. */
 function ProjectDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useLanguage();
+  const { user } = useAuth();
   const showToast = useToast();
   const { project, isLoading, error, reload } = useProject(id);
   const { remove, isSubmitting, error: actionError } = useProjectActions();
@@ -27,7 +29,7 @@ function ProjectDetailPage() {
     navigate("/projects");
   };
 
-  const actions = (
+  const actions = user && (
     <>
       <Button to={`/projects/${id}/edit`}>{t("projects.edit")}</Button>
       <Button variant="danger" onClick={() => setIsConfirmOpen(true)}>

@@ -1,3 +1,4 @@
+import { AuthProvider } from "./contexts/AuthContext.jsx";
 import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import { ThemeProvider } from "./contexts/ThemeContext.jsx";
 import { ToastProvider } from "./contexts/ToastContext.jsx";
@@ -7,7 +8,9 @@ function AppProviders({ children }) {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <ToastProvider>{children}</ToastProvider>
+        <ToastProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </ToastProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

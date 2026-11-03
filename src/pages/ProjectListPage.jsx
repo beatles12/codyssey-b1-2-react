@@ -5,15 +5,17 @@ import DataStatus from "../components/ui/DataStatus.jsx";
 import EmptyState from "../components/ui/EmptyState.jsx";
 import FilterBar from "../components/ui/FilterBar.jsx";
 import SectionHeading from "../components/ui/SectionHeading.jsx";
+import useAuth from "../hooks/useAuth.js";
 import useLanguage from "../hooks/useLanguage.js";
 import useProjects from "../hooks/useProjects.js";
 import { CATEGORIES } from "../lib/projectForm.js";
 
 const ALL = "all";
 
-/** "/projects" 목록 화면. 분류 필터(state)를 바꾸면 보이는 카드가 바로 바뀐다. */
+/** "/projects" 목록 화면. 분류 필터(state)를 바꾸면 보이는 카드가 바로 바뀐다. 등록 버튼은 관리자에게만 보인다. */
 function ProjectListPage() {
   const { t } = useLanguage();
+  const { user } = useAuth();
   const { projects, isLoading, error, reload } = useProjects();
   const [category, setCategory] = useState(ALL);
   const visibleProjects = useMemo(
@@ -24,7 +26,7 @@ function ProjectListPage() {
     value,
     label: value === ALL ? t("projects.all") : t(`categories.${value}`),
   }));
-  const createButton = (
+  const createButton = user && (
     <Button variant="primary" to="/projects/new" icon="+">
       {t("projects.create")}
     </Button>

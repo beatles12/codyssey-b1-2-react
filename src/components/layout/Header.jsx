@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth.js";
 import useLanguage from "../../hooks/useLanguage.js";
 import useScrolled from "../../hooks/useScrolled.js";
+import useToast from "../../hooks/useToast.js";
 import DisplayControls from "./DisplayControls.jsx";
 
 const NAV_ITEMS = [
@@ -9,13 +11,27 @@ const NAV_ITEMS = [
   { to: "/projects", labelKey: "nav.work" },
 ];
 
-/** 로고·메뉴·설정 버튼을 담은 상단 헤더. 모바일에서는 메뉴 열림 여부를 state로 관리한다. */
+/** 로고·메뉴·설정 버튼을 담은 상단 헤더. 관리자로 로그인하면 New·Logout 메뉴가 생긴다. */
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const isScrolled = useScrolled(60);
   const { t } = useLanguage();
+  const { user, signOut } = useAuth();
+  const showToast = useToast();
+  const navigate = useNavigate();
 
   const closeMenu = () => setIsMenuOpen(false);
+
+  const handleLogout = async () => {
+    closeMenu();
+    try {
+      await signOut();
+      showToast(t("auth.loggedOut"));
+      navigate("/projects");
+    } catch {
+      showToast(t("errors.unknown"), "error");
+    }
+  };
 
   return (
     <header className={`site-header${isScrolled ? " scrolled" : ""}`}>
@@ -36,6 +52,20 @@ function Header() {
               {t("nav.contact")}
             </Link>
           </li>
+          {user && (
+            <>
+              <li>
+                <NavLink to="/projects/new" onClick={closeMenu}>
+                  {t("nav.newProject")}
+                </NavLink>
+              </li>
+              <li>
+                <button className="nav-button" type="button" onClick={handleLogout}>
+                  {t("nav.logout")}
+                </button>
+              </li>
+            </>
+          )}
         </ul>
         <div className="nav-actions">
           <DisplayControls />

@@ -3,11 +3,15 @@ import userEvent from "@testing-library/user-event";
 import App from "../App.jsx";
 import { AppError } from "../lib/errors.js";
 import * as api from "../lib/projectsApi.js";
+import { adminSession, setMockSession } from "../test/authMock.js";
 import { mockProjects } from "../test/mockProjects.js";
 import { renderWithProviders } from "../test/renderWithProviders.jsx";
 
-// 실제 Supabase 대신 가짜 API(Mock)로 화면 흐름만 검증한다.
+// 실제 Supabase 대신 가짜 API(Mock)로 화면 흐름만 검증한다. 기본은 관리자로 로그인한 상태.
 vi.mock("../lib/projectsApi.js");
+vi.mock("../lib/authApi.js");
+
+beforeEach(() => setMockSession(adminSession));
 
 const [aiProject, eduProject] = mockProjects;
 const renderAt = route => renderWithProviders(<App />, { route });
@@ -130,6 +134,7 @@ describe("등록 화면 (/projects/new)", () => {
   it("필수값이 비면 제출하지 않고 필드 옆에 오류를 보여준다", async () => {
     const user = userEvent.setup();
     renderAt("/projects/new");
+    await screen.findByLabelText(/TITLE/);
 
     await user.click(screen.getByRole("button", { name: /등록하기/ }));
 
@@ -142,6 +147,7 @@ describe("등록 화면 (/projects/new)", () => {
   it("입력하면 미리보기 카드와 글자 수가 바로 바뀐다", async () => {
     const user = userEvent.setup();
     renderAt("/projects/new");
+    await screen.findByLabelText(/TITLE/);
     const preview = screen.getByRole("complementary", { name: "PREVIEW" });
 
     expect(within(preview).getByRole("heading", { name: "프로젝트 제목" })).toBeInTheDocument();
@@ -161,6 +167,7 @@ describe("등록 화면 (/projects/new)", () => {
     api.fetchProjectById.mockResolvedValue({ ...aiProject, id: "new-id", title: "학습 기록 앱" });
     const user = userEvent.setup();
     renderAt("/projects/new");
+    await screen.findByLabelText(/TITLE/);
 
     await user.type(screen.getByLabelText(/TITLE/), "학습 기록 앱");
     await user.type(screen.getByLabelText(/SUMMARY/), "매일 배운 것을 기록");
@@ -180,6 +187,7 @@ describe("등록 화면 (/projects/new)", () => {
     api.createProject.mockRejectedValue({ code: "42501", message: "new row violates row-level security policy" });
     const user = userEvent.setup();
     renderAt("/projects/new");
+    await screen.findByLabelText(/TITLE/);
 
     await user.type(screen.getByLabelText(/TITLE/), "제목");
     await user.type(screen.getByLabelText(/SUMMARY/), "요약");

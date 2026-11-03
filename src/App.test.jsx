@@ -2,16 +2,19 @@ import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App.jsx";
 import * as api from "./lib/projectsApi.js";
+import { adminSession, setMockSession } from "./test/authMock.js";
 import { mockProjects } from "./test/mockProjects.js";
 import { renderWithProviders } from "./test/renderWithProviders.jsx";
 
 vi.mock("./lib/projectsApi.js");
+vi.mock("./lib/authApi.js");
 
 const [firstProject] = mockProjects;
 const renderAt = route => renderWithProviders(<App />, { route });
 
 describe("라우팅", () => {
   beforeEach(() => {
+    setMockSession(adminSession);
     api.fetchProjects.mockResolvedValue(mockProjects);
     api.fetchProjectById.mockResolvedValue(firstProject);
   });

@@ -373,3 +373,17 @@ ol {
     animation: none !important;
   }
 }
+
+.nav-button {
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.nav-button:hover {
+  color: var(--lavender-deep);
+}
