@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
+import BackToTopButton from "./BackToTopButton.jsx";
 import Header from "./Header.jsx";
 import Footer from "./Footer.jsx";
 
@@ -20,6 +21,7 @@ function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <BackToTopButton />
     </>
   );
 }

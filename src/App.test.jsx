@@ -64,3 +64,18 @@ describe("라우팅", () => {
     expect(toggle).toHaveAttribute("aria-expanded", "false");
   });
 });
+
+describe("맨 위로 버튼", () => {
+  it("300px 넘게 스크롤하면 나타난다", async () => {
+    setMockSession(null);
+    renderAt("/about");
+    const button = screen.getByRole("button", { name: "페이지 맨 위로 이동", hidden: true });
+    expect(button).not.toHaveClass("visible");
+
+    window.scrollY = 400;
+    window.dispatchEvent(new Event("scroll"));
+
+    expect(await screen.findByRole("button", { name: "페이지 맨 위로 이동" })).toHaveClass("visible");
+    window.scrollY = 0;
+  });
+});

@@ -28,6 +28,7 @@ export const translations = {
     footer: {
       tagline: "Planning · AI · Development",
       backToTop: "Back to top ↑",
+      scrollTop: "페이지 맨 위로 이동",
       admin: "Admin",
     },
     hero: {
@@ -237,6 +238,7 @@ export const translations = {
     footer: {
       tagline: "Planning · AI · Development",
       backToTop: "Back to top ↑",
+      scrollTop: "Scroll to top",
       admin: "Admin",
     },
     hero: {
