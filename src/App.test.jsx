@@ -1,21 +1,11 @@
-import { render, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { MemoryRouter } from "react-router-dom";
 import App from "./App.jsx";
+import { renderWithProviders } from "./test/renderWithProviders.jsx";
 
-function renderAt(path) {
-  return render(
-    <MemoryRouter initialEntries={[path]}>
-      <App />
-    </MemoryRouter>,
-  );
-}
+const renderAt = route => renderWithProviders(<App />, { route });
 
 describe("라우팅", () => {
-  beforeAll(() => {
-    window.scrollTo = vi.fn();
-  });
-
   it.each([
     ["/", "불편함 속에서 서비스는 시작됩니다."],
     ["/about", "사람을 이해하는 마음에서 좋은 서비스가 시작됩니다."],

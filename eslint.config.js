@@ -24,4 +24,8 @@ export default [
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
     },
   },
+  {
+    files: ["src/contexts/**", "src/test/**"],
+    rules: { "react-refresh/only-export-components": "off" },
+  },
 ];
