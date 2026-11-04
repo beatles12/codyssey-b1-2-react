@@ -107,6 +107,8 @@ docs/               초보자용 기술 설명서
 | 문서 | 내용 |
 | --- | --- |
 | [START_HERE](docs/START_HERE.md) | 가장 먼저 확인할 것 |
+| [프로그램 기술설명서 (HTML)](docs/B1-2_program_guide.html) | 구조도·함수 사전·흐름도를 한 파일로 (브라우저로 열기, 인터넷 불필요) |
+| [DEMO_GUIDE](docs/DEMO_GUIDE.md) | 시연 순서, 화면별 관련 코드, 오류 시 확인할 것 |
 | [OWNER_CHECKLIST](docs/OWNER_CHECKLIST.md) | 직접 해야 할 설정만 순서대로 (Windows 초보자용) |
 | [00 개요](docs/00-overview.md) | B1-1과 차이, React 선택 이유, 구조도, 30초 설명 |
 | [01 React 기초](docs/01-react-basics.md) | React vs JS, props / state / useEffect, Context, 커스텀 훅 |

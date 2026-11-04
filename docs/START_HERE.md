@@ -51,6 +51,7 @@ http://localhost:5173 에서
 
 | 순서 | 문서 | 이런 질문에 답합니다 |
 | --- | --- | --- |
+| ★ | [B1-2_program_guide.html](B1-2_program_guide.html) | **시각 자료 한 파일**: 구조도, 함수 사전(입력·반환·호출 관계), 클릭→화면·CRUD 흐름도, 테스트, 구현 상태. 파일을 더블클릭해 브라우저로 엽니다 |
 | 1 | [00-overview.md](00-overview.md) | B1-1과 뭐가 달라요? 왜 React? 전체 구조도, 페이지별 컴포넌트, **30초 설명** |
 | 2 | [01-react-basics.md](01-react-basics.md) | props / state / useEffect / Context / 커스텀 훅이 이 코드 어디에 있나요? |
 | 3 | [02-structure.md](02-structure.md) | 폴더·컴포넌트 역할, 함수의 입력·반환·호출 관계 |
@@ -58,6 +59,8 @@ http://localhost:5173 에서
 | 5 | [04-run-and-test.md](04-run-and-test.md) | 실행·테스트 방법, 테스트가 무엇을 검증하나요? |
 | 6 | [05-requirements.md](05-requirements.md) | 공식 요구사항별 구현 위치·테스트·보여줄 화면·핵심 원리 |
 | 7 | [security-review.md](security-review.md) | 관리자 권한은 어떻게 지켜지나요? RLS 검토와 직접 테스트 절차 |
+
+시연용: [DEMO_GUIDE.md](DEMO_GUIDE.md)(발표 순서·화면별 코드·오류 확인)
 
 설정용 문서: [OWNER_CHECKLIST.md](OWNER_CHECKLIST.md)(직접 할 일), [supabase-setup.md](supabase-setup.md)(자세한 설명·문제 해결), [security-audit.md](security-audit.md)(의존성·배포 전 체크리스트)
 

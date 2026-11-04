@@ -1,0 +1,1764 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>B1-2 프로그램 기술설명서</title>
+<meta name="description" content="Codyssey B1-2 React 포트폴리오의 구조·함수·데이터 흐름을 초보자 눈높이로 설명하는 오프라인 설명서">
+<style>
+:root{
+  --bg:#ffffff;--soft:#faf9fc;--panel:#f2eff9;--surface:#ffffff;--text:#222126;--muted:#716e78;--light:#9d98a4;
+  --lav:#bbaee1;--lav-deep:#8f7cc6;--lav-pale:#f1edf8;--line:#e8e4ee;--line-strong:#d8d2df;
+  --code-bg:#f7f5fb;--code-text:#2c2a33;--cm:#8b8496;
+  --js-bg:#e8f1fb;--js:#2457a6;--react-bg:#f1edf8;--react:#6d58b5;--lib-bg:#e3f5f1;--lib:#1d7563;
+  --mine-bg:#e7f5ea;--mine:#2b7148;--py-bg:#fff3d6;--py:#8a5a00;
+  --ok-bg:#e7f5ea;--ok:#2b7148;--mock-bg:#e8f1fb;--mock:#2457a6;--wait-bg:#fff1df;--wait:#9a5300;--bad:#b23a55;
+  --shadow:0 14px 40px rgba(48,41,61,.08);--radius:16px;--side:280px;
+  --font:"Pretendard Variable",Pretendard,SUIT,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"D2Coding",monospace;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#151519;--soft:#1b1b20;--panel:#26232e;--surface:#1d1d22;--text:#f5f3f7;--muted:#bbb6c0;--light:#8f8996;
+  --lav:#c8b9ef;--lav-deep:#ad98e2;--lav-pale:#2a2633;--line:#35313c;--line-strong:#494551;
+  --code-bg:#201e26;--code-text:#ebe7f2;--cm:#958ea0;
+  --js-bg:#1d2a3d;--js:#9cc3f5;--react-bg:#2a2633;--react:#c8b9ef;--lib-bg:#183330;--lib:#86d8c4;
+  --mine-bg:#1c3324;--mine:#8fd8a6;--py-bg:#3a2f14;--py:#f2c86a;
+  --ok-bg:#1c3324;--ok:#8fd8a6;--mock-bg:#1d2a3d;--mock:#9cc3f5;--wait-bg:#3a2a14;--wait:#f5b871;--bad:#f08ba0;
+  --shadow:0 18px 50px rgba(0,0,0,.3);color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#151519;--soft:#1b1b20;--panel:#26232e;--surface:#1d1d22;--text:#f5f3f7;--muted:#bbb6c0;--light:#8f8996;
+    --lav:#c8b9ef;--lav-deep:#ad98e2;--lav-pale:#2a2633;--line:#35313c;--line-strong:#494551;
+    --code-bg:#201e26;--code-text:#ebe7f2;--cm:#958ea0;
+    --js-bg:#1d2a3d;--js:#9cc3f5;--react-bg:#2a2633;--react:#c8b9ef;--lib-bg:#183330;--lib:#86d8c4;
+    --mine-bg:#1c3324;--mine:#8fd8a6;--py-bg:#3a2f14;--py:#f2c86a;
+    --ok-bg:#1c3324;--ok:#8fd8a6;--mock-bg:#1d2a3d;--mock:#9cc3f5;--wait-bg:#3a2a14;--wait:#f5b871;--bad:#f08ba0;
+    --shadow:0 18px 50px rgba(0,0,0,.3);color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:24px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.75;font-size:16px;-webkit-text-size-adjust:100%}
+a{color:var(--lav-deep);text-underline-offset:3px}
+a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--lav-deep);outline-offset:2px;border-radius:6px}
+code{font-family:var(--mono);font-size:.86em;background:var(--code-bg);padding:.1em .4em;border-radius:6px;word-break:break-word}
+h1,h2,h3,h4{line-height:1.35;letter-spacing:-.02em;word-break:keep-all}
+p,li,dd,td{word-break:keep-all;overflow-wrap:anywhere}
+
+/* 레이아웃 */
+.topbar{display:none}
+.sidebar{position:fixed;inset:0 auto 0 0;width:var(--side);overflow-y:auto;background:var(--soft);border-right:1px solid var(--line);padding:24px 18px 40px;z-index:30}
+.brand{display:flex;align-items:baseline;gap:0;font-weight:700;font-size:1.35rem;letter-spacing:-.05em;margin:0 6px 4px;color:var(--text);text-decoration:none}
+.brand span{color:var(--lav-deep)}
+.brand-sub{margin:0 6px 18px;color:var(--muted);font-size:.8rem}
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin:0 4px 18px}
+.tool{border:1px solid var(--line-strong);background:var(--surface);color:var(--text);border-radius:999px;padding:5px 11px;font:inherit;font-size:.75rem;font-weight:700;cursor:pointer}
+.tool:hover{border-color:var(--lav)}
+.toc{list-style:none;margin:0;padding:0}
+.toc a{display:flex;gap:8px;align-items:baseline;padding:7px 10px;border-radius:10px;color:var(--muted);text-decoration:none;font-size:.88rem;line-height:1.45}
+.toc a .n{min-width:22px;color:var(--lav-deep);font-weight:700;font-size:.75rem}
+.toc a:hover{background:var(--lav-pale);color:var(--text)}
+.toc a[aria-current="true"]{background:var(--lav-pale);color:var(--text);font-weight:700;box-shadow:inset 3px 0 0 var(--lav-deep)}
+.toc .group{margin:16px 10px 4px;font-size:.7rem;font-weight:700;letter-spacing:.12em;color:var(--light)}
+main{margin-left:var(--side);padding:40px 56px 120px;max-width:calc(var(--side) + 1040px)}
+.content{max-width:1000px}
+section.chapter{padding-top:28px;margin-top:28px;border-top:1px solid var(--line)}
+section.chapter:first-of-type{border-top:0;margin-top:0}
+.eyebrow{margin:0 0 6px;color:var(--lav-deep);font-size:.72rem;font-weight:700;letter-spacing:.14em}
+h1{font-size:clamp(1.9rem,4vw,2.8rem);font-weight:600;margin:0 0 12px}
+h2{font-size:clamp(1.45rem,3vw,1.9rem);font-weight:600;margin:0 0 14px}
+h3{font-size:1.12rem;margin:28px 0 10px}
+h4{font-size:1rem;margin:18px 0 6px}
+.lead{color:var(--muted);font-size:1.02rem;max-width:760px}
+.backtop{position:fixed;right:18px;bottom:18px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font-size:1.1rem;cursor:pointer;box-shadow:var(--shadow);z-index:20}
+
+/* 상자·표 */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;margin:14px 0;box-shadow:0 1px 0 rgba(0,0,0,.02)}
+.note{border-left:4px solid var(--lav-deep);background:var(--lav-pale);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+.warn{border-left:4px solid var(--wait);background:var(--wait-bg);padding:12px 16px;border-radius:0 12px 12px 0;margin:14px 0}
+.grid{display:grid;gap:14px}
+.grid.two{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.grid.three{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.grid>*,.compare>*,.branch>*,.arch>*{min-width:0}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;margin:14px 0;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.9rem}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--panel);font-weight:700;font-size:.82rem;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.steps{counter-reset:s;list-style:none;padding:0;margin:14px 0}
+.steps>li{counter-increment:s;position:relative;padding:4px 0 14px 46px}
+.steps>li::before{content:counter(s);position:absolute;left:0;top:2px;width:32px;height:32px;border-radius:50%;background:var(--lav-pale);color:var(--lav-deep);display:grid;place-items:center;font-weight:700;font-size:.85rem;border:1px solid var(--lav)}
+
+/* 배지 */
+.b{display:inline-block;padding:1px 9px;border-radius:999px;font-size:.72rem;font-weight:700;white-space:nowrap;vertical-align:middle;margin:1px 2px}
+.b.js{background:var(--js-bg);color:var(--js)}
+.b.react{background:var(--react-bg);color:var(--react);border:1px solid var(--lav)}
+.b.lib{background:var(--lib-bg);color:var(--lib)}
+.b.mine{background:var(--mine-bg);color:var(--mine)}
+.b.py{background:var(--py-bg);color:var(--py)}
+.b.ok{background:var(--ok-bg);color:var(--ok)}
+.b.mock{background:var(--mock-bg);color:var(--mock)}
+.b.wait{background:var(--wait-bg);color:var(--wait)}
+.legend{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:.86rem;color:var(--muted)}
+
+/* 코드 */
+figure.code{margin:14px 0;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--code-bg)}
+figure.code figcaption{padding:7px 14px;border-bottom:1px solid var(--line);font-size:.76rem;color:var(--muted);background:var(--panel)}
+figure.code figcaption .path{font-family:var(--mono)}
+figure.code pre{margin:0;padding:14px 16px;overflow-x:auto;font-size:.8rem;line-height:1.6;color:var(--code-text);-webkit-overflow-scrolling:touch}
+figure.code code{background:none;padding:0;font-size:inherit;word-break:normal;white-space:pre}
+.cm{color:var(--cm);font-style:italic}
+
+/* 접기·펼치기 */
+details{border:1px solid var(--line);border-radius:14px;background:var(--surface);margin:10px 0}
+details>summary{cursor:pointer;list-style:none;padding:12px 16px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-weight:700}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"▸";color:var(--lav-deep);transition:transform .2s ease;flex:none}
+details[open]>summary::before{transform:rotate(90deg)}
+details>summary .where{font-family:var(--mono);font-weight:400;font-size:.76rem;color:var(--muted)}
+details>.body{padding:0 18px 16px}
+details[open]{box-shadow:var(--shadow)}
+dl.io{display:grid;grid-template-columns:120px 1fr;gap:6px 14px;margin:6px 0 4px}
+dl.io dt{color:var(--lav-deep);font-weight:700;font-size:.82rem}
+dl.io dd{margin:0}
+
+/* 흐름도 */
+.flow{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:16px 0}
+.flow .node{background:var(--surface);border:1px solid var(--line-strong);border-radius:12px;padding:10px 14px}
+.flow .node.hl{border-color:var(--lav-deep);background:var(--lav-pale)}
+.flow .node.ext{border-style:dashed}
+.flow .node small{display:block;color:var(--muted);font-size:.8rem}
+.flow .arrow{align-self:center;color:var(--lav-deep);font-size:1.1rem;line-height:1;padding:4px 0}
+.flow .arrow::before{content:"↓"}
+.flow .arrow[data-label]::after{content:attr(data-label);font-size:.74rem;color:var(--muted);margin-left:8px}
+.flow.row{flex-direction:row;flex-wrap:wrap;align-items:center;gap:6px}
+.flow.row .arrow::before{content:"→"}
+.flow.row .arrow{padding:0 2px}
+.branch{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+
+/* 구조도 */
+.arch{display:grid;gap:10px;margin:16px 0}
+.layer{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.layer>.label{font-size:.72rem;font-weight:700;letter-spacing:.1em;color:var(--lav-deep);margin-bottom:6px}
+.layer .items{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-block;border:1px solid var(--line-strong);border-radius:10px;padding:4px 10px;font-size:.82rem;background:var(--soft)}
+.chip code{background:none;padding:0}
+.layer.app{background:linear-gradient(135deg,var(--lav-pale),var(--surface))}
+.layer.ext{border-style:dashed}
+.arch .down{text-align:center;color:var(--lav-deep);font-size:.8rem}
+
+/* 코드 ↔ 화면 비교 */
+.compare{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:16px;align-items:start;margin:14px 0}
+.compare .screen{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.compare .screen h4{margin-top:0}
+.compare .screen ol{margin:0;padding-left:20px}
+
+/* 폴더 트리 */
+.tree{font-family:var(--mono);font-size:.82rem;background:var(--code-bg);border:1px solid var(--line);border-radius:12px;padding:14px 16px;overflow-x:auto;white-space:pre;line-height:1.7}
+.tree b{color:var(--lav-deep)}
+.tree i{color:var(--cm);font-style:normal}
+
+@media (max-width:1100px){main{padding:32px 32px 120px}}
+@media (max-width:900px){
+  .topbar{display:flex;position:sticky;top:0;z-index:25;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--line)}
+  .topbar .brand{font-size:1.15rem;margin:0}
+  .sidebar{transform:translateX(-100%);transition:transform .25s ease;box-shadow:var(--shadow);width:min(86vw,320px)}
+  body.toc-open .sidebar{transform:none}
+  .scrim{display:none}
+  body.toc-open .scrim{display:block;position:fixed;inset:0;background:rgba(21,21,25,.4);z-index:29}
+  main{margin-left:0;padding:20px 16px 110px}
+  html{scroll-padding-top:70px}
+  .compare{grid-template-columns:minmax(0,1fr)}
+  .grid.two{grid-template-columns:minmax(0,1fr)}
+  dl.io{grid-template-columns:1fr}
+  dl.io dt{margin-top:6px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+@media print{.sidebar,.topbar,.backtop,.scrim,.tools{display:none!important}main{margin:0;padding:0}details{break-inside:avoid}}
+</style>
+<script>
+  (function(){try{var t=localStorage.getItem("b12-guide-theme");if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;}catch(e){}})();
+</script>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#top">B1-2<span>.</span>guide</a>
+  <button class="tool" type="button" id="toc-toggle" aria-controls="sidebar" aria-expanded="false">☰ 목차</button>
+</header>
+<div class="scrim" id="scrim" hidden></div>
+
+<nav class="sidebar" id="sidebar" aria-label="목차">
+  <a class="brand" href="#top">B1-2<span>.</span>guide</a>
+  <p class="brand-sub">React 포트폴리오 프로그램 기술설명서</p>
+  <div class="tools">
+    <button class="tool" type="button" id="expand-all">모두 펼치기</button>
+    <button class="tool" type="button" id="collapse-all">모두 접기</button>
+    <button class="tool" type="button" id="theme-toggle" aria-label="설명서 테마 바꾸기">테마: 자동</button>
+  </div>
+  <ol class="toc" id="toc">
+    <li class="group">시작</li>
+    <li><a href="#start"><span class="n">0</span>읽는 법 · 학습 순서</a></li>
+    <li class="group">전체 그림</li>
+    <li><a href="#architecture"><span class="n">1</span>프로그램 전체 구조도</a></li>
+    <li><a href="#react-vs-js"><span class="n">2</span>React와 HTML·CSS·JS의 차이</a></li>
+    <li><a href="#folders"><span class="n">3</span>폴더와 파일</a></li>
+    <li><a href="#pages"><span class="n">4</span>페이지별 기능</a></li>
+    <li class="group">React 핵심</li>
+    <li><a href="#components"><span class="n">5</span>주요 컴포넌트와 props</a></li>
+    <li><a href="#state"><span class="n">6</span>state · useEffect · Context · 훅</a></li>
+    <li><a href="#functions"><span class="n">7</span>주요 함수 사전</a></li>
+    <li class="group">흐름</li>
+    <li><a href="#click-flow"><span class="n">8</span>클릭부터 화면 변경까지</a></li>
+    <li><a href="#crud-flow"><span class="n">9</span>등록·조회·수정·삭제 흐름</a></li>
+    <li><a href="#supabase"><span class="n">10</span>Supabase 저장 과정</a></li>
+    <li><a href="#auth"><span class="n">11</span>관리자 인증과 RLS</a></li>
+    <li><a href="#theme-lang"><span class="n">12</span>테마와 언어 전환</a></li>
+    <li class="group">확인</li>
+    <li><a href="#requirements"><span class="n">13</span>공식 요구사항 ↔ 코드</a></li>
+    <li><a href="#tests"><span class="n">14</span>자동 테스트</a></li>
+    <li><a href="#status"><span class="n">15</span>구현 상태와 미검증 기능</a></li>
+    <li><a href="#glossary"><span class="n">+</span>용어 사전</a></li>
+  </ol>
+</nav>
+
+<main id="top">
+<div class="content">
+
+<!-- 0 ─────────────────────────────────────────── -->
+<section class="chapter" id="start">
+  <p class="eyebrow">CODYSSEY B1-2 · PROGRAM GUIDE</p>
+  <h1>React 포트폴리오, 코드로 이해하기</h1>
+  <p class="lead">B1-1의 정적인 소개 사이트를 React 기반의 웹 서비스로 바꾼 프로그램입니다. 방문자는 프로젝트를 보고, 관리자는 로그인해 프로젝트를 등록·수정·삭제합니다. 이 설명서는 <strong>실제 최신 코드</strong>를 기준으로, 화면에서 일어나는 일과 그 뒤의 코드를 나란히 보여줍니다.</p>
+
+  <div class="note"><strong>코드 조각은 모두 실제 파일에서 그대로 가져왔습니다.</strong> 각 코드 상자 위에 파일 경로가 적혀 있습니다. 설명서를 만든 시점(브랜치 <code>claude/epic-clarke-mmra67</code>)의 코드와 같으며, 코드가 바뀌면 설명서도 다시 만들어야 합니다.</div>
+
+  <h3>학습 순서 (추천)</h3>
+  <ol class="steps">
+    <li><strong>큰 그림</strong> — <a href="#architecture">1. 구조도</a>와 <a href="#react-vs-js">2. React와 JS의 차이</a>를 먼저 봅니다. "어떤 층이 있고, 무엇이 무엇을 부르는지"만 잡으면 됩니다.</li>
+    <li><strong>화면 지도</strong> — <a href="#folders">3. 폴더</a>와 <a href="#pages">4. 페이지</a>로 "어느 주소에서 어떤 파일이 일하는지" 연결합니다.</li>
+    <li><strong>React 핵심 개념</strong> — <a href="#components">5. props</a> → <a href="#state">6. state·useEffect·Context·훅</a> 순서로 읽습니다.</li>
+    <li><strong>흐름 따라가기</strong> — <a href="#click-flow">8. 클릭 → 화면</a>, <a href="#crud-flow">9. CRUD 흐름</a>을 실제 앱을 켜 놓고 따라 눌러 봅니다.</li>
+    <li><strong>데이터와 보안</strong> — <a href="#supabase">10. Supabase</a>, <a href="#auth">11. 인증과 RLS</a>, <a href="#theme-lang">12. 테마·언어</a>.</li>
+    <li><strong>확인</strong> — <a href="#requirements">13. 요구사항 연결</a>, <a href="#tests">14. 테스트</a>, <a href="#status">15. 구현 상태</a>. 함수가 궁금할 때마다 <a href="#functions">7. 함수 사전</a>을 찾아봅니다.</li>
+  </ol>
+
+  <h3>배지 읽는 법</h3>
+  <div class="card">
+    <p style="margin-top:0"><strong>누가 만든 기능인가?</strong> — 언어·도구가 원래 주는 기능과, 이 프로젝트에서 직접 만든 함수를 구분합니다.</p>
+    <div class="legend">
+      <span><span class="b js">JS 기본</span> JavaScript·브라우저가 원래 제공 (<code>fetch</code>, <code>setTimeout</code>, <code>localStorage</code> …)</span>
+      <span><span class="b react">React 기본</span> React가 제공 (<code>useState</code>, <code>useEffect</code> …)</span>
+      <span><span class="b lib">라이브러리</span> 설치한 도구가 제공 (React Router, Supabase)</span>
+      <span><span class="b mine">직접 만든 함수</span> 이 프로젝트의 <code>src/</code>에 있는 코드</span>
+      <span><span class="b py">Python 비교</span> 개념 비교용 (이 프로젝트에는 Python 코드가 없습니다)</span>
+    </div>
+    <p><strong>얼마나 확인됐나?</strong></p>
+    <div class="legend">
+      <span><span class="b ok">검증 완료</span> 자동 테스트 + 실제 브라우저 화면에서 확인</span>
+      <span><span class="b mock">모의 검증</span> 가짜 데이터·가짜 서버(또는 로컬 DB)로만 확인</span>
+      <span><span class="b wait">실제 연결 필요</span> 실제 Supabase·배포 환경에서 아직 확인하지 않음</span>
+    </div>
+  </div>
+</section>
+
+<!-- 1 ─────────────────────────────────────────── -->
+<section class="chapter" id="architecture">
+  <p class="eyebrow">01 · ARCHITECTURE</p>
+  <h2>프로그램 전체 구조도</h2>
+  <p class="lead">위에서 아래로 갈수록 "화면"에서 "데이터" 쪽으로 내려갑니다. 위층은 아래층을 부를 수 있지만, 아래층은 위층을 모릅니다. 예를 들어 <code class="path">src/lib</code>의 함수는 React도 화면도 모릅니다.</p>
+
+  <div class="arch" role="img" aria-label="브라우저에서 시작해 main.jsx, 전역 Provider, 라우터, 레이아웃, 페이지, 컴포넌트와 훅, lib 함수, 외부 서비스로 이어지는 구조도">
+    <div class="layer"><div class="label">사용자</div><div class="items"><span class="chip">브라우저에서 클릭·입력·주소 이동</span></div></div>
+    <div class="down">↓ <code>index.html</code>이 <code>src/main.jsx</code>를 실행</div>
+    <div class="layer app"><div class="label">시작점</div><div class="items"><span class="chip"><code class="path">src/main.jsx</code> — <code>BrowserRouter</code> + <code class="comp">AppProviders</code> + <code class="comp">App</code></span></div></div>
+    <div class="down">↓ 전역 상태(Context)로 감싸기</div>
+    <div class="layer app"><div class="label">전역 상태 · src/contexts</div><div class="items"><span class="chip"><code class="comp">ThemeProvider</code> 테마</span><span class="chip"><code class="comp">LanguageProvider</code> 언어</span><span class="chip"><code class="comp">ToastProvider</code> 알림</span><span class="chip"><code class="comp">AuthProvider</code> 로그인</span></div></div>
+    <div class="down">↓ 주소에 맞는 화면 고르기</div>
+    <div class="layer app"><div class="label">라우터 · src/App.jsx</div><div class="items"><span class="chip"><code class="comp">Layout</code> (Header · Outlet · Footer)</span><span class="chip"><code class="comp">ProtectedRoute</code> 관리자 전용 화면 보호</span></div></div>
+    <div class="down">↓</div>
+    <div class="layer"><div class="label">페이지 · src/pages (8개)</div><div class="items"><span class="chip"><code class="comp">HomePage</code></span><span class="chip"><code class="comp">AboutPage</code></span><span class="chip"><code class="comp">ProjectListPage</code></span><span class="chip"><code class="comp">ProjectDetailPage</code></span><span class="chip"><code class="comp">ProjectCreatePage</code></span><span class="chip"><code class="comp">ProjectEditPage</code></span><span class="chip"><code class="comp">LoginPage</code></span><span class="chip"><code class="comp">NotFoundPage</code></span></div></div>
+    <div class="down">↓ 데이터는 훅에서 받고, 그리기는 컴포넌트에 맡김</div>
+    <div class="grid two">
+      <div class="layer"><div class="label">재사용 컴포넌트 · src/components</div><div class="items"><span class="chip">ui (13개)</span><span class="chip">project (4개)</span><span class="chip">home (8개)</span><span class="chip">layout (5개)</span><span class="chip">auth (1개)</span></div></div>
+      <div class="layer"><div class="label">커스텀 훅 · src/hooks (12개)</div><div class="items"><span class="chip"><code class="fn">useProjects</code></span><span class="chip"><code class="fn">useProject</code></span><span class="chip"><code class="fn">useProjectActions</code></span><span class="chip"><code class="fn">useAsyncData</code></span><span class="chip">그 외 8개</span></div></div>
+    </div>
+    <div class="down">↓ React와 무관한 함수</div>
+    <div class="layer"><div class="label">함수 모음 · src/lib</div><div class="items"><span class="chip"><code class="path">projectsApi.js</code> CRUD</span><span class="chip"><code class="path">authApi.js</code> 로그인</span><span class="chip"><code class="path">projectForm.js</code> 폼 검사·변환</span><span class="chip"><code class="path">validators.js</code></span><span class="chip"><code class="path">i18n.js</code> 번역</span><span class="chip"><code class="path">request.js</code> 시간 제한</span><span class="chip"><code class="path">errors.js</code></span><span class="chip">그 외</span></div></div>
+    <div class="down">↓ 인터넷 요청 (HTTPS)</div>
+    <div class="layer ext"><div class="label">외부 서비스</div><div class="items"><span class="chip">Supabase Auth (로그인)</span><span class="chip">Supabase DB + RLS (projects 테이블)</span><span class="chip">GitHub API (저장소 카드)</span><span class="chip">Formspree (문의 메일)</span></div></div>
+  </div>
+
+  <details>
+    <summary>시작점 코드 보기 <span class="where">src/main.jsx · src/AppProviders.jsx</span></summary>
+    <div class="body">
+      <p><code>StrictMode</code>는 개발 중 실수를 찾기 위한 React 기능입니다. 개발 모드에서는 effect를 일부러 두 번 실행해 보므로, 이 프로젝트의 데이터 요청 코드는 "이전 요청 결과를 무시하는" 장치(<code>isCurrent</code>)를 갖고 있습니다.</p>
+      <figure class="code"><figcaption><span class="path">src/main.jsx</span></figcaption><pre data-src="src/main.jsx"><code>import { createRoot } from &quot;react-dom/client&quot;;</code></pre></figure>
+      <figure class="code"><figcaption><span class="path">src/AppProviders.jsx</span></figcaption><pre data-src="src/AppProviders.jsx"><code><span class="cm">/** 앱 전체에서 공유하는 전역 상태(Context)를 한곳에서 감싼다. */</span>
+function AppProviders({ children }) {
+  return (
+    &lt;ThemeProvider&gt;
+      &lt;LanguageProvider&gt;
+        &lt;ToastProvider&gt;
+          &lt;AuthProvider&gt;{children}&lt;/AuthProvider&gt;
+        &lt;/ToastProvider&gt;
+      &lt;/LanguageProvider&gt;
+    &lt;/ThemeProvider&gt;
+  );
+}</code></pre></figure>
+    </div>
+  </details>
+</section>
+
+<!-- 2 ─────────────────────────────────────────── -->
+<section class="chapter" id="react-vs-js">
+  <p class="eyebrow">02 · REACT VS HTML·CSS·JS</p>
+  <h2>React와 HTML·CSS·JavaScript의 차이</h2>
+  <p class="lead">B1-1은 "버튼을 누르면 어떤 HTML 요소를 찾아서 어떻게 바꿔라"를 직접 적었습니다. React는 "상태(state)가 이 값이면 화면은 이렇게 생겼다"만 적고, 바꾸는 일은 React가 합니다.</p>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>비교</th><th>B1-1 (HTML·CSS·JavaScript)</th><th>B1-2 (React)</th></tr></thead>
+    <tbody>
+      <tr><td>화면 바꾸기</td><td><code>querySelector</code>로 요소를 찾아 <code>classList</code>·<code>innerHTML</code>을 직접 수정</td><td>state만 바꾸면 React가 바뀐 부분을 다시 그림</td></tr>
+      <tr><td>화면 단위</td><td>HTML 파일 1개 안의 섹션</td><td>컴포넌트(화면 조각을 돌려주는 함수)를 조립</td></tr>
+      <tr><td>페이지 이동</td><td>같은 페이지 안 <code>#about</code> 스크롤</td><td>React Router로 <code>/about</code>, <code>/projects/:id</code> 같은 실제 주소. 새로고침 없이 전환(SPA)</td></tr>
+      <tr><td>데이터</td><td>GitHub 응답을 HTML 문자열로 조립</td><td>데이터 배열을 <code>map</code>으로 컴포넌트에 넘김</td></tr>
+      <tr><td>다국어</td><td>CSS 선택자마다 <code>innerHTML</code> 교체</td><td><code class="fn">translate</code> 함수(<code>t</code>)가 현재 언어 문구를 돌려줌</td></tr>
+      <tr><td>HTML 삽입 방어</td><td><code>escapeHtml</code> 함수를 직접 만들어 사용</td><td>JSX가 글자를 자동으로 안전하게 처리</td></tr>
+      <tr><td>CSS</td><td>그대로 사용</td><td>그대로 사용 (B1-1의 색상 변수·반응형 기준점 계승)</td></tr>
+    </tbody>
+  </table></div>
+
+  <h3>같은 기능, 두 가지 방식 — 모바일 메뉴 열고 닫기</h3>
+  <div class="grid two">
+    <div>
+      <p><span class="b js">JS 기본</span> <strong>B1-1</strong>: 상태를 바꾼 뒤, 화면을 고치는 함수를 직접 부릅니다.</p>
+      <figure class="code"><figcaption><span>B1-1 js/script.js (읽기 전용 참고)</span></figcaption><pre><code><span class="cm">// 모바일 메뉴 상태를 화면에 적용한다.</span>
+const renderMenu = () =&gt; {
+    navMenu.classList.toggle("active", STATE.menuOpen);
+    menuToggle.setAttribute("aria-expanded", String(STATE.menuOpen));
+};
+
+<span class="cm">// 모바일 메뉴를 열고 닫는다.</span>
+const toggleMenu = () =&gt; {
+    STATE.menuOpen = !STATE.menuOpen;
+    renderMenu();
+};</code></pre></figure>
+    </div>
+    <div>
+      <p><span class="b react">React 기본</span> <strong>B1-2</strong>: 상태와 "상태에 따른 모양"만 적습니다. <code>setIsMenuOpen</code>을 부르면 React가 다시 그립니다.</p>
+      <figure class="code"><figcaption><span class="path">src/components/layout/Header.jsx</span></figcaption><pre data-src="src/components/layout/Header.jsx"><code>const [isMenuOpen, setIsMenuOpen] = useState(false);</code></pre></figure>
+      <figure class="code"><figcaption><span class="path">src/components/layout/Header.jsx</span></figcaption><pre data-src="src/components/layout/Header.jsx"><code>&lt;ul id=&quot;nav-menu&quot; className={`nav-menu${isMenuOpen ? &quot; active&quot; : &quot;&quot;}`}&gt;</code></pre></figure>
+      <figure class="code"><figcaption><span class="path">src/components/layout/Header.jsx</span></figcaption><pre data-src="src/components/layout/Header.jsx"><code>onClick={() =&gt; setIsMenuOpen(open =&gt; !open)}</code></pre></figure>
+    </div>
+  </div>
+
+  <details>
+    <summary>Python으로 공부했다면 — 같은 개념, 다른 문법 <span class="b py">Python 비교</span></summary>
+    <div class="body">
+      <p>이 프로젝트에는 Python 코드가 없습니다. 다만 앞선 과정에서 Python을 배웠다면 아래처럼 대응시키면 읽기 쉽습니다. 오른쪽 열은 이 프로젝트에서 실제로 그 문법을 쓰는 곳입니다.</p>
+      <div class="table-wrap"><table>
+        <thead><tr><th>개념</th><th><span class="b py">Python</span></th><th><span class="b js">JavaScript</span></th><th>이 프로젝트에서</th></tr></thead>
+        <tbody>
+          <tr><td>함수 만들기</td><td><code>def f(x):</code></td><td><code>function f(x) {}</code> / <code>const f = x =&gt; …</code></td><td>둘 다 사용 (<code class="fn">withTimeout</code>, <code>handleChange</code>)</td></tr>
+          <tr><td>목록 변환</td><td><code>[x * 2 for x in items]</code></td><td><code>items.map(x =&gt; x * 2)</code></td><td><code class="fn">fetchProjects</code>의 <code>rows.map(fromRow)</code></td></tr>
+          <tr><td>걸러내기</td><td><code>[x for x in items if ok(x)]</code></td><td><code>items.filter(ok)</code></td><td><code class="comp">ProjectListPage</code>의 분류 필터</td></tr>
+          <tr><td>중복 제거</td><td><code>set(items)</code></td><td><code>new Set(items)</code></td><td><code class="fn">parseTechStack</code></td></tr>
+          <tr><td>딕셔너리 / 객체</td><td><code>{"title": "A"}</code></td><td><code>{ title: "A" }</code></td><td>프로젝트 데이터 전체</td></tr>
+          <tr><td>문자열 끼워넣기</td><td><code>f"/projects/{id}"</code></td><td><code>`/projects/${id}`</code></td><td>상세 화면 이동 주소</td></tr>
+          <tr><td>값 없음</td><td><code>None</code></td><td><code>null</code> / <code>undefined</code></td><td><code class="fn">toRow</code>가 빈 문자열을 <code>null</code>로 저장</td></tr>
+          <tr><td>오류 처리</td><td><code>try: … except:</code></td><td><code>try { … } catch {}</code></td><td><code class="fn">createProject</code>, <code class="fn">readStorage</code></td></tr>
+          <tr><td>비동기</td><td><code>async def</code> / <code>await</code></td><td><code>async function</code> / <code>await</code></td><td><code class="path">src/lib/projectsApi.js</code> 전체</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+  </details>
+</section>
+
+<!-- 3 ─────────────────────────────────────────── -->
+<section class="chapter" id="folders">
+  <p class="eyebrow">03 · FOLDERS</p>
+  <h2>폴더와 파일</h2>
+  <p class="lead">역할별로 나눴습니다. <strong>pages</strong>는 "이 주소에서 무엇을 보여줄까", <strong>components</strong>는 "어떻게 생겼나", <strong>hooks</strong>는 "상태를 어떻게 관리할까", <strong>lib</strong>는 "바깥 세상과 어떻게 이야기할까"를 맡습니다.</p>
+  <div class="tree"><b>codyssey-b1-2-react/</b>
+├── index.html            <i># HTML은 이 파일 하나(SPA). 첫 화면 테마 깜빡임 방지 스크립트</i>
+├── public/images/        <i># B1-1에서 가져온 이미지</i>
+├── supabase/             <i># 사용자가 직접 실행할 SQL 5개</i>
+├── docs/                 <i># 설명서 (이 파일 포함)</i>
+├── vercel.json           <i># 배포 시 새로고침 404 방지</i>
+├── .env.example          <i># 환경변수 예시 (.env는 GitHub에 올리지 않음)</i>
+└── <b>src/</b>
+    ├── main.jsx · App.jsx · AppProviders.jsx
+    ├── <b>pages/</b>          <i># 라우트 단위 화면 8개</i>
+    ├── <b>components/</b>     <i># ui · project · home · layout · auth</i>
+    ├── <b>contexts/</b>       <i># 전역 상태 4개</i>
+    ├── <b>hooks/</b>          <i># 커스텀 훅 12개</i>
+    ├── <b>lib/</b>            <i># React와 무관한 함수</i>
+    ├── <b>styles/</b>         <i># global · ui · home · project CSS</i>
+    └── <b>test/</b>           <i># 테스트 도우미</i></div>
+
+  <details>
+    <summary>src/pages — 라우트 단위 화면 (8)</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>파일</th><th>역할</th></tr></thead><tbody>
+        <tr><td><code class="path">src/pages/HomePage.jsx</code></td><td>Hero → About → Expertise → Work → Contact (B1-1과 같은 순서)</td></tr>
+        <tr><td><code class="path">src/pages/AboutPage.jsx</code></td><td>소개, 네 가지 역할, GitHub 저장소 카드</td></tr>
+        <tr><td><code class="path">src/pages/ProjectListPage.jsx</code></td><td>프로젝트 목록 + 분류 필터</td></tr>
+        <tr><td><code class="path">src/pages/ProjectDetailPage.jsx</code></td><td>프로젝트 상세, 삭제 확인</td></tr>
+        <tr><td><code class="path">src/pages/ProjectCreatePage.jsx</code></td><td>등록 폼 (관리자)</td></tr>
+        <tr><td><code class="path">src/pages/ProjectEditPage.jsx</code></td><td>수정 폼 (관리자)</td></tr>
+        <tr><td><code class="path">src/pages/LoginPage.jsx</code></td><td>관리자 로그인</td></tr>
+        <tr><td><code class="path">src/pages/NotFoundPage.jsx</code></td><td>잘못된 주소</td></tr>
+      </tbody></table></div></div>
+  </details>
+  <details>
+    <summary>src/components — 재사용 컴포넌트 (31)</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>폴더</th><th>파일</th><th>역할</th></tr></thead><tbody>
+        <tr><td>ui</td><td><code class="path">src/components/ui/Button.jsx</code></td><td>버튼·내부 링크·외부 링크 공통 모양, 제출 중 비활성화</td></tr>
+        <tr><td>ui</td><td><code class="path">src/components/ui/FormField.jsx</code></td><td>라벨 + 입력칸 + 오류 문구</td></tr>
+        <tr><td>ui</td><td><code class="path">src/components/ui/LoadingState.jsx</code> · <code class="path">src/components/ui/ErrorState.jsx</code> · <code class="path">src/components/ui/EmptyState.jsx</code></td><td>로딩 · 오류(다시 시도) · 빈 데이터</td></tr>
+        <tr><td>ui</td><td><code class="path">src/components/ui/DataStatus.jsx</code></td><td>위 세 가지 중 알맞은 하나를 고름</td></tr>
+        <tr><td>ui</td><td><code class="path">src/components/ui/FilterBar.jsx</code> · <code class="path">src/components/ui/TagList.jsx</code></td><td>필터 버튼 묶음 · 기술 태그</td></tr>
+        <tr><td>ui</td><td><code class="path">src/components/ui/Toast.jsx</code> · <code class="path">src/components/ui/ConfirmDialog.jsx</code></td><td>잠깐 뜨는 알림 · 삭제 확인 창</td></tr>
+        <tr><td>ui</td><td><code class="path">src/components/ui/SectionHeading.jsx</code> · <code class="path">src/components/ui/TypingHeading.jsx</code> · <code class="path">src/components/ui/RevealSection.jsx</code></td><td>B1-1 제목 모양 · 타이핑 제목 · 스크롤 등장 효과</td></tr>
+        <tr><td>project</td><td><code class="path">src/components/project/ProjectCard.jsx</code></td><td>카드 1장 (목록·홈·GitHub·미리보기에서 재사용)</td></tr>
+        <tr><td>project</td><td><code class="path">src/components/project/ProjectList.jsx</code> · <code class="path">src/components/project/ProjectDetail.jsx</code> · <code class="path">src/components/project/ProjectForm.jsx</code></td><td>카드 격자 · 상세 본문 · 등록/수정 공통 폼</td></tr>
+        <tr><td>home</td><td><code class="path">src/components/home/HeroSection.jsx</code> · <code class="path">src/components/home/AboutSection.jsx</code> · <code class="path">src/components/home/ExpertiseSection.jsx</code> · <code class="path">src/components/home/WorkSection.jsx</code></td><td>홈 섹션들</td></tr>
+        <tr><td>home</td><td><code class="path">src/components/home/FeaturedProjects.jsx</code> · <code class="path">src/components/home/GithubSection.jsx</code></td><td>대표 프로젝트 · GitHub 카드</td></tr>
+        <tr><td>home</td><td><code class="path">src/components/home/ContactSection.jsx</code> · <code class="path">src/components/home/ContactForm.jsx</code></td><td>문의 영역 · 문의 폼</td></tr>
+        <tr><td>layout</td><td><code class="path">src/components/layout/Layout.jsx</code> · <code class="path">src/components/layout/Header.jsx</code> · <code class="path">src/components/layout/Footer.jsx</code></td><td>공통 틀 · 헤더 · 푸터</td></tr>
+        <tr><td>layout</td><td><code class="path">src/components/layout/DisplayControls.jsx</code> · <code class="path">src/components/layout/BackToTopButton.jsx</code></td><td>언어·테마 버튼 · 맨 위로 버튼</td></tr>
+        <tr><td>auth</td><td><code class="path">src/components/auth/ProtectedRoute.jsx</code></td><td>관리자 전용 화면 보호</td></tr>
+      </tbody></table></div></div>
+  </details>
+  <details>
+    <summary>src/contexts · src/hooks — 상태 관리</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>파일</th><th>역할</th></tr></thead><tbody>
+        <tr><td><code class="path">src/contexts/ThemeContext.jsx</code></td><td>Light / Dark / Auto</td></tr>
+        <tr><td><code class="path">src/contexts/LanguageContext.jsx</code></td><td>KR / EN, 번역 함수 <code>t</code></td></tr>
+        <tr><td><code class="path">src/contexts/ToastContext.jsx</code></td><td>페이지를 옮겨도 남는 알림</td></tr>
+        <tr><td><code class="path">src/contexts/AuthContext.jsx</code></td><td>로그인 상태, 관리자 여부</td></tr>
+        <tr><td><code class="path">src/hooks/useAsyncData.js</code></td><td>로딩·오류·다시 시도를 처리하는 공통 훅</td></tr>
+        <tr><td><code class="path">src/hooks/useProjects.js</code> · <code class="path">src/hooks/useProject.js</code></td><td>목록 · 상세 데이터</td></tr>
+        <tr><td><code class="path">src/hooks/useProjectActions.js</code></td><td>등록·수정·삭제, 저장 중 상태, 연속 클릭 잠금</td></tr>
+        <tr><td><code class="path">src/hooks/useGithubRepos.js</code></td><td>GitHub 저장소</td></tr>
+        <tr><td><code class="path">src/hooks/useInView.js</code> · <code class="path">src/hooks/useTypingEffect.js</code> · <code class="path">src/hooks/useScrolled.js</code></td><td>화면에 보임 · 타이핑 · 스크롤 위치</td></tr>
+        <tr><td><code class="path">src/hooks/useTheme.js</code> · <code class="path">src/hooks/useLanguage.js</code> · <code class="path">src/hooks/useToast.js</code> · <code class="path">src/hooks/useAuth.js</code></td><td>Context 값을 꺼내 쓰는 훅</td></tr>
+      </tbody></table></div></div>
+  </details>
+  <details>
+    <summary>src/lib — 함수 모음</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>파일</th><th>역할</th></tr></thead><tbody>
+        <tr><td><code class="path">src/lib/supabaseClient.js</code></td><td>Supabase 연결. <code>.env</code>가 없으면 안내 오류</td></tr>
+        <tr><td><code class="path">src/lib/projectsApi.js</code></td><td>projects 테이블 CRUD, DB 행 ↔ 화면 객체 변환</td></tr>
+        <tr><td><code class="path">src/lib/authApi.js</code></td><td>로그인·로그아웃·세션·관리자 확인</td></tr>
+        <tr><td><code class="path">src/lib/projectForm.js</code></td><td>프로젝트 폼 검사와 변환, 분류·글자 수 상수</td></tr>
+        <tr><td><code class="path">src/lib/validators.js</code></td><td>이메일·주소 검사, 안전한 링크·이미지 주소, 문의·로그인 폼 검사</td></tr>
+        <tr><td><code class="path">src/lib/errors.js</code></td><td>오류 → 화면 문구 key</td></tr>
+        <tr><td><code class="path">src/lib/request.js</code></td><td>15초 시간 제한</td></tr>
+        <tr><td><code class="path">src/lib/id.js</code></td><td>새 프로젝트 UUID 만들기</td></tr>
+        <tr><td><code class="path">src/lib/i18n.js</code></td><td>한국어·영어 문구 사전, 번역 함수</td></tr>
+        <tr><td><code class="path">src/lib/storage.js</code></td><td>localStorage 안전하게 읽고 쓰기</td></tr>
+        <tr><td><code class="path">src/lib/githubApi.js</code> · <code class="path">src/lib/contactApi.js</code></td><td>GitHub 저장소 · Formspree 문의 전송</td></tr>
+      </tbody></table></div></div>
+  </details>
+  <details>
+    <summary>supabase · src/styles · src/test</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>파일</th><th>역할</th></tr></thead><tbody>
+        <tr><td><code class="path">supabase/01_schema.sql</code></td><td>projects 테이블, 주소 형식 제약, 수정 시각 자동 기록</td></tr>
+        <tr><td><code class="path">supabase/02_policies.sql</code></td><td>관리자 목록 표, <code>is_admin()</code> 함수, RLS 정책</td></tr>
+        <tr><td><code class="path">supabase/03_register_admin.sql</code></td><td>관리자 계정 등록</td></tr>
+        <tr><td><code class="path">supabase/04_seed.sql</code></td><td>(선택) 예시 데이터</td></tr>
+        <tr><td><code class="path">supabase/05_verify_rls.sql</code></td><td>RLS 안전 점검 (실제 데이터는 바뀌지 않음)</td></tr>
+        <tr><td><code class="path">src/styles/global.css</code></td><td>B1-1 색상 변수(라이트·다크), 헤더·푸터</td></tr>
+        <tr><td><code class="path">src/styles/ui.css</code> · <code class="path">src/styles/home.css</code> · <code class="path">src/styles/project.css</code></td><td>UI 컴포넌트 · 홈 · 프로젝트 화면</td></tr>
+        <tr><td><code class="path">src/test/setup.js</code></td><td>테스트마다 실제 네트워크 요청 차단, 저장값 초기화</td></tr>
+        <tr><td><code class="path">src/test/browserMocks.js</code></td><td>테스트용 <code>matchMedia</code>·<code>IntersectionObserver</code> 흉내</td></tr>
+        <tr><td><code class="path">src/test/authMock.js</code> · <code class="path">src/test/mockProjects.js</code> · <code class="path">src/test/renderWithProviders.jsx</code></td><td>가짜 로그인 상태 · 가짜 프로젝트 · Provider 감싸기</td></tr>
+      </tbody></table></div></div>
+  </details>
+</section>
+
+<!-- 4 ─────────────────────────────────────────── -->
+<section class="chapter" id="pages">
+  <p class="eyebrow">04 · PAGES</p>
+  <h2>페이지별 기능</h2>
+  <p class="lead">주소와 페이지의 연결은 <code class="path">src/App.jsx</code> 한 곳에 모여 있습니다. 모든 페이지는 <code class="comp">Layout</code> 안에서 그려지므로 헤더와 푸터가 늘 보입니다.</p>
+  <figure class="code"><figcaption><span class="path">src/App.jsx</span></figcaption><pre data-src="src/App.jsx"><code><span class="cm">/** 주소(URL)와 페이지 컴포넌트를 연결한다. 등록·수정 화면은 ProtectedRoute로 로그인한 관리자만 들어갈 수 있다. */</span>
+function App() {
+  return (
+    &lt;Routes&gt;
+      &lt;Route element={&lt;Layout /&gt;}&gt;
+        &lt;Route path=&quot;/&quot; element={&lt;HomePage /&gt;} /&gt;
+        &lt;Route path=&quot;/about&quot; element={&lt;AboutPage /&gt;} /&gt;
+        &lt;Route path=&quot;/projects&quot; element={&lt;ProjectListPage /&gt;} /&gt;
+        &lt;Route path=&quot;/projects/:id&quot; element={&lt;ProjectDetailPage /&gt;} /&gt;
+        &lt;Route path=&quot;/login&quot; element={&lt;LoginPage /&gt;} /&gt;
+        &lt;Route element={&lt;ProtectedRoute /&gt;}&gt;
+          &lt;Route path=&quot;/projects/new&quot; element={&lt;ProjectCreatePage /&gt;} /&gt;
+          &lt;Route path=&quot;/projects/:id/edit&quot; element={&lt;ProjectEditPage /&gt;} /&gt;
+        &lt;/Route&gt;
+        &lt;Route path=&quot;*&quot; element={&lt;NotFoundPage /&gt;} /&gt;
+      &lt;/Route&gt;
+    &lt;/Routes&gt;
+  );
+}</code></pre></figure>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>주소</th><th>페이지</th><th>누가</th><th>쓰는 훅</th><th>하는 일</th></tr></thead>
+    <tbody>
+      <tr><td><code>/</code></td><td><code class="comp">HomePage</code></td><td>누구나</td><td>(섹션 안) <code class="fn">useProjects</code></td><td>B1-1 순서의 5개 섹션. Work에 대표 프로젝트 최대 4개</td></tr>
+      <tr><td><code>/about</code></td><td><code class="comp">AboutPage</code></td><td>누구나</td><td><code class="fn">useLanguage</code>, (섹션 안) <code class="fn">useGithubRepos</code></td><td>소개, 네 가지 역할, GitHub 저장소 카드</td></tr>
+      <tr><td><code>/projects</code></td><td><code class="comp">ProjectListPage</code></td><td>누구나</td><td><code class="fn">useProjects</code>, <code class="fn">useAuth</code></td><td>목록, 분류 필터, 개수 표시. 관리자에게만 등록 버튼</td></tr>
+      <tr><td><code>/projects/:id</code></td><td><code class="comp">ProjectDetailPage</code></td><td>누구나</td><td><code class="fn">useProject</code>, <code class="fn">useProjectActions</code>, <code class="fn">useAuth</code></td><td>상세. 관리자에게만 수정·삭제, 삭제 확인 창</td></tr>
+      <tr><td><code>/projects/new</code></td><td><code class="comp">ProjectCreatePage</code></td><td>관리자</td><td><code class="fn">useProjectActions</code></td><td>등록 폼. 새 id를 화면이 열릴 때 한 번 만듦</td></tr>
+      <tr><td><code>/projects/:id/edit</code></td><td><code class="comp">ProjectEditPage</code></td><td>관리자</td><td><code class="fn">useProject</code>, <code class="fn">useProjectActions</code></td><td>기존 값을 채운 수정 폼</td></tr>
+      <tr><td><code>/login</code></td><td><code class="comp">LoginPage</code></td><td>누구나</td><td><code class="fn">useAuth</code></td><td>관리자 로그인. 공개 회원가입 없음</td></tr>
+      <tr><td><code>*</code></td><td><code class="comp">NotFoundPage</code></td><td>누구나</td><td><code class="fn">useLanguage</code></td><td>정의되지 않은 모든 주소</td></tr>
+    </tbody>
+  </table></div>
+
+  <details>
+    <summary>페이지별 컴포넌트 구성도</summary>
+    <div class="body"><div class="tree"><b>HomePage</b> "/"
+├ HeroSection ─ TypingHeading, Button
+├ AboutSection ─ RevealSection, SectionHeading
+├ ExpertiseSection ─ RevealSection, SectionHeading
+├ WorkSection ─ FeaturedProjects ─ DataStatus ─ ProjectList ─ ProjectCard
+└ ContactSection ─ TypingHeading, ContactForm ─ FormField, Button
+
+<b>AboutPage</b> "/about"
+├ AboutSection
+├ RevealSection (역할 카드 4개)
+└ GithubSection ─ DataStatus ─ ProjectCard (외부 링크)
+
+<b>ProjectListPage</b> "/projects"
+├ SectionHeading
+└ DataStatus ─ FilterBar · Button(관리자) · ProjectList / EmptyState
+
+<b>ProjectDetailPage</b> "/projects/:id"
+├ Button "목록으로"
+├ DataStatus ─ ProjectDetail ─ TagList, Button (+ 관리자: 수정·삭제)
+└ ConfirmDialog
+
+<b>ProjectCreatePage</b> · <b>ProjectEditPage</b>   (ProtectedRoute 안)
+└ ProjectForm ─ FormField, Button, ProjectCard(미리보기)
+
+<b>LoginPage</b> ─ SectionHeading, FormField, Button
+<b>NotFoundPage</b> ─ SectionHeading, Button</div></div>
+  </details>
+</section>
+
+<!-- 5 ─────────────────────────────────────────── -->
+<section class="chapter" id="components">
+  <p class="eyebrow">05 · COMPONENTS &amp; PROPS</p>
+  <h2>주요 컴포넌트와 props</h2>
+  <p class="lead"><strong>props</strong>는 부모 컴포넌트가 자식에게 주는 읽기 전용 값입니다. 값을 내려줄 수도 있고(<code>value</code>), 함수를 내려줘서 자식이 "눌렸어요"라고 알리게 할 수도 있습니다(<code>onChange</code>). 데이터는 위에서 아래로, 이벤트는 아래에서 위로 흐릅니다.</p>
+
+  <div class="compare">
+    <div class="screen">
+      <h4>부모 — 목록 화면</h4>
+      <p>필터 값 <code>category</code>를 state로 가지고, <code class="comp">FilterBar</code>에 <code>value</code>와 <code>onChange</code>를 props로 줍니다.</p>
+      <figure class="code"><figcaption><span class="path">src/pages/ProjectListPage.jsx</span></figcaption><pre data-src="src/pages/ProjectListPage.jsx"><code>&lt;FilterBar label={t(&quot;projects.filterLabel&quot;)} options={filterOptions} value={category} onChange={setCategory} /&gt;</code></pre></figure>
+    </div>
+    <div>
+      <p style="margin-top:0"><strong>자식 — FilterBar</strong>: 받은 <code>value</code>로 선택 표시를 그리고, 버튼이 눌리면 받은 <code>onChange</code>를 부릅니다. 필터 값을 스스로 바꾸지는 않습니다.</p>
+      <figure class="code"><figcaption><span class="path">src/components/ui/FilterBar.jsx</span></figcaption><pre data-src="src/components/ui/FilterBar.jsx"><code><span class="cm">/**</span>
+<span class="cm"> * 여러 선택지 중 하나를 고르는 버튼 묶음. 고른 값은 부모 state에 있다.</span>
+<span class="cm"> * @param {{value: string, label: string}[]} options 선택지</span>
+<span class="cm"> * @param {string} value 현재 선택된 값</span>
+<span class="cm"> * @param {(value: string) =&gt; void} onChange 다른 선택지를 눌렀을 때 호출</span>
+<span class="cm"> * @param {string} label 화면 낭독기용 묶음 이름</span>
+<span class="cm"> */</span>
+function FilterBar({ options, value, onChange, label }) {
+  return (
+    &lt;div className=&quot;filter-bar&quot; role=&quot;group&quot; aria-label={label}&gt;
+      {options.map(option =&gt; {
+        const isActive = option.value === value;
+
+        return (
+          &lt;button
+            key={option.value}
+            className={`filter-button${isActive ? &quot; active&quot; : &quot;&quot;}`}
+            type=&quot;button&quot;
+            aria-pressed={isActive}
+            onClick={() =&gt; onChange(option.value)}
+          &gt;
+            {option.label}
+          &lt;/button&gt;
+        );
+      })}
+    &lt;/div&gt;
+  );
+}</code></pre></figure>
+    </div>
+  </div>
+
+  <details open>
+    <summary>재사용 UI 컴포넌트 (src/components/ui · 13개)</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>컴포넌트</th><th>주요 props</th><th>하는 일</th><th>쓰는 곳</th></tr></thead><tbody>
+        <tr><td><code class="comp">Button</code></td><td><code>variant</code> 모양, <code>to</code> 내부 이동, <code>href</code> 외부 링크, <code>icon</code>, <code>isLoading</code>·<code>loadingText</code>, <code>disabled</code>, <code>onClick</code></td><td>버튼·링크 공통 모양. <code>isLoading</code>이면 비활성화</td><td>거의 모든 화면</td></tr>
+        <tr><td><code class="comp">FormField</code></td><td><code>label</code>, <code>name</code>, <code>value</code>, <code>onChange</code>, <code>as</code>(input·textarea·select), <code>error</code>, <code>hint</code>, <code>options</code>, <code>required</code></td><td>라벨·입력칸·오류 문구. 오류를 입력칸과 연결(<code>aria-describedby</code>)</td><td>프로젝트 폼, 문의 폼, 로그인</td></tr>
+        <tr><td><code class="comp">DataStatus</code></td><td><code>isLoading</code>, <code>error</code>, <code>isEmpty</code>, <code>onRetry</code>, <code>retryLabel</code>, <code>loadingMessage</code>, <code>emptyMessage</code>, <code>emptyAction</code>, <code>children</code></td><td>로딩 → 오류 → 빈 데이터 → 내용 순서로 검사해 하나만 보여줌</td><td>홈 Work, 목록, 상세, 수정, GitHub</td></tr>
+        <tr><td><code class="comp">LoadingState</code> / <code class="comp">ErrorState</code> / <code class="comp">EmptyState</code></td><td><code>message</code> / <code>message</code>·<code>onRetry</code>·<code>retryLabel</code> / <code>message</code>·<code>action</code></td><td>스피너 / 오류 + 다시 시도 / 빈 데이터 안내</td><td><code class="comp">DataStatus</code>, <code class="comp">ProtectedRoute</code></td></tr>
+        <tr><td><code class="comp">FilterBar</code></td><td><code>options</code>, <code>value</code>, <code>onChange</code>, <code>label</code></td><td>필터 버튼 묶음 (<code>aria-pressed</code>로 선택 표시)</td><td>목록</td></tr>
+        <tr><td><code class="comp">TagList</code></td><td><code>tags</code></td><td>기술 태그. 없으면 아무것도 안 그림</td><td>카드, 상세</td></tr>
+        <tr><td><code class="comp">Toast</code></td><td><code>message</code>, <code>type</code>, <code>onClose</code>, <code>duration</code>(기본 3000ms), <code>closeLabel</code></td><td>잠깐 뜨는 알림, 시간이 지나면 <code>onClose</code></td><td><code class="comp">ToastProvider</code></td></tr>
+        <tr><td><code class="comp">ConfirmDialog</code></td><td><code>open</code>, <code>title</code>, <code>message</code>, <code>confirmLabel</code>, <code>cancelLabel</code>, <code>loadingLabel</code>, <code>isLoading</code>, <code>onConfirm</code>, <code>onCancel</code></td><td>삭제 확인. Esc·바깥 클릭은 취소, 포커스를 창 안에 유지</td><td>상세</td></tr>
+        <tr><td><code class="comp">SectionHeading</code></td><td><code>eyebrow</code>, <code>title</code>, <code>number</code>, <code>description</code>, <code>as</code>(h1·h2), <code>isTyping</code></td><td>B1-1 섹션 제목 모양</td><td>모든 페이지</td></tr>
+        <tr><td><code class="comp">TypingHeading</code></td><td><code>text</code>, <code>as</code>, <code>startDelay</code>, <code>className</code></td><td>화면에 보이면 한 글자씩 타이핑. 남은 글자는 투명하게 자리만 차지</td><td>Hero, 섹션 제목, Contact</td></tr>
+        <tr><td><code class="comp">RevealSection</code></td><td><code>id</code>, <code>className</code>, <code>children</code></td><td>스크롤해서 보이면 아래에서 떠오름</td><td>홈·About 섹션</td></tr>
+      </tbody></table></div></div>
+  </details>
+  <details>
+    <summary>프로젝트·홈·레이아웃 컴포넌트</summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>컴포넌트</th><th>주요 props</th><th>하는 일</th></tr></thead><tbody>
+        <tr><td><code class="comp">ProjectCard</code></td><td><code>project</code>, <code>index</code>, <code>label</code>, <code>href</code>, <code>isExternal</code>, <code>linkLabel</code></td><td>B1-1 Work 카드. 안전한 이미지 주소만 표시(<code class="fn">toSafeImageUrl</code>). <code>href</code>가 없으면 링크 없는 미리보기</td></tr>
+        <tr><td><code class="comp">ProjectList</code></td><td><code>projects</code></td><td>카드 격자. 카드를 누르면 <code>/projects/:id</code></td></tr>
+        <tr><td><code class="comp">ProjectForm</code></td><td><code>initialValues</code>, <code>submitLabel</code>, <code>onSubmit</code>, <code>isSubmitting</code>, <code>serverError</code>, <code>cancelTo</code></td><td>등록·수정 공통 폼. 입력값은 폼 안의 state, 검사를 통과해야 <code>onSubmit</code> 호출, 오른쪽 미리보기</td></tr>
+        <tr><td><code class="comp">ProjectDetail</code></td><td><code>project</code>, <code>actions</code></td><td>상세 본문. 안전한 http(s) 링크만 버튼으로 표시. 관리자일 때만 <code>actions</code>가 전달됨</td></tr>
+        <tr><td><code class="comp">AboutSection</code></td><td><code>number</code>, <code>headingAs</code></td><td>홈(h2)과 About 페이지(h1)에서 재사용</td></tr>
+        <tr><td><code class="comp">ExpertiseSection</code> · <code class="comp">ContactSection</code></td><td><code>number</code></td><td>역량 카드 · 문의 영역</td></tr>
+        <tr><td><code class="comp">WorkSection</code></td><td><code>number</code>, <code>children</code></td><td>제목 + 안에 넣은 대표 프로젝트 + 전체 보기 버튼</td></tr>
+        <tr><td><code class="comp">HeroSection</code> · <code class="comp">FeaturedProjects</code> · <code class="comp">GithubSection</code> · <code class="comp">ContactForm</code></td><td>(없음)</td><td>스스로 필요한 값을 Context·훅에서 가져옴</td></tr>
+        <tr><td><code class="comp">Layout</code> · <code class="comp">Header</code> · <code class="comp">Footer</code> · <code class="comp">DisplayControls</code> · <code class="comp">BackToTopButton</code></td><td>(없음)</td><td>모든 페이지 공통 틀과 버튼</td></tr>
+        <tr><td><code class="comp">ProtectedRoute</code></td><td>(없음)</td><td>로딩 중 → 확인 중 표시 / 방문자 → 로그인으로 / 관리자 아님 → 권한 없음 / 관리자 → 안쪽 화면</td></tr>
+      </tbody></table></div></div>
+  </details>
+  <details>
+    <summary>로딩·오류·빈 상태를 하나로 통일한 DataStatus 코드</summary>
+    <div class="body">
+      <p>모든 데이터 화면이 이 컴포넌트를 거치므로 상태 표시 방식이 한 가지로 통일됩니다.</p>
+      <figure class="code"><figcaption><span class="path">src/components/ui/DataStatus.jsx</span></figcaption><pre data-src="src/components/ui/DataStatus.jsx"><code><span class="cm">/**</span>
+<span class="cm"> * 로딩 → 오류 → 빈 데이터 → 실제 내용 순서로 검사해 알맞은 화면 하나만 보여준다.</span>
+<span class="cm"> * 모든 데이터 화면이 이 컴포넌트를 거치므로 상태 표시 방식이 하나로 통일된다.</span>
+<span class="cm"> * @param {boolean} isLoading 요청 중인지</span>
+<span class="cm"> * @param {string|null} error 오류 문구. 없으면 null</span>
+<span class="cm"> * @param {boolean} [isEmpty] 데이터가 비었는지</span>
+<span class="cm"> * @param {() =&gt; void} [onRetry] 오류 화면의 다시 시도 동작</span>
+<span class="cm"> * @param {string} [retryLabel] 다시 시도 버튼 글자</span>
+<span class="cm"> */</span>
+function DataStatus({
+  isLoading,
+  error,
+  isEmpty = false,
+  onRetry,
+  retryLabel,
+  loadingMessage,
+  emptyMessage,
+  emptyAction,
+  children,
+}) {
+  if (isLoading) return &lt;LoadingState message={loadingMessage} /&gt;;
+  if (error) return &lt;ErrorState message={error} onRetry={onRetry} retryLabel={retryLabel} /&gt;;
+  if (isEmpty) return &lt;EmptyState message={emptyMessage} action={emptyAction} /&gt;;
+  return children;
+}</code></pre></figure>
+    </div>
+  </details>
+</section>
+
+<!-- 6 ─────────────────────────────────────────── -->
+<section class="chapter" id="state">
+  <p class="eyebrow">06 · STATE · EFFECT · CONTEXT · HOOKS</p>
+  <h2>state, useEffect, Context, 커스텀 훅</h2>
+
+  <h3>state — 바뀌면 화면이 다시 그려지는 값 <span class="b react">React 기본</span></h3>
+  <p><code>const [값, 바꾸는함수] = useState(처음값)</code>. <strong>바꾸는 함수로만</strong> 바꿉니다. 객체는 직접 고치지 않고 <code>{ ...기존, 바뀐칸 }</code>으로 새 객체를 만들어야 React가 알아챕니다.</p>
+  <div class="compare">
+    <div class="screen">
+      <h4>화면</h4>
+      <ol><li>등록 폼의 제목 칸에 글자를 입력</li><li>입력칸 글자가 바뀜</li><li>오른쪽 미리보기 카드 제목도 동시에 바뀜</li></ol>
+    </div>
+    <figure class="code"><figcaption><span class="path">src/components/project/ProjectForm.jsx</span></figcaption><pre data-src="src/components/project/ProjectForm.jsx"><code>const [values, setValues] = useState(initialValues);
+const [errors, setErrors] = useState({});
+const preview = toProjectInput(values);</code></pre></figure>
+  </div>
+  <figure class="code"><figcaption><span class="path">src/components/project/ProjectForm.jsx</span></figcaption><pre data-src="src/components/project/ProjectForm.jsx"><code>const handleChange = event =&gt; {
+  const { name, value, type, checked } = event.target;
+  const nextValues = { ...values, [name]: type === &quot;checkbox&quot; ? checked : value };
+  setValues(nextValues);
+  if (errors[name]) setErrors(validateProjectForm(nextValues));
+};</code></pre></figure>
+
+  <div class="table-wrap"><table>
+    <thead><tr><th>상태</th><th>어디에 두었나</th><th>왜 거기에?</th></tr></thead><tbody>
+      <tr><td>필터 선택값 <code>category</code></td><td><code class="comp">ProjectListPage</code></td><td>필터 버튼과 카드 목록 <strong>둘 다</strong> 필요 → 공통 부모(상태 끌어올리기)</td></tr>
+      <tr><td>폼 입력값 <code>values</code>, 오류 <code>errors</code></td><td><code class="comp">ProjectForm</code></td><td>폼과 미리보기만 사용</td></tr>
+      <tr><td>목록·상세 데이터, 로딩, 오류</td><td><code class="fn">useProjects</code>, <code class="fn">useProject</code></td><td>여러 페이지가 같은 방식으로 불러옴</td></tr>
+      <tr><td>저장 중 <code>isSubmitting</code></td><td><code class="fn">useProjectActions</code></td><td>등록·수정·삭제 공통</td></tr>
+      <tr><td>새 프로젝트 id <code>projectId</code></td><td><code class="comp">ProjectCreatePage</code></td><td>화면이 열릴 때 한 번 만들고 다시 저장할 때도 재사용(중복 등록 방지)</td></tr>
+      <tr><td>삭제 확인 창 열림 <code>isConfirmOpen</code></td><td><code class="comp">ProjectDetailPage</code></td><td>상세 화면만 사용</td></tr>
+      <tr><td>모바일 메뉴 열림 <code>isMenuOpen</code></td><td><code class="comp">Header</code></td><td>헤더만 사용</td></tr>
+      <tr><td>테마·언어·알림·로그인</td><td>Context</td><td>거의 모든 화면이 필요 → 전역</td></tr>
+    </tbody></table></div>
+
+  <h3>useEffect — 화면을 그린 "뒤에" 할 일 <span class="b react">React 기본</span></h3>
+  <p><code>useEffect(할일, [의존성])</code>: 처음 화면에 나타난 뒤 실행되고, 의존성 배열 안의 값이 바뀔 때마다 다시 실행됩니다. 함수를 <code>return</code>하면 다음 실행 전이나 화면에서 사라질 때 정리(clean-up)합니다.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>위치</th><th>의존성</th><th>하는 일</th><th>정리(clean-up)</th></tr></thead><tbody>
+      <tr><td><code class="fn">useAsyncData</code></td><td><code>[loadData, reloadCount]</code></td><td>데이터 요청 (불러올 대상이 바뀌거나 다시 시도할 때)</td><td>늦게 온 이전 응답 무시 (<code>isCurrent = false</code>)</td></tr>
+      <tr><td><code class="comp">AuthProvider</code></td><td><code>[]</code> 처음 한 번</td><td>저장된 로그인 확인, 로그인 변화 구독</td><td>구독 해제</td></tr>
+      <tr><td><code class="comp">AuthProvider</code></td><td><code>[userId]</code></td><td>로그인한 사람이 바뀌면 관리자 여부 확인</td><td>늦은 응답 무시</td></tr>
+      <tr><td><code class="comp">ThemeProvider</code></td><td><code>[]</code> / <code>[theme]</code> / <code>[mode]</code></td><td>운영체제 테마 변화 구독 / <code>&lt;html data-theme&gt;</code> 적용 / 선택 저장</td><td>구독 해제</td></tr>
+      <tr><td><code class="comp">LanguageProvider</code></td><td><code>[language]</code></td><td><code>&lt;html lang&gt;</code> 적용, 저장</td><td>—</td></tr>
+      <tr><td><code class="comp">Layout</code></td><td><code>[pathname, hash]</code></td><td>주소가 바뀌면 맨 위 또는 <code>#섹션</code>으로 스크롤</td><td>—</td></tr>
+      <tr><td><code class="fn">useScrolled</code></td><td><code>[offset]</code></td><td>스크롤 위치 감시</td><td>이벤트 리스너 제거</td></tr>
+      <tr><td><code class="fn">useInView</code></td><td><code>[threshold, rootMargin, isInView]</code></td><td>요소가 화면에 들어왔는지 감시</td><td>감시 중단</td></tr>
+      <tr><td><code class="fn">useTypingEffect</code></td><td><code>[isActive, isDone, typedCount, text, startDelay]</code></td><td>다음 글자 예약</td><td>타이머 취소</td></tr>
+      <tr><td><code class="comp">Toast</code></td><td><code>[message, duration, onClose]</code></td><td>정해진 시간 뒤 자동 닫기</td><td>타이머 취소</td></tr>
+      <tr><td><code class="comp">ConfirmDialog</code></td><td><code>[open]</code> / <code>[open, isLoading, onCancel]</code></td><td>창으로 포커스 이동 후 닫힐 때 복귀 / Esc 키 감시</td><td>포커스 복귀 / 리스너 제거</td></tr>
+    </tbody></table></div>
+
+  <details open>
+    <summary>가장 중요한 effect — 데이터 요청 <span class="where">src/hooks/useAsyncData.js</span></summary>
+    <div class="body">
+      <p>컴포넌트 함수 본문에서 바로 요청하면 "요청 → state 변경 → 다시 그림 → 또 요청"이 무한 반복됩니다. 그래서 요청은 useEffect 안에서 합니다. <code>isLoading</code>은 따로 state로 두지 않고 "지금 요청한 대상(<code>loadData</code>·<code>reloadCount</code>)의 결과가 아직 없다"에서 계산합니다.</p>
+      <figure class="code"><figcaption><span class="path">src/hooks/useAsyncData.js</span></figcaption><pre data-src="src/hooks/useAsyncData.js"><code><span class="cm">/**</span>
+<span class="cm"> * 비동기 함수(loadData)를 실행해 { data, isLoading, error, reload }로 돌려주는 공통 훅.</span>
+<span class="cm"> * loadData가 바뀌거나 reload를 부르면 다시 요청한다. loadData는 useCallback으로 고정해서 넘긴다.</span>
+<span class="cm"> * @returns {{ data: any, isLoading: boolean, error: string, reload: () =&gt; void }} error는 i18n key</span>
+<span class="cm"> */</span>
+function useAsyncData(loadData) {
+  const [reloadCount, setReloadCount] = useState(0);
+  const [result, setResult] = useState({ loader: null, count: -1, data: null, error: &quot;&quot; });
+
+  useEffect(() =&gt; {
+    let isCurrent = true;
+    const save = (data, error) =&gt; {
+      if (isCurrent) setResult({ loader: loadData, count: reloadCount, data, error });
+    };
+
+    loadData()
+      .then(data =&gt; save(data, &quot;&quot;))
+      .catch(error =&gt; save(null, toErrorKey(error)));
+
+    return () =&gt; {
+      isCurrent = false;
+    };
+  }, [loadData, reloadCount]);
+
+  const reload = useCallback(() =&gt; setReloadCount(count =&gt; count + 1), []);
+  const isLoading = result.loader !== loadData || result.count !== reloadCount;
+
+  return { data: isLoading ? null : result.data, isLoading, error: isLoading ? &quot;&quot; : result.error, reload };
+}</code></pre></figure>
+    </div>
+  </details>
+
+  <h3>Context — 앱 전체가 함께 쓰는 값 <span class="b react">React 기본</span></h3>
+  <p>props를 여러 단계로 계속 내려주는 대신, 위에서 한 번 넣어 두면 아래 어디서든 꺼내 씁니다. 꺼낼 때는 각각의 훅(<code class="fn">useTheme</code> 등)을 씁니다.</p>
+  <div class="flow">
+    <div class="node hl"><strong><code class="comp">ThemeProvider</code></strong> → <code class="fn">useTheme</code><small>mode, theme, toggleTheme, selectAutoTheme</small></div>
+    <div class="arrow"></div>
+    <div class="node hl"><strong><code class="comp">LanguageProvider</code></strong> → <code class="fn">useLanguage</code><small>language, t, messages, toggleLanguage</small></div>
+    <div class="arrow"></div>
+    <div class="node hl"><strong><code class="comp">ToastProvider</code></strong> → <code class="fn">useToast</code><small>showToast(message, type) — 페이지를 이동해도 알림이 남도록 페이지 바깥에 둠</small></div>
+    <div class="arrow"></div>
+    <div class="node hl"><strong><code class="comp">AuthProvider</code></strong> → <code class="fn">useAuth</code><small>user, isAdmin, isLoading, signIn, signOut</small></div>
+    <div class="arrow"></div>
+    <div class="node"><code class="comp">App</code> — 모든 페이지</div>
+  </div>
+  <details>
+    <summary>Context 값을 꺼내는 훅 코드 <span class="where">src/hooks/useTheme.js</span></summary>
+    <div class="body"><p>Provider 바깥에서 실수로 쓰면 바로 알 수 있도록 오류를 던집니다. 나머지 세 훅도 같은 모양입니다.</p><figure class="code"><figcaption><span class="path">src/hooks/useTheme.js</span></figcaption><pre data-src="src/hooks/useTheme.js"><code><span class="cm">/** 테마 정보({ mode, theme, toggleTheme, selectAutoTheme })를 꺼내 쓴다. */</span>
+function useTheme() {
+  const context = useContext(ThemeContext);
+  if (!context) throw new Error(&quot;useTheme은 ThemeProvider 안에서만 사용할 수 있습니다.&quot;);
+  return context;
+}</code></pre></figure></div>
+  </details>
+
+  <h3>커스텀 훅 — 상태 로직을 재사용하는 함수 <span class="b mine">직접 만든 함수</span></h3>
+  <p><code>use</code>로 시작하고 안에서 다른 훅을 쓰는 함수입니다. 페이지는 "무엇을 보여줄지"에 집중하고, "어떻게 불러올지"는 훅이 맡습니다.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>훅</th><th>돌려주는 값</th><th>왜 분리했나</th></tr></thead><tbody>
+      <tr><td><a href="#fn-useAsyncData"><code class="fn">useAsyncData</code></a>(loadData)</td><td>data, isLoading, error, reload</td><td>로딩·오류·다시 시도·늦은 응답 무시를 한 곳에서</td></tr>
+      <tr><td><a href="#fn-useProjects"><code class="fn">useProjects</code></a>()</td><td>projects, isLoading, error, reload</td><td>홈 Work와 목록이 같은 데이터</td></tr>
+      <tr><td><a href="#fn-useProject"><code class="fn">useProject</code></a>(id)</td><td>project, isLoading, error, reload</td><td>상세와 수정이 같은 방식으로 한 건 조회</td></tr>
+      <tr><td><a href="#fn-useProjectActions"><code class="fn">useProjectActions</code></a>()</td><td>create, update, remove, isSubmitting, error, clearError</td><td>저장 중·실패·연속 클릭 잠금 처리가 같음</td></tr>
+      <tr><td><code class="fn">useGithubRepos</code>()</td><td>repos, isLoading, error, reload</td><td>GitHub API를 화면과 분리</td></tr>
+      <tr><td><code class="fn">useInView</code>(options)</td><td>[ref, isInView]</td><td>등장 효과·타이핑 시작 시점을 여러 곳이 공유</td></tr>
+      <tr><td><code class="fn">useTypingEffect</code>(text, isActive, startDelay)</td><td>지금까지 타이핑된 문자열</td><td>B1-1 타이핑 리듬</td></tr>
+      <tr><td><code class="fn">useScrolled</code>(offset)</td><td>true / false</td><td>헤더 배경(60px), 맨 위로 버튼(300px)</td></tr>
+      <tr><td><code class="fn">useTheme</code> · <code class="fn">useLanguage</code> · <code class="fn">useToast</code> · <code class="fn">useAuth</code></td><td>Context 값</td><td>Provider 밖 사용 실수를 바로 알림</td></tr>
+    </tbody></table></div>
+  <p class="note"><span class="b react">React 기본</span> 이 프로젝트에서 쓴 React 기본 훅: <code>useState</code>, <code>useEffect</code>, <code>useMemo</code>(계산 결과 재사용), <code>useCallback</code>(함수 재사용), <code>useContext</code>, <code>useRef</code>(다시 그려도 유지되는 값, 화면 요소 참조), <code>createContext</code>.<br><span class="b lib">라이브러리</span> React Router: <code>useParams</code>(주소의 :id), <code>useNavigate</code>(코드로 이동), <code>useLocation</code>, <code>Link</code>, <code>NavLink</code>, <code>Navigate</code>, <code>Outlet</code>, <code>Routes</code>, <code>Route</code>.</p>
+</section>
+
+<!-- 7 ─────────────────────────────────────────── -->
+<section class="chapter" id="functions">
+  <p class="eyebrow">07 · FUNCTION REFERENCE</p>
+  <h2>주요 함수 사전</h2>
+  <p class="lead">각 항목을 누르면 역할, 입력값, 반환값, 누가 부르는지(호출 관계)와 실제 코드가 펼쳐집니다. 함수 이름 링크를 누르면 그 함수로 이동합니다.</p>
+
+  <h3>데이터 — src/lib/projectsApi.js</h3>
+  <details class="fn-card" id="fn-fetchProjects">
+    <summary><code class="fn">fetchProjects</code>() <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>전체 프로젝트를 최신 등록순으로 가져옵니다.</dd>
+      <dt>입력</dt><dd>없음</dd>
+      <dt>반환</dt><dd><code>Promise&lt;프로젝트[]&gt;</code> — 화면용 객체 배열</dd>
+      <dt>실패하면</dt><dd>Supabase 오류, 설정 누락(<code>config</code>), 15초 초과(<code>timeout</code>)를 그대로 던짐</dd>
+      <dt>누가 부르나</dt><dd><a href="#fn-useProjects"><code class="fn">useProjects</code></a> (→ 목록 화면, 홈 Work)</dd>
+      <dt>안에서 부르는 것</dt><dd><code class="fn">getSupabase</code>, <code>run</code>(내부 도우미), <a href="#fn-fromRow"><code class="fn">fromRow</code></a></dd>
+      <dt>사용한 기능</dt><dd><span class="b lib">라이브러리</span> <code>from().select().order()</code> <span class="b js">JS 기본</span> <code>Array.map</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** 전체 프로젝트를 최신순으로 가져온다. */</span>
+export async function fetchProjects() {
+  const rows = await run(getSupabase().from(TABLE).select(COLUMNS).order(&quot;created_at&quot;, { ascending: false }));
+  return rows.map(fromRow);
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-fetchProjectById">
+    <summary><code class="fn">fetchProjectById</code>(id) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>id로 프로젝트 하나를 가져옵니다.</dd>
+      <dt>입력</dt><dd><code>id</code> — 주소 <code>/projects/:id</code>의 값</dd>
+      <dt>반환</dt><dd><code>Promise&lt;프로젝트&gt;</code></dd>
+      <dt>실패하면</dt><dd>없으면 <code>AppError("notFound")</code>. 잘못된 형식의 id는 DB 오류 <code>22P02</code> → 화면에는 "찾을 수 없습니다"</dd>
+      <dt>누가 부르나</dt><dd><a href="#fn-useProject"><code class="fn">useProject</code></a> (→ 상세, 수정 화면)</dd>
+      <dt>사용한 기능</dt><dd><span class="b lib">라이브러리</span> <code>eq()</code>, <code>maybeSingle()</code>(0건이면 null)</dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** id로 프로젝트 하나를 가져온다. 없으면 &quot;notFound&quot; 오류. */</span>
+export async function fetchProjectById(id) {
+  const row = await run(getSupabase().from(TABLE).select(COLUMNS).eq(&quot;id&quot;, id).maybeSingle());
+  if (!row) throw new AppError(&quot;notFound&quot;);
+  return fromRow(row);
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-createProject">
+    <summary><code class="fn">createProject</code>(project, id) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>새 프로젝트를 저장합니다. 같은 id가 이미 있으면(시간 초과된 이전 시도가 늦게 저장된 경우) 새로 만들지 않고 그 행을 지금 내용으로 수정해 <strong>중복 등록을 막습니다</strong>.</dd>
+      <dt>입력</dt><dd><code>project</code> — 저장용 객체(<a href="#fn-toProjectInput"><code class="fn">toProjectInput</code></a> 결과), <code>id</code> — 등록 화면이 만든 UUID (생략하면 <a href="#fn-createProjectId"><code class="fn">createProjectId</code></a>로 만듦)</dd>
+      <dt>반환</dt><dd><code>Promise&lt;프로젝트&gt;</code> — 저장된 프로젝트</dd>
+      <dt>실패하면</dt><dd>RLS 거절(<code>42501</code>) 등은 그대로 던짐. 중복 키(<code>23505</code>)만 수정으로 바꿈</dd>
+      <dt>누가 부르나</dt><dd><a href="#fn-useProjectActions"><code class="fn">useProjectActions</code></a>의 <code>create</code> ← <code class="comp">ProjectCreatePage</code></dd>
+      <dt>안에서 부르는 것</dt><dd><a href="#fn-toRow"><code class="fn">toRow</code></a>, <a href="#fn-fromRow"><code class="fn">fromRow</code></a>, <a href="#fn-updateProject"><code class="fn">updateProject</code></a>(중복일 때)</dd>
+      <dt>사용한 기능</dt><dd><span class="b lib">라이브러리</span> <code>insert().select().single()</code> <span class="b js">JS 기본</span> <code>try/catch</code>, 펼침 문법 <code>{ id, ...toRow(project) }</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/**</span>
+<span class="cm"> * 새 프로젝트를 저장하고 저장된 프로젝트를 돌려준다.</span>
+<span class="cm"> * id는 등록 화면이 한 번 만들어 다시 시도할 때도 같은 값을 보낸다. 시간 초과된 이전 시도가 늦게 저장되어</span>
+<span class="cm"> * 같은 id가 이미 있으면(중복 키 오류) 새로 만들지 않고 그 행을 지금 내용으로 수정한다. → 중복 등록 방지</span>
+<span class="cm"> */</span>
+export async function createProject(project, id = createProjectId()) {
+  try {
+    const row = await run(getSupabase().from(TABLE).insert({ id, ...toRow(project) }).select(COLUMNS).single());
+    return fromRow(row);
+  } catch (error) {
+    if (error?.code !== DUPLICATE_KEY) throw error;
+    return updateProject(id, project);
+  }
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-updateProject">
+    <summary><code class="fn">updateProject</code>(id, project) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>프로젝트를 수정합니다. 바뀐 행이 0개면 원인을 구분합니다.</dd>
+      <dt>입력</dt><dd><code>id</code>, <code>project</code>(저장용 객체)</dd>
+      <dt>반환</dt><dd><code>Promise&lt;프로젝트&gt;</code></dd>
+      <dt>실패하면</dt><dd>0행 + 행이 남아 있음 → <code>notChanged</code>(권한 문제, RLS가 조용히 걸러냄) / 0행 + 행 없음 → <code>notFound</code></dd>
+      <dt>누가 부르나</dt><dd><code>useProjectActions().update</code> ← <code class="comp">ProjectEditPage</code>, 그리고 <a href="#fn-createProject"><code class="fn">createProject</code></a>(중복일 때)</dd>
+      <dt>안에서 부르는 것</dt><dd><a href="#fn-toRow"><code class="fn">toRow</code></a>, <a href="#fn-fromRow"><code class="fn">fromRow</code></a>, <code>existsProject</code>(내부 도우미)</dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** 프로젝트를 수정하고 수정된 프로젝트를 돌려준다. 0행이면 행이 없는지(notFound) 권한 문제인지(notChanged) 구분한다. */</span>
+export async function updateProject(id, project) {
+  const rows = await run(getSupabase().from(TABLE).update(toRow(project)).eq(&quot;id&quot;, id).select(COLUMNS));
+  if (rows.length &gt; 0) return fromRow(rows[0]);
+  throw new AppError((await existsProject(id)) ? &quot;notChanged&quot; : &quot;notFound&quot;);
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-deleteProject">
+    <summary><code class="fn">deleteProject</code>(id) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>프로젝트를 삭제합니다. 이미 없으면(시간 초과 뒤 다시 누른 경우 등) 성공으로 봅니다.</dd>
+      <dt>입력</dt><dd><code>id</code></dd>
+      <dt>반환</dt><dd><code>Promise&lt;void&gt;</code> (돌려주는 값 없음)</dd>
+      <dt>실패하면</dt><dd>0행인데 행이 남아 있으면 <code>notChanged</code>(권한 문제)</dd>
+      <dt>누가 부르나</dt><dd><code>useProjectActions().remove</code> ← <code class="comp">ProjectDetailPage</code>의 <code>handleDelete</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/**</span>
+<span class="cm"> * 프로젝트를 삭제한다. 0행인데 행이 남아 있으면 권한 문제(notChanged)로 오류를 던지고,</span>
+<span class="cm"> * 행이 이미 없으면(시간 초과 뒤 다시 누른 경우 등) 이미 삭제된 것이므로 성공으로 본다.</span>
+<span class="cm"> */</span>
+export async function deleteProject(id) {
+  const rows = await run(getSupabase().from(TABLE).delete().eq(&quot;id&quot;, id).select(&quot;id&quot;));
+  if (rows.length &gt; 0) return;
+  if (await existsProject(id)) throw new AppError(&quot;notChanged&quot;);
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-fromRow">
+    <summary><code class="fn">fromRow</code>(row) · <code class="fn">toRow</code>(project) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body" id="fn-toRow"><dl class="io">
+      <dt>역할</dt><dd>DB는 <code>tech_stack</code>처럼 밑줄 이름(snake_case), 화면은 <code>techStack</code>처럼 낙타 이름(camelCase)을 씁니다. 두 모양을 서로 바꿉니다. <code class="fn">toRow</code>는 빈 문자열을 <code>null</code>로 저장합니다.</dd>
+      <dt>입력 → 반환</dt><dd><code class="fn">fromRow</code>: DB 행 → 화면 객체 / <code class="fn">toRow</code>: 화면 객체 → DB 행</dd>
+      <dt>누가 부르나</dt><dd>같은 파일의 CRUD 함수들</dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** DB 한 행(snake_case)을 화면용 객체(camelCase)로 바꾼다. */</span>
+export function fromRow(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    summary: row.summary,
+    description: row.description,
+    category: row.category,
+    techStack: row.tech_stack ?? [],
+    role: row.role ?? &quot;&quot;,
+    period: row.period ?? &quot;&quot;,
+    githubUrl: row.github_url ?? &quot;&quot;,
+    demoUrl: row.demo_url ?? &quot;&quot;,
+    imageUrl: row.image_url ?? &quot;&quot;,
+    isFeatured: Boolean(row.is_featured),
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}</code></pre></figure><figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** 화면용 객체를 DB에 저장할 행으로 바꾼다. 빈 문자열은 null로 저장한다. */</span>
+export function toRow(project) {
+  return {
+    title: project.title,
+    summary: project.summary,
+    description: project.description,
+    category: project.category,
+    tech_stack: project.techStack,
+    role: project.role || null,
+    period: project.period || null,
+    github_url: project.githubUrl || null,
+    demo_url: project.demoUrl || null,
+    image_url: project.imageUrl || null,
+    is_featured: project.isFeatured,
+  };
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card">
+    <summary>내부 도우미 <code>run</code>(query) · <code>existsProject</code>(id) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectsApi.js</span></summary>
+    <div class="body"><p>파일 밖으로 내보내지 않는(export 없음) 도우미입니다. <code>run</code>은 모든 쿼리에 15초 제한(<a href="#fn-withTimeout"><code class="fn">withTimeout</code></a>)을 걸고 Supabase 응답 <code>{ data, error }</code>에서 오류면 던지고 아니면 <code>data</code>만 돌려줍니다. <code>useProjectActions</code> 안에도 같은 이름의 <code>run</code>이 있지만 <strong>다른 함수</strong>입니다(그쪽은 저장 중 상태를 관리).</p>
+      <figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** 쿼리를 시간 제한과 함께 실행하고, 오류가 있으면 던지고 없으면 data를 돌려준다. */</span>
+async function run(query) {
+  const { data, error } = await withTimeout(query);
+  if (error) throw error;
+  return data;
+}</code></pre></figure>
+      <figure class="code"><figcaption><span class="path">src/lib/projectsApi.js</span></figcaption><pre data-src="src/lib/projectsApi.js"><code><span class="cm">/** id인 행이 지금 DB에 있는지 확인한다. (수정·삭제가 0행일 때 원인을 구분하는 데 사용) */</span>
+async function existsProject(id) {
+  const row = await run(getSupabase().from(TABLE).select(&quot;id&quot;).eq(&quot;id&quot;, id).maybeSingle());
+  return Boolean(row);
+}</code></pre></figure></div>
+  </details>
+
+  <h3>로그인 — src/lib/authApi.js · src/lib/supabaseClient.js</h3>
+  <details class="fn-card" id="fn-getSupabase">
+    <summary><code class="fn">getSupabase</code>() · <code class="fn">isSupabaseConfigured</code> <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/supabaseClient.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd><code>.env</code>의 <code>VITE_SUPABASE_URL</code>·<code>VITE_SUPABASE_ANON_KEY</code>로 Supabase 연결을 한 번 만들고 돌려줍니다. 값이 없으면 <code>AppError("config")</code> → 화면에 "Supabase 연결 정보가 없습니다…" 안내.</dd>
+      <dt>누가 부르나</dt><dd><code class="path">src/lib/projectsApi.js</code>, <code class="path">src/lib/authApi.js</code>의 모든 함수</dd>
+      <dt>사용한 기능</dt><dd><span class="b lib">라이브러리</span> <code>createClient</code> <span class="b js">JS 기본</span> <code>import.meta.env</code>(Vite 환경변수)</dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/supabaseClient.js</span></figcaption><pre data-src="src/lib/supabaseClient.js"><code>import { createClient } from &quot;@supabase/supabase-js&quot;;
+import { AppError } from &quot;./errors.js&quot;;
+
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+<span class="cm">/** .env에 Supabase 주소와 공개(anon) 키가 모두 들어 있는지. */</span>
+export const isSupabaseConfigured = Boolean(SUPABASE_URL &amp;&amp; SUPABASE_ANON_KEY);
+
+const client = isSupabaseConfigured ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+if (!client &amp;&amp; import.meta.env.DEV) {
+  console.warn(&quot;[Supabase] VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY가 없습니다. .env.example을 참고해 .env를 만들어 주세요.&quot;);
+}
+
+<span class="cm">/** Supabase 클라이언트를 돌려준다. 설정이 없으면 &quot;config&quot; 오류를 던져 화면에 설정 방법을 안내한다. */</span>
+export function getSupabase() {
+  if (!client) throw new AppError(&quot;config&quot;);
+  return client;
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-authApi">
+    <summary><code class="fn">getSession</code> · <code class="fn">onAuthStateChange</code> · <code class="fn">checkIsAdmin</code> · <code class="fn">signInWithPassword</code> · <code class="fn">signOut</code> <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/authApi.js</span></summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>함수</th><th>입력 → 반환</th><th>누가 부르나</th></tr></thead><tbody>
+        <tr><td><code class="fn">getSession</code>()</td><td>→ 저장된 세션 또는 <code>null</code>. 설정이 없으면 <code>null</code></td><td><code class="comp">AuthProvider</code> 시작 시</td></tr>
+        <tr><td><code class="fn">onAuthStateChange</code>(callback)</td><td>로그인·로그아웃 때마다 <code>callback(session)</code> → 구독 해제 함수</td><td><code class="comp">AuthProvider</code></td></tr>
+        <tr><td><code class="fn">checkIsAdmin</code>()</td><td>→ <code>true</code>/<code>false</code>. DB 함수 <code>is_admin()</code> 호출</td><td><code class="comp">AuthProvider</code> (로그인한 사람이 바뀔 때)</td></tr>
+        <tr><td><code class="fn">signInWithPassword</code>(email, password)</td><td>→ 세션. 틀리면 오류(<code>invalid_credentials</code>)</td><td><code class="comp">LoginPage</code>가 <code>useAuth().signIn</code>으로</td></tr>
+        <tr><td><code class="fn">signOut</code>()</td><td>→ 없음</td><td><code class="comp">Header</code>의 Logout 버튼이 <code>useAuth().signOut</code>으로</td></tr>
+      </tbody></table></div>
+    <figure class="code"><figcaption><span class="path">src/lib/authApi.js</span></figcaption><pre data-src="src/lib/authApi.js"><code><span class="cm">/** 지금 로그인한 계정이 admin_users에 등록된 관리자인지 DB 함수(is_admin)로 확인한다. */</span>
+export async function checkIsAdmin() {
+  const { data, error } = await withTimeout(getSupabase().rpc(&quot;is_admin&quot;));
+  if (error) throw error;
+  return data === true;
+}</code></pre></figure></div>
+  </details>
+
+  <h3>폼 검사와 변환 — src/lib/projectForm.js · src/lib/validators.js</h3>
+  <details class="fn-card" id="fn-validateProjectForm">
+    <summary><code class="fn">validateProjectForm</code>(values) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectForm.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>등록·수정 폼의 입력값을 검사합니다. 제목·한 줄 소개·설명 필수(공백만 입력도 거부), 제목 60자·소개 120자 이내, 분류 값, 링크·이미지 주소 형식.</dd>
+      <dt>입력</dt><dd>폼 값 객체 (<code>EMPTY_PROJECT_FORM</code>과 같은 모양)</dd>
+      <dt>반환</dt><dd>오류 객체 <code>{ title: "validation.titleRequired", … }</code>. 문제가 없으면 <code>{}</code></dd>
+      <dt>누가 부르나</dt><dd><code class="comp">ProjectForm</code>의 제출·입력 처리</dd>
+      <dt>안에서 부르는 것</dt><dd><a href="#fn-validators"><code class="fn">isOptionalUrl</code></a>, <a href="#fn-validators"><code class="fn">isOptionalImageUrl</code></a></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/projectForm.js</span></figcaption><pre data-src="src/lib/projectForm.js"><code><span class="cm">/** 프로젝트 폼을 검사해 { 필드명: i18n key } 오류 객체를 돌려준다. */</span>
+export function validateProjectForm(values) {
+  const errors = {};
+  const title = values.title.trim();
+  const summary = values.summary.trim();
+
+  if (!title) errors.title = &quot;validation.titleRequired&quot;;
+  else if (title.length &gt; TITLE_MAX) errors.title = &quot;validation.titleTooLong&quot;;
+  if (!summary) errors.summary = &quot;validation.summaryRequired&quot;;
+  else if (summary.length &gt; SUMMARY_MAX) errors.summary = &quot;validation.summaryTooLong&quot;;
+  if (!values.description.trim()) errors.description = &quot;validation.descriptionRequired&quot;;
+  if (!CATEGORIES.includes(values.category)) errors.category = &quot;validation.categoryRequired&quot;;
+  [&quot;githubUrl&quot;, &quot;demoUrl&quot;].forEach(field =&gt; {
+    if (!isOptionalUrl(values[field])) errors[field] = &quot;validation.urlInvalid&quot;;
+  });
+  if (!isOptionalImageUrl(values.imageUrl)) errors.imageUrl = &quot;validation.imageUrlInvalid&quot;;
+  return errors;
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-toProjectInput">
+    <summary><code class="fn">toProjectInput</code>(values) · <code class="fn">toFormValues</code>(project) · <code class="fn">parseTechStack</code>(text) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/projectForm.js</span></summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>함수</th><th>입력 → 반환</th><th>누가 부르나</th></tr></thead><tbody>
+        <tr><td><code class="fn">toProjectInput</code></td><td>폼 값 → 앞뒤 공백을 지우고 기술 스택을 배열로 바꾼 저장용 객체</td><td><code class="comp">ProjectForm</code> (미리보기, 제출)</td></tr>
+        <tr><td><code class="fn">toFormValues</code></td><td>저장된 프로젝트 → 수정 폼 초기값 (기술 스택은 <code>"React, Supabase"</code> 문자열)</td><td><code class="comp">ProjectEditPage</code></td></tr>
+        <tr><td><code class="fn">parseTechStack</code></td><td><code>" React, ,Vite, React"</code> → <code>["React", "Vite"]</code></td><td><code class="fn">toProjectInput</code></td></tr>
+      </tbody></table></div>
+    <figure class="code"><figcaption><span class="path">src/lib/projectForm.js</span></figcaption><pre data-src="src/lib/projectForm.js"><code><span class="cm">/** &quot;React, Supabase&quot; 같은 쉼표 문자열을 중복 없는 배열로 바꾼다. */</span>
+export function parseTechStack(text) {
+  return [...new Set(text.split(&quot;,&quot;).map(item =&gt; item.trim()).filter(Boolean))];
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-validators">
+    <summary>검사 도우미 — <code class="fn">isOptionalUrl</code> · <code class="fn">isOptionalImageUrl</code> · <code class="fn">toSafeLinkUrl</code> · <code class="fn">toSafeImageUrl</code> · <code class="fn">isValidEmail</code> · <code class="fn">validateContact</code> · <code class="fn">validateLogin</code> · <code class="fn">hasErrors</code> <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/validators.js</span></summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>함수</th><th>입력 → 반환</th><th>누가 부르나</th></tr></thead><tbody>
+        <tr><td><code class="fn">isOptionalUrl</code></td><td>문자열 → 비었거나 http(s):// 주소면 <code>true</code></td><td><code class="fn">validateProjectForm</code></td></tr>
+        <tr><td><code class="fn">isOptionalImageUrl</code></td><td>위 규칙 또는 <code>/images/a.png</code> 같은 사이트 안 경로면 <code>true</code>. <code>//example.com</code>은 거절</td><td><code class="fn">validateProjectForm</code>, <code class="fn">toSafeImageUrl</code></td></tr>
+        <tr><td><code class="fn">toSafeLinkUrl</code></td><td>주소 → 안전한 http(s)면 그대로, 아니면 <code>""</code> (<code>javascript:</code> 차단)</td><td><code class="comp">ProjectDetail</code></td></tr>
+        <tr><td><code class="fn">toSafeImageUrl</code></td><td>주소 → 안전한 이미지 주소면 그대로, 아니면 <code>""</code></td><td><code class="comp">ProjectCard</code>, <code class="comp">ProjectDetail</code></td></tr>
+        <tr><td><code class="fn">isValidEmail</code></td><td>문자열 → 이메일 형식이면 <code>true</code></td><td><code class="fn">validateContact</code>, <code class="fn">validateLogin</code></td></tr>
+        <tr><td><code class="fn">validateContact</code> / <code class="fn">validateLogin</code></td><td>폼 값 → 오류 객체</td><td><code class="comp">ContactForm</code> / <code class="comp">LoginPage</code></td></tr>
+        <tr><td><code class="fn">hasErrors</code></td><td>오류 객체 → 하나라도 있으면 <code>true</code></td><td>폼 3곳</td></tr>
+      </tbody></table></div>
+    <p>주소 규칙은 DB의 제약(<code class="path">supabase/01_schema.sql</code>)과 같은 내용이며, 자동 테스트(<code class="path">src/lib/schemaSync.test.js</code>)가 두 규칙의 글자가 같은지 비교합니다.</p>
+    <figure class="code"><figcaption><span class="path">src/lib/validators.js</span></figcaption><pre data-src="src/lib/validators.js"><code>const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+<span class="cm">// 아래 두 규칙은 supabase/01_schema.sql 의 CHECK 제약과 같아야 한다. (src/lib/schemaSync.test.js가 비교)</span>
+<span class="cm">// 외부 주소: http:// 또는 https:// 로 시작하고 공백이 없음 (대소문자 무시)</span>
+const URL_PATTERN = /^https?:\/\/\S+$/i;
+<span class="cm">// 사이트 안 경로: &quot;/&quot; 하나로 시작하고 영문·숫자·_ . ~ % - / 만 사용. &quot;//example.com&quot;, &quot;/\\example.com&quot; 같은 외부 주소 우회를 막는다</span>
+const SITE_PATH_PATTERN = /^\/[A-Za-z0-9_.~%-][A-Za-z0-9_.~%/-]*$/;</code></pre></figure>
+    <figure class="code"><figcaption><span class="path">src/lib/validators.js</span></figcaption><pre data-src="src/lib/validators.js"><code><span class="cm">/** 비어 있거나 http(s):// 주소, 또는 사이트 안 경로(&quot;/images/a.png&quot;)면 통과한다. */</span>
+export function isOptionalImageUrl(value) {
+  return isOptionalUrl(value) || SITE_PATH_PATTERN.test(value.trim());
+}</code></pre></figure></div>
+  </details>
+
+  <h3>공통 도우미 — 오류·시간 제한·id·번역·저장</h3>
+  <details class="fn-card" id="fn-withTimeout">
+    <summary><code class="fn">withTimeout</code>(promise, ms) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/request.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>요청이 15초(<code>REQUEST_TIMEOUT_MS</code>) 안에 끝나지 않으면 <code>timeout</code> 오류로 끝내 무한 로딩을 막습니다. <strong>실제 서버 요청을 취소하지는 않습니다</strong> → 그래서 등록은 id 재사용으로 중복을 막습니다(<a href="#fn-createProject"><code class="fn">createProject</code></a>).</dd>
+      <dt>입력</dt><dd><code>promise</code>(또는 Supabase 쿼리), <code>ms</code>(기본 15000)</dd>
+      <dt>반환</dt><dd>원래 결과, 또는 <code>AppError("timeout")</code>로 실패</dd>
+      <dt>누가 부르나</dt><dd><code class="path">src/lib/projectsApi.js</code>, <code class="path">src/lib/authApi.js</code>(관리자 확인), <code class="path">src/lib/githubApi.js</code>, <code class="path">src/lib/contactApi.js</code></dd>
+      <dt>사용한 기능</dt><dd><span class="b js">JS 기본</span> <code>Promise.race</code>(먼저 끝나는 쪽을 따름), <code>setTimeout</code>, <code>clearTimeout</code>, <code>finally</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/request.js</span></figcaption><pre data-src="src/lib/request.js"><code><span class="cm">/** promise가 ms 안에 끝나지 않으면 &quot;timeout&quot; 오류로 끝낸다. 무한 로딩을 막기 위함이며 요청 자체를 취소하지는 않는다. */</span>
+export function withTimeout(promise, ms = REQUEST_TIMEOUT_MS) {
+  let timerId;
+  const timeout = new Promise((_, reject) =&gt; {
+    timerId = setTimeout(() =&gt; reject(new AppError(&quot;timeout&quot;)), ms);
+  });
+  return Promise.race([promise, timeout]).finally(() =&gt; clearTimeout(timerId));
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-toErrorKey">
+    <summary><code class="fn">toErrorKey</code>(error) · <code class="fn">AppError</code> <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/errors.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>여러 곳에서 생긴 오류를 화면 문구의 key(<code>"errors.notFound"</code> 등)로 바꿉니다. 화면은 <code>t(key)</code>로 현재 언어의 문구를 보여줍니다.</dd>
+      <dt>입력 → 반환</dt><dd>오류 객체 → 문자열 key</dd>
+      <dt>누가 부르나</dt><dd><a href="#fn-useAsyncData"><code class="fn">useAsyncData</code></a>, <a href="#fn-useProjectActions"><code class="fn">useProjectActions</code></a>, <code class="comp">LoginPage</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/errors.js</span></figcaption><pre data-src="src/lib/errors.js"><code><span class="cm">/** 오류 객체를 i18n 문구 key(&quot;errors.xxx&quot;)로 바꾼다. */</span>
+export function toErrorKey(error) {
+  const code = error?.code;
+  const status = error?.status;
+  const message = String(error?.message ?? &quot;&quot;);
+
+  if (code === &quot;config&quot;) return &quot;errors.config&quot;;
+  if (code === &quot;notFound&quot; || code === &quot;PGRST116&quot; || code === &quot;22P02&quot;) return &quot;errors.notFound&quot;;
+  if (code === &quot;timeout&quot;) return &quot;errors.timeout&quot;;
+  if (code === &quot;notAdmin&quot;) return &quot;errors.notAdmin&quot;;
+  if (code === &quot;notChanged&quot;) return &quot;errors.notChanged&quot;;
+  if (code === &quot;permission&quot; || code === &quot;42501&quot; || status === 401 || status === 403) return &quot;errors.permission&quot;;
+  if (code === &quot;invalid_credentials&quot; || message.includes(&quot;Invalid login credentials&quot;)) return &quot;errors.invalidLogin&quot;;
+  if (/failed to fetch|networkerror|load failed/i.test(message)) return &quot;errors.network&quot;;
+  return &quot;errors.unknown&quot;;
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-createProjectId">
+    <summary><code class="fn">createProjectId</code>() <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/id.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>새 프로젝트용 UUID(v4)를 만듭니다. https가 아닌 주소처럼 <code>crypto.randomUUID</code>가 없는 환경에서도 동작합니다.</dd>
+      <dt>반환</dt><dd>예: <code>"1a2b3c4d-…-…"</code> 형식의 36자 문자열</dd>
+      <dt>누가 부르나</dt><dd><code class="comp">ProjectCreatePage</code>(<code>useState(createProjectId)</code>로 화면이 열릴 때 한 번), <a href="#fn-createProject"><code class="fn">createProject</code></a>(id를 안 받았을 때)</dd>
+      <dt>사용한 기능</dt><dd><span class="b js">JS 기본</span> <code>crypto.randomUUID</code>, <code>crypto.getRandomValues</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/id.js</span></figcaption><pre data-src="src/lib/id.js"><code><span class="cm">/**</span>
+<span class="cm"> * 새 프로젝트용 UUID(v4)를 만든다.</span>
+<span class="cm"> * https가 아닌 주소(예: 같은 와이파이의 다른 PC에서 접속)처럼 crypto.randomUUID가 없는 환경에서는 getRandomValues로 만든다.</span>
+<span class="cm"> */</span>
+export function createProjectId() {
+  if (typeof crypto.randomUUID === &quot;function&quot;) return crypto.randomUUID();
+
+  const bytes = crypto.getRandomValues(new Uint8Array(16));
+  bytes[6] = (bytes[6] &amp; 0x0f) | 0x40;
+  bytes[8] = (bytes[8] &amp; 0x3f) | 0x80;
+  const hex = [...bytes].map(byte =&gt; byte.toString(16).padStart(2, &quot;0&quot;)).join(&quot;&quot;);
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-translate">
+    <summary><code class="fn">translate</code>(language, key, params) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/i18n.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd><code>"projects.count"</code> 같은 점 경로로 문구를 찾고 <code>{count}</code> 자리에 값을 넣습니다. 찾지 못하면 key를 그대로 돌려줘 빠진 번역이 화면에서 바로 보입니다.</dd>
+      <dt>예</dt><dd><code>translate("ko", "projects.count", { count: 3 })</code> → <code>"3개의 프로젝트를 표시하고 있습니다."</code></dd>
+      <dt>누가 부르나</dt><dd><code class="comp">LanguageProvider</code>가 만드는 <code>t</code> 함수 → 거의 모든 컴포넌트</dd>
+    </dl><figure class="code"><figcaption><span class="path">src/lib/i18n.js</span></figcaption><pre data-src="src/lib/i18n.js"><code><span class="cm">/**</span>
+<span class="cm"> * &quot;nav.about&quot; 같은 점(.) 경로로 문구를 찾고 {이름} 자리에 params 값을 넣는다.</span>
+<span class="cm"> * 찾지 못하면 key를 그대로 돌려줘 빠진 번역을 화면에서 바로 알 수 있게 한다.</span>
+<span class="cm"> */</span>
+export function translate(language, key, params = {}) {
+  if (!key) return &quot;&quot;;
+  const value = key.split(&quot;.&quot;).reduce((node, part) =&gt; node?.[part], translations[language]);
+  if (typeof value !== &quot;string&quot;) return key;
+  return value.replace(/\{(\w+)\}/g, (_, name) =&gt; String(params[name] ?? &quot;&quot;));
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-storage">
+    <summary><code class="fn">readStorage</code>(key) · <code class="fn">writeStorage</code>(key, value) <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/storage.js</span></summary>
+    <div class="body"><p>사생활 보호 모드 등에서 <code>localStorage</code>(<span class="b js">JS 기본</span>)가 막혀 있어도 앱이 멈추지 않게 <code>try/catch</code>로 감쌉니다. <code>writeStorage</code>에 <code>null</code>을 주면 지웁니다. 테마·언어 Context가 사용합니다.</p><figure class="code"><figcaption><span class="path">src/lib/storage.js</span></figcaption><pre data-src="src/lib/storage.js"><code><span class="cm">/** 저장된 값을 읽는다. 실패하면 null. */</span>
+export function readStorage(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card">
+    <summary><code class="fn">fetchGithubRepos</code> · <code class="fn">sortByPreference</code> · <code class="fn">toRepoCard</code> · <code class="fn">sendContactMessage</code> <span class="b mine">직접 만든 함수</span> <span class="where">src/lib/githubApi.js · contactApi.js</span></summary>
+    <div class="body"><div class="table-wrap"><table>
+      <thead><tr><th>함수</th><th>입력 → 반환</th><th>누가 부르나</th></tr></thead><tbody>
+        <tr><td><code class="fn">fetchGithubRepos</code>()</td><td>→ 포크·보관 저장소를 뺀 최대 4개 카드</td><td><code class="fn">useGithubRepos</code></td></tr>
+        <tr><td><code class="fn">sortByPreference</code>(repos)</td><td>B1-1에서 고른 저장소를 앞으로</td><td><code class="fn">fetchGithubRepos</code></td></tr>
+        <tr><td><code class="fn">toRepoCard</code>(repo)</td><td>GitHub 응답 1개 → 카드 모양 (설명은 ko·en)</td><td><code class="fn">fetchGithubRepos</code>의 <code>.map(toRepoCard)</code></td></tr>
+        <tr><td><code class="fn">sendContactMessage</code>(values)</td><td>문의 내용 → Formspree로 전송, 실패하면 오류</td><td><code class="comp">ContactForm</code></td></tr>
+      </tbody></table></div>
+    <p><span class="b js">JS 기본</span> <code>fetch</code>(인터넷 요청), <code>FormData</code>, <code>response.json()</code></p></div>
+  </details>
+
+  <h3>커스텀 훅 — src/hooks</h3>
+  <details class="fn-card" id="fn-useAsyncData">
+    <summary><code class="fn">useAsyncData</code>(loadData) <span class="b mine">직접 만든 훅</span> <span class="where">src/hooks/useAsyncData.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>비동기 함수를 실행해 결과와 로딩·오류 상태를 관리하는 공통 훅. <code>loadData</code>가 바뀌거나 <code>reload()</code>를 부르면 다시 요청합니다.</dd>
+      <dt>입력</dt><dd><code>loadData</code> — Promise를 돌려주는 함수. 매번 새로 만들어지지 않게 고정해서 넘깁니다(<code>useCallback</code> 또는 모듈 함수).</dd>
+      <dt>반환</dt><dd><code>{ data, isLoading, error, reload }</code> — <code>error</code>는 i18n key</dd>
+      <dt>누가 부르나</dt><dd><a href="#fn-useProjects"><code class="fn">useProjects</code></a>, <a href="#fn-useProject"><code class="fn">useProject</code></a>, <code class="fn">useGithubRepos</code></dd>
+      <dt>사용한 기능</dt><dd><span class="b react">React 기본</span> <code>useState</code>, <code>useEffect</code>, <code>useCallback</code></dd>
+    </dl><p>코드는 <a href="#state">6장</a>에 있습니다.</p></div>
+  </details>
+  <details class="fn-card" id="fn-useProjects">
+    <summary><code class="fn">useProjects</code>() · <code class="fn">useProject</code>(id) <span class="b mine">직접 만든 훅</span> <span class="where">src/hooks/useProjects.js · useProject.js</span></summary>
+    <div class="body" id="fn-useProject"><dl class="io">
+      <dt>역할</dt><dd>목록 / 한 건을 불러옵니다. <code class="fn">useProject</code>는 <code>id</code>가 바뀌면 다시 불러옵니다.</dd>
+      <dt>반환</dt><dd><code>{ projects, isLoading, error, reload }</code> / <code>{ project, isLoading, error, reload }</code></dd>
+      <dt>누가 부르나</dt><dd><code class="comp">ProjectListPage</code>, <code class="comp">FeaturedProjects</code> / <code class="comp">ProjectDetailPage</code>, <code class="comp">ProjectEditPage</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/hooks/useProject.js</span></figcaption><pre data-src="src/hooks/useProject.js"><code><span class="cm">/** 주소의 id로 프로젝트 하나를 불러온다. id가 바뀌면 다시 불러온다. { project, isLoading, error, reload } */</span>
+function useProject(id) {
+  const loadProject = useCallback(() =&gt; fetchProjectById(id), [id]);
+  const { data, ...status } = useAsyncData(loadProject);
+  return { project: data, ...status };
+}</code></pre></figure></div>
+  </details>
+  <details class="fn-card" id="fn-useProjectActions">
+    <summary><code class="fn">useProjectActions</code>() <span class="b mine">직접 만든 훅</span> <span class="where">src/hooks/useProjectActions.js</span></summary>
+    <div class="body"><dl class="io">
+      <dt>역할</dt><dd>등록·수정·삭제를 실행하고 저장 중 여부와 오류를 관리합니다. 이미 실행 중이면 새 요청을 무시해 <strong>연속 클릭으로 두 번 저장되지 않게</strong> 합니다(<code>useRef</code> 잠금).</dd>
+      <dt>반환</dt><dd><code>create(input, id)</code>, <code>update(id, input)</code>, <code>remove(id)</code> — 성공하면 결과, 실패하면 <code>null</code> / <code>isSubmitting</code>, <code>error</code>, <code>clearError</code></dd>
+      <dt>누가 부르나</dt><dd><code class="comp">ProjectCreatePage</code>, <code class="comp">ProjectEditPage</code>, <code class="comp">ProjectDetailPage</code></dd>
+    </dl><figure class="code"><figcaption><span class="path">src/hooks/useProjectActions.js</span></figcaption><pre data-src="src/hooks/useProjectActions.js"><code><span class="cm">/**</span>
+<span class="cm"> * 프로젝트 등록·수정·삭제를 실행하고 진행 중 여부와 오류를 관리한다.</span>
+<span class="cm"> * 각 함수는 성공하면 결과를, 실패하면 null을 돌려주고 error(i18n key)를 채운다.</span>
+<span class="cm"> * 이미 실행 중이면 새 요청을 무시해 연속 클릭으로 같은 데이터가 두 번 저장되지 않게 한다.</span>
+<span class="cm"> */</span>
+function useProjectActions() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(&quot;&quot;);
+  const isRunningRef = useRef(false);
+
+  const run = useCallback(async task =&gt; {
+    if (isRunningRef.current) return null;
+    isRunningRef.current = true;
+    setIsSubmitting(true);
+    setError(&quot;&quot;);
+    try {
+      return await task();
+    } catch (caught) {
+      setError(toErrorKey(caught));
+      return null;
+    } finally {
+      isRunningRef.current = false;
+      setIsSubmitting(false);
+    }
+  }, []);
+
+  const create = useCallback((input, id) =&gt; run(() =&gt; createProject(input, id)), [run]);
+  const update = useCallback((id, input) =&gt; run(() =&gt; updateProject(id, input)), [run]);
+  const remove = useCallback(id =&gt; run(() =&gt; deleteProject(id).then(() =&gt; true)), [run]);
+  const clearError = useCallback(() =&gt; setError(&quot;&quot;), []);
+
+  return { create, update, remove, isSubmitting, error, clearError };
+}</code></pre></figure></div>
+  </details>
+</section>
+
+<!-- 8 ─────────────────────────────────────────── -->
+<section class="chapter" id="click-flow">
+  <p class="eyebrow">08 · EVENT → STATE → RENDER</p>
+  <h2>사용자 클릭부터 화면 변경까지</h2>
+  <p class="lead">React의 기본 흐름은 항상 같습니다: <strong>이벤트 → 함수 실행 → state 변경 → React가 다시 그림</strong>. 아래는 실제 화면에서 눌러 볼 수 있는 세 가지 예입니다.</p>
+
+  <div class="flow row" aria-label="이벤트에서 화면까지 4단계">
+    <div class="node">① 사용자 이벤트<small>클릭·입력·제출</small></div><div class="arrow"></div>
+    <div class="node">② 이벤트 함수<small>onClick, onChange</small></div><div class="arrow"></div>
+    <div class="node hl">③ state 변경<small>setXxx(새 값)</small></div><div class="arrow"></div>
+    <div class="node">④ 다시 그리기<small>바뀐 부분만 화면 반영</small></div>
+  </div>
+
+  <h3>예 1 · 분류 필터 → 목록 변경</h3>
+  <div class="compare">
+    <div class="screen"><h4>화면 (<code>/projects</code>)</h4><ol>
+      <li>"교육" 버튼 클릭</li>
+      <li><code class="comp">FilterBar</code>가 <code>onChange("education")</code> 호출 = <code>setCategory</code></li>
+      <li><code>category</code> state 변경 → <code class="comp">ProjectListPage</code> 다시 실행</li>
+      <li><code>useMemo</code>가 <code>visibleProjects</code>를 다시 계산</li>
+      <li>"1개의 프로젝트…" 문구와 카드 목록, 버튼 선택 표시가 바뀜</li></ol></div>
+    <figure class="code"><figcaption><span class="path">src/pages/ProjectListPage.jsx</span></figcaption><pre data-src="src/pages/ProjectListPage.jsx"><code>const [category, setCategory] = useState(ALL);
+const visibleProjects = useMemo(
+  () =&gt; (category === ALL ? projects : projects.filter(project =&gt; project.category === category)),
+  [projects, category],
+);</code></pre></figure>
+  </div>
+
+  <h3>예 2 · 저장 성공 → 알림 + 화면 이동</h3>
+  <div class="compare">
+    <div class="screen"><h4>화면 (<code>/projects/new</code>)</h4><ol>
+      <li>등록하기 클릭 → 버튼이 "저장 중..."으로 바뀌고 비활성화(<code>isSubmitting</code>)</li>
+      <li>저장 성공 → <code>showToast</code>로 알림 state 변경</li>
+      <li><code>navigate</code>로 상세 주소 이동 → 상세 페이지가 그려짐</li>
+      <li>알림은 페이지 바깥(<code class="comp">ToastProvider</code>)에 있어 이동 후에도 보이고 3초 뒤 사라짐</li></ol></div>
+    <figure class="code"><figcaption><span class="path">src/pages/ProjectCreatePage.jsx</span></figcaption><pre data-src="src/pages/ProjectCreatePage.jsx"><code>const handleSubmit = async input =&gt; {
+  const created = await create(input, projectId);
+  if (!created) return;
+  showToast(t(&quot;projects.created&quot;));
+  navigate(`/projects/${created.id}`);
+};</code></pre></figure>
+  </div>
+
+  <h3>예 3 · 테마 버튼 → 전체 색 변경</h3>
+  <div class="compare">
+    <div class="screen"><h4>화면 (헤더 오른쪽)</h4><ol>
+      <li>"Dark" 클릭 → <code>toggleTheme()</code></li>
+      <li><code>mode</code> state가 <code>"dark"</code>로 바뀜</li>
+      <li>effect가 <code>&lt;html data-theme="dark"&gt;</code>를 적용</li>
+      <li>CSS 변수 값이 바뀌어 모든 화면 색이 한꺼번에 바뀜, 선택은 저장됨</li></ol></div>
+    <figure class="code"><figcaption><span class="path">src/contexts/ThemeContext.jsx</span></figcaption><pre data-src="src/contexts/ThemeContext.jsx"><code>const toggleTheme = useCallback(() =&gt; setMode(theme === &quot;dark&quot; ? &quot;light&quot; : &quot;dark&quot;), [theme]);</code></pre></figure>
+  </div>
+</section>
+
+<!-- 9 ─────────────────────────────────────────── -->
+<section class="chapter" id="crud-flow">
+  <p class="eyebrow">09 · CRUD FLOW</p>
+  <h2>프로젝트 등록·조회·수정·삭제 호출 흐름</h2>
+  <p class="lead">네 가지 모두 <strong>페이지 → 훅 → lib 함수 → Supabase</strong> 순서로 내려갔다가, 결과가 거꾸로 올라와 화면이 바뀝니다. <span class="b mock">모의 검증</span> 자동 테스트·브라우저(가짜 API)로 확인했고, <span class="b wait">실제 연결 필요</span> 실제 Supabase에서는 아직 실행하지 않았습니다.</p>
+
+  <details open>
+    <summary>조회 (Read) — 목록과 상세</summary>
+    <div class="body"><div class="flow">
+      <div class="node"><code class="comp">ProjectListPage</code> 화면에 나타남<small><code class="path">src/pages/ProjectListPage.jsx</code></small></div><div class="arrow"></div>
+      <div class="node"><a href="#fn-useProjects"><code class="fn">useProjects</code></a>() → <a href="#fn-useAsyncData"><code class="fn">useAsyncData</code></a>(fetchProjects)<small>useEffect가 처음 한 번 실행</small></div><div class="arrow"></div>
+      <div class="node"><a href="#fn-fetchProjects"><code class="fn">fetchProjects</code></a>()<small>select(COLUMNS).order("created_at", 최신순) · 15초 제한</small></div><div class="arrow" data-label="HTTPS"></div>
+      <div class="node ext">Supabase — RLS: 조회는 누구나 허용</div><div class="arrow" data-label="결과"></div>
+      <div class="branch">
+        <div class="node hl">성공 → <code class="fn">fromRow</code>로 변환 → 카드 목록</div>
+        <div class="node">0건 → "아직 등록된 프로젝트가 없습니다."</div>
+        <div class="node">실패 → <code class="fn">toErrorKey</code> → 오류 + [다시 시도] → <code>reload()</code></div>
+      </div>
+    </div>
+    <p>상세는 <code class="comp">ProjectDetailPage</code> → <code class="fn">useProject</code>(id) → <code class="fn">fetchProjectById</code>(id). 주소의 <code>:id</code>는 <code>useParams()</code>로 읽고, id가 바뀌면 다시 불러옵니다.</p></div>
+  </details>
+
+  <details>
+    <summary>등록 (Create) — 중복 등록 방지 포함</summary>
+    <div class="body"><div class="flow">
+      <div class="node"><code class="comp">ProjectCreatePage</code> 열림 → <code>useState(createProjectId)</code>로 새 id 한 번 생성</div><div class="arrow"></div>
+      <div class="node">[등록하기] → <code class="comp">ProjectForm</code>의 <code>handleSubmit</code><small><a href="#fn-validateProjectForm"><code class="fn">validateProjectForm</code></a> — 오류가 있으면 여기서 멈춤(요청 안 보냄)</small></div><div class="arrow"></div>
+      <div class="node"><code>onSubmit</code>(<a href="#fn-toProjectInput"><code class="fn">toProjectInput</code></a>(values)) → 페이지의 <code>handleSubmit</code></div><div class="arrow"></div>
+      <div class="node hl"><code>create(input, projectId)</code> — <a href="#fn-useProjectActions"><code class="fn">useProjectActions</code></a><small>isSubmitting = true, 실행 중이면 추가 클릭 무시</small></div><div class="arrow"></div>
+      <div class="node"><a href="#fn-createProject"><code class="fn">createProject</code></a>(input, id) → insert({ id, ...toRow(input) })</div><div class="arrow" data-label="HTTPS"></div>
+      <div class="node ext">Supabase — RLS: <code>is_admin()</code>일 때만 등록 허용 · CHECK 제약 검사</div><div class="arrow"></div>
+      <div class="branch">
+        <div class="node hl">성공 → 알림 "등록했습니다" → <code>/projects/새id</code></div>
+        <div class="node">같은 id 있음(23505) → 그 행을 <code class="fn">updateProject</code>로 수정 (중복 없음)</div>
+        <div class="node">실패 → 폼 위 빨간 상자, 입력값 유지 (예: 권한 없음, 시간 초과)</div>
+      </div>
+    </div></div>
+  </details>
+
+  <details>
+    <summary>수정 (Update)</summary>
+    <div class="body"><div class="flow">
+      <div class="node"><code class="comp">ProjectEditPage</code> → <code class="fn">useProject</code>(id)로 기존 값 조회</div><div class="arrow"></div>
+      <div class="node"><a href="#fn-toProjectInput"><code class="fn">toFormValues</code></a>(project) → <code class="comp">ProjectForm</code> 초기값</div><div class="arrow"></div>
+      <div class="node hl">[수정 완료] → 검사 → <code>update(id, input)</code> → <a href="#fn-updateProject"><code class="fn">updateProject</code></a></div><div class="arrow" data-label="HTTPS"></div>
+      <div class="node ext">Supabase — RLS: 관리자가 아니면 0행 처리</div><div class="arrow"></div>
+      <div class="branch">
+        <div class="node hl">성공 → 알림 "수정했습니다" → <code>/projects/:id</code></div>
+        <div class="node">0행 + 행 있음 → "변경되지 않았습니다…"(권한) / 행 없음 → "찾을 수 없습니다"</div>
+      </div>
+    </div></div>
+  </details>
+
+  <details>
+    <summary>삭제 (Delete)</summary>
+    <div class="body"><div class="flow">
+      <div class="node">[삭제] → <code>isConfirmOpen = true</code> → <code class="comp">ConfirmDialog</code> 열림</div><div class="arrow"></div>
+      <div class="node hl">확인 → <code>handleDelete</code> → <code>remove(id)</code> → <a href="#fn-deleteProject"><code class="fn">deleteProject</code></a></div><div class="arrow" data-label="HTTPS"></div>
+      <div class="node ext">Supabase — RLS: 관리자가 아니면 0행 처리</div><div class="arrow"></div>
+      <div class="branch">
+        <div class="node hl">성공(또는 이미 없음) → 알림 "삭제했습니다" → <code>/projects</code> → 목록 다시 조회</div>
+        <div class="node">0행 + 행 남아 있음 → 상세에 머물며 실패 이유 표시</div>
+      </div>
+    </div>
+    <figure class="code"><figcaption><span class="path">src/pages/ProjectDetailPage.jsx</span></figcaption><pre data-src="src/pages/ProjectDetailPage.jsx"><code>const handleDelete = async () =&gt; {
+  const isDeleted = await remove(id);
+  setIsConfirmOpen(false);
+  if (!isDeleted) return;
+  showToast(t(&quot;projects.deleted&quot;));
+  navigate(&quot;/projects&quot;);
+};</code></pre></figure></div>
+  </details>
+</section>
+
+<!-- 10 ─────────────────────────────────────────── -->
+<section class="chapter" id="supabase">
+  <p class="eyebrow">10 · SUPABASE</p>
+  <h2>Supabase에 데이터가 저장되는 과정</h2>
+  <p class="lead">Supabase는 PostgreSQL 데이터베이스와 로그인 기능을 인터넷 API로 제공하는 서비스입니다. 이 프로젝트는 서버 코드를 직접 만들지 않고, 브라우저가 <code>supabase-js</code> <span class="b lib">라이브러리</span>로 API를 부릅니다.</p>
+  <div class="flow">
+    <div class="node">① 폼 값 (문자열 위주)<small><code>{ title: " 학습 앱 ", techStack: "React, Vite", … }</code></small></div><div class="arrow" data-label="validateProjectForm · toProjectInput"></div>
+    <div class="node">② 저장용 객체 (공백 제거, 배열)<small><code>{ title: "학습 앱", techStack: ["React", "Vite"], … }</code></small></div><div class="arrow" data-label="toRow"></div>
+    <div class="node">③ DB 행 (snake_case, 빈 값은 null)<small><code>{ id, title, tech_stack: ["React","Vite"], github_url: null, … }</code></small></div><div class="arrow" data-label="supabase-js insert → HTTPS"></div>
+    <div class="node ext">④ Supabase API — 요청에 anon 키(+ 로그인 시 사용자 토큰)</div><div class="arrow" data-label="RLS 정책 검사"></div>
+    <div class="node ext">⑤ projects 테이블 — CHECK 제약(글자 수·분류·주소 형식), 수정 시각 자동 기록</div><div class="arrow" data-label="저장된 행"></div>
+    <div class="node hl">⑥ fromRow → 화면 객체 → 상세 화면</div>
+  </div>
+
+  <h3>열 이름 대응표</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>DB 열</th><th>화면 객체</th><th>폼 칸</th><th>DB 제약</th></tr></thead><tbody>
+      <tr><td><code>id</code></td><td><code>id</code></td><td>—</td><td>uuid 기본키. 등록 화면이 만든 값 사용</td></tr>
+      <tr><td><code>title</code></td><td><code>title</code></td><td>TITLE *</td><td>1~60자</td></tr>
+      <tr><td><code>summary</code></td><td><code>summary</code></td><td>SUMMARY *</td><td>1~120자</td></tr>
+      <tr><td><code>description</code></td><td><code>description</code></td><td>DESCRIPTION *</td><td>비어 있으면 안 됨</td></tr>
+      <tr><td><code>category</code></td><td><code>category</code></td><td>CATEGORY *</td><td>planning · education · ai · startup · development</td></tr>
+      <tr><td><code>tech_stack</code></td><td><code>techStack</code> (배열)</td><td>TECH STACK (쉼표)</td><td>text 배열, 기본 빈 배열</td></tr>
+      <tr><td><code>role</code> · <code>period</code></td><td><code>role</code> · <code>period</code></td><td>ROLE · PERIOD</td><td>선택</td></tr>
+      <tr><td><code>github_url</code> · <code>demo_url</code></td><td><code>githubUrl</code> · <code>demoUrl</code></td><td>GITHUB URL · DEMO URL</td><td>http(s):// 형식만</td></tr>
+      <tr><td><code>image_url</code></td><td><code>imageUrl</code></td><td>IMAGE URL</td><td>http(s):// 또는 <code>/images/…</code> 형식만</td></tr>
+      <tr><td><code>is_featured</code></td><td><code>isFeatured</code></td><td>홈 대표 프로젝트 체크</td><td>기본 false</td></tr>
+      <tr><td><code>created_at</code> · <code>updated_at</code></td><td><code>createdAt</code> · <code>updatedAt</code></td><td>—</td><td>자동 기록 (수정 시 트리거)</td></tr>
+    </tbody></table></div>
+  <p>이 대응이 어긋나지 않았는지 자동 테스트 <code class="path">src/lib/schemaSync.test.js</code>가 SQL 파일과 코드를 직접 비교합니다.</p>
+  <details>
+    <summary>환경변수와 키 — 무엇을 넣고 무엇을 넣으면 안 되나</summary>
+    <div class="body">
+      <ul>
+        <li><code>VITE_SUPABASE_URL</code>, <code>VITE_SUPABASE_ANON_KEY</code> — <code>.env</code>에 넣습니다(GitHub에는 올라가지 않음). anon 키는 브라우저에 공개되도록 만들어진 키이고, 데이터 보호는 RLS가 맡습니다.</li>
+        <li><strong>service_role / secret 키는 절대 넣지 않습니다.</strong> RLS를 무시하는 관리자 열쇠입니다.</li>
+        <li>값이 없으면 <code class="fn">getSupabase</code>가 <code>config</code> 오류를 던져 화면에 설정 방법을 안내합니다.</li>
+      </ul>
+    </div>
+  </details>
+</section>
+
+<!-- 11 ─────────────────────────────────────────── -->
+<section class="chapter" id="auth">
+  <p class="eyebrow">11 · AUTH &amp; RLS</p>
+  <h2>관리자 인증과 RLS 권한 보호</h2>
+  <p class="lead">보호는 두 겹입니다. 화면(React)은 관리 버튼을 숨기고 관리자 전용 주소를 막는 <strong>편의 기능</strong>이고, <strong>진짜 보안은 데이터베이스의 RLS(Row Level Security)</strong>입니다. 누군가 개발자 도구로 API를 직접 불러도 DB가 거절합니다.</p>
+
+  <div class="grid two">
+    <div class="card"><h4 style="margin-top:0">① 화면 쪽 (React)</h4><ul>
+      <li><code class="comp">AuthProvider</code>: 세션 확인 → 로그인했으면 <a href="#fn-authApi"><code class="fn">checkIsAdmin</code></a>으로 DB에 관리자인지 물어봄 → <code>isAdmin</code></li>
+      <li>관리자일 때만 New·등록·수정·삭제 버튼 표시</li>
+      <li><code class="comp">ProtectedRoute</code>가 <code>/projects/new</code>, <code>/projects/:id/edit</code>를 보호</li>
+      <li>관리자 확인이 실패하면 "관리자 아님"으로 처리 (안전한 쪽으로 실패)</li></ul></div>
+    <div class="card"><h4 style="margin-top:0">② DB 쪽 (Supabase RLS)</h4><ul>
+      <li><code class="path">supabase/02_policies.sql</code></li>
+      <li>조회: 누구나</li>
+      <li>등록·수정·삭제: <code>is_admin()</code>이 true일 때만</li>
+      <li>관리자 = <code>admin_users</code> 표에 등록된 계정 (앱에서 스스로 등록할 방법 없음)</li>
+      <li>방문자(anon)는 테이블 쓰기 권한 자체가 없음</li></ul></div>
+  </div>
+
+  <h3>ProtectedRoute의 판단 순서</h3>
+  <div class="compare">
+    <div class="flow">
+      <div class="node">확인 중(<code>isLoading</code>)? → "로그인 상태를 확인하는 중입니다."</div><div class="arrow"></div>
+      <div class="node">로그인 안 함(<code>!user</code>)? → <code>/login</code>으로 (원래 주소 기억)</div><div class="arrow"></div>
+      <div class="node">관리자 아님(<code>!isAdmin</code>)? → "관리자 권한이 없는 계정입니다."</div><div class="arrow"></div>
+      <div class="node hl">관리자 → 안쪽 화면(<code>&lt;Outlet /&gt;</code>)</div>
+    </div>
+    <figure class="code"><figcaption><span class="path">src/components/auth/ProtectedRoute.jsx</span></figcaption><pre data-src="src/components/auth/ProtectedRoute.jsx"><code><span class="cm">/**</span>
+<span class="cm"> * 관리자만 안쪽 라우트를 볼 수 있게 한다.</span>
+<span class="cm"> * 방문자는 로그인 화면으로 보내고(원래 주소 기억), 관리자가 아닌 계정에는 권한 없음 안내를 보여준다.</span>
+<span class="cm"> */</span>
+function ProtectedRoute() {
+  const { user, isAdmin, isLoading } = useAuth();
+  const { t } = useLanguage();
+  const location = useLocation();
+
+  if (isLoading) {
+    return (
+      &lt;section className=&quot;page-section&quot;&gt;
+        &lt;LoadingState message={t(&quot;auth.checking&quot;)} /&gt;
+      &lt;/section&gt;
+    );
+  }
+  if (!user) return &lt;Navigate to=&quot;/login&quot; replace state={{ from: location }} /&gt;;
+  if (!isAdmin) {
+    return (
+      &lt;section className=&quot;page-section&quot;&gt;
+        &lt;ErrorState message={t(&quot;errors.notAdmin&quot;)} /&gt;
+        &lt;div className=&quot;section-action&quot;&gt;
+          &lt;Button to=&quot;/projects&quot; icon=&quot;→&quot;&gt;
+            {t(&quot;projects.back&quot;)}
+          &lt;/Button&gt;
+        &lt;/div&gt;
+      &lt;/section&gt;
+    );
+  }
+  return &lt;Outlet /&gt;;
+}</code></pre></figure>
+  </div>
+
+  <h3>RLS 권한표</h3>
+  <div class="table-wrap"><table>
+    <thead><tr><th>명령</th><th>방문자 (anon)</th><th>로그인 + 관리자 아님</th><th>관리자</th></tr></thead><tbody>
+      <tr><td>조회 SELECT</td><td>✅</td><td>✅</td><td>✅</td></tr>
+      <tr><td>등록 INSERT</td><td>❌ 테이블 권한 없음</td><td>❌ RLS 거절</td><td>✅</td></tr>
+      <tr><td>수정 UPDATE</td><td>❌ 테이블 권한 없음</td><td>❌ 0행 처리</td><td>✅</td></tr>
+      <tr><td>삭제 DELETE</td><td>❌ 테이블 권한 없음</td><td>❌ 0행 처리</td><td>✅</td></tr>
+    </tbody></table></div>
+  <details>
+    <summary>RLS 정책 SQL 보기 <span class="where">supabase/02_policies.sql</span></summary>
+    <div class="body">
+      <figure class="code"><figcaption><span class="path">supabase/02_policies.sql</span></figcaption><pre data-src="supabase/02_policies.sql"><code>create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = &#x27;&#x27;
+as $$
+  select exists (select 1 from public.admin_users where user_id = auth.uid());
+$$;</code></pre></figure>
+      <figure class="code"><figcaption><span class="path">supabase/02_policies.sql</span></figcaption><pre data-src="supabase/02_policies.sql"><code>create policy &quot;projects_select_all&quot; on public.projects
+  for select to anon, authenticated
+  using (true);
+
+create policy &quot;projects_insert_admin&quot; on public.projects
+  for insert to authenticated
+  with check ((select public.is_admin()));
+
+create policy &quot;projects_update_admin&quot; on public.projects
+  for update to authenticated
+  using ((select public.is_admin()))
+  with check ((select public.is_admin()));
+
+create policy &quot;projects_delete_admin&quot; on public.projects
+  for delete to authenticated
+  using ((select public.is_admin()));</code></pre></figure>
+    </div>
+  </details>
+  <div class="warn"><strong>안전 점검 방법</strong> — <code class="path">supabase/05_verify_rls.sql</code>은 스스로 만든 시험용 행만 건드리고 끝나면 전부 되돌립니다. 결과는 빨간 ERROR 상자 안에 "✅ RLS 점검 통과" 또는 실패 항목으로 나옵니다(이 ERROR는 되돌리기 위한 정상 동작). <span class="b mock">모의 검증</span> 로컬 PostgreSQL 모의 환경에서는 안전·위험 설정 모두 의도대로 동작했고, <span class="b wait">실제 연결 필요</span> 실제 Supabase에서는 아직 실행하지 않았습니다.</div>
+</section>
+
+<!-- 12 ─────────────────────────────────────────── -->
+<section class="chapter" id="theme-lang">
+  <p class="eyebrow">12 · THEME &amp; LANGUAGE</p>
+  <h2>Light / Dark / Auto와 KR / EN 동작 원리</h2>
+  <div class="grid two">
+    <div class="card">
+      <h4 style="margin-top:0">테마 — <code class="path">src/contexts/ThemeContext.jsx</code></h4>
+      <div class="table-wrap"><table style="min-width:0">
+        <thead><tr><th>state</th><th>뜻</th></tr></thead><tbody>
+          <tr><td><code>mode</code></td><td>사용자 선택: <code>"light"</code> · <code>"dark"</code> · <code>"auto"</code></td></tr>
+          <tr><td><code>systemTheme</code></td><td>운영체제 설정 (<code>matchMedia</code> <span class="b js">JS 기본</span>로 감시)</td></tr>
+          <tr><td><code>theme</code></td><td>실제 적용값 = <code>mode</code>가 auto면 <code>systemTheme</code>, 아니면 <code>mode</code></td></tr>
+        </tbody></table></div>
+      <ul><li>저장 키 <code>portfolio-theme-mode</code> (Auto면 지움)</li><li><code>&lt;html data-theme&gt;</code>가 바뀌면 CSS 변수(<code>[data-theme="dark"]</code>)가 색을 한꺼번에 바꿈</li><li><code>index.html</code>의 작은 스크립트가 React보다 먼저 테마를 적용해 깜빡임 방지</li></ul>
+    </div>
+    <div class="card">
+      <h4 style="margin-top:0">언어 — <code class="path">src/contexts/LanguageContext.jsx</code></h4>
+      <ul><li><code>language</code> state: <code>"ko"</code> · <code>"en"</code>, 저장 키 <code>portfolio-language</code></li>
+        <li>문구는 모두 <code class="path">src/lib/i18n.js</code>의 사전에 ko·en 두 벌</li>
+        <li><code>t(key, params)</code> = <a href="#fn-translate"><code class="fn">translate</code></a>(language, key, params)</li>
+        <li>배열 문구(역량 카드 등)는 <code>messages</code>에서 직접 꺼냄</li>
+        <li><code>&lt;html lang&gt;</code>도 함께 바뀜 → 영어 제목 글꼴 CSS 적용</li>
+        <li>두 사전의 문구 목록이 같은지 자동 테스트(<code class="path">src/lib/i18n.test.js</code>)가 확인</li></ul>
+    </div>
+  </div>
+  <figure class="code"><figcaption><span class="path">src/contexts/ThemeContext.jsx</span></figcaption><pre data-src="src/contexts/ThemeContext.jsx"><code><span class="cm">/** Light / Dark / Auto 테마를 앱 전체에 제공한다. */</span>
+export function ThemeProvider({ children }) {
+  const [mode, setMode] = useState(readSavedMode);
+  const [systemTheme, setSystemTheme] = useState(readSystemTheme);
+  const theme = mode === &quot;auto&quot; ? systemTheme : mode;
+
+  useEffect(() =&gt; {
+    const mediaQuery = window.matchMedia(DARK_QUERY);
+    const handleChange = event =&gt; setSystemTheme(event.matches ? &quot;dark&quot; : &quot;light&quot;);
+
+    mediaQuery.addEventListener(&quot;change&quot;, handleChange);
+    return () =&gt; mediaQuery.removeEventListener(&quot;change&quot;, handleChange);
+  }, []);
+
+  useEffect(() =&gt; {
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  useEffect(() =&gt; {
+    writeStorage(STORAGE_KEY, mode === &quot;auto&quot; ? null : mode);
+  }, [mode]);
+
+  const toggleTheme = useCallback(() =&gt; setMode(theme === &quot;dark&quot; ? &quot;light&quot; : &quot;dark&quot;), [theme]);
+  const selectAutoTheme = useCallback(() =&gt; setMode(&quot;auto&quot;), []);
+  const value = useMemo(
+    () =&gt; ({ mode, theme, toggleTheme, selectAutoTheme }),
+    [mode, theme, toggleTheme, selectAutoTheme],
+  );
+
+  return &lt;ThemeContext.Provider value={value}&gt;{children}&lt;/ThemeContext.Provider&gt;;
+}</code></pre></figure>
+  <details>
+    <summary>첫 화면 깜빡임 방지 스크립트 <span class="where">index.html</span></summary>
+    <div class="body"><figure class="code"><figcaption><span class="path">index.html</span></figcaption><pre data-src="index.html"><code>&lt;script&gt;
+  try {
+    var mode = localStorage.getItem(&quot;portfolio-theme-mode&quot;);
+    var dark = mode ? mode === &quot;dark&quot; : matchMedia(&quot;(prefers-color-scheme: dark)&quot;).matches;
+    document.documentElement.dataset.theme = dark ? &quot;dark&quot; : &quot;light&quot;;
+    if (localStorage.getItem(&quot;portfolio-language&quot;) === &quot;en&quot;) document.documentElement.lang = &quot;en&quot;;
+  } catch (error) {}
+&lt;/script&gt;</code></pre></figure></div>
+  </details>
+</section>
+
+<!-- 13 ─────────────────────────────────────────── -->
+<section class="chapter" id="requirements">
+  <p class="eyebrow">13 · REQUIREMENTS</p>
+  <h2>공식 B1-2 요구사항과 구현 코드 연결</h2>
+  <p class="lead">공식 미션 문서의 결과물·기능 요구사항을 실제 파일과 연결했습니다.</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>요구사항</th><th>구현 위치</th><th>함수·컴포넌트</th><th>자동 테스트</th><th>상태</th></tr></thead><tbody>
+      <tr><td>React 18 이상 SPA</td><td><code class="path">package.json</code>, <code class="path">src/main.jsx</code></td><td>React 18.3.1, Vite</td><td>—</td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>라우트 5개 이상, 목록·상세, Not Found</td><td><code class="path">src/App.jsx</code></td><td>8개 라우트, <code class="comp">NotFoundPage</code></td><td><code class="path">src/App.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>공통 레이아웃·네비게이션</td><td><code class="path">src/components/layout/Layout.jsx</code></td><td><code class="comp">Header</code>, <code class="comp">Footer</code></td><td><code class="path">src/App.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>pages / components / hooks·lib 분리</td><td><code class="path">src/pages</code> 등</td><td>3장 참고</td><td>계층별 테스트</td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>재사용 컴포넌트 8개 이상 (props로 동작 변화)</td><td><code class="path">src/components/ui</code>, <code class="path">src/components/project</code></td><td>UI 13 + 프로젝트 4</td><td><code class="path">src/components/ui/ui.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>로딩·에러·빈 상태 공통 컴포넌트</td><td><code class="path">src/components/ui/DataStatus.jsx</code></td><td><code class="comp">DataStatus</code></td><td><code class="path">src/components/ui/ui.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>폼 입력 상태(controlled input)</td><td><code class="path">src/components/project/ProjectForm.jsx</code></td><td><code>values</code> state</td><td><code class="path">src/components/ui/ui.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>데이터 흐름 커스텀 훅</td><td><code class="path">src/hooks</code></td><td><code class="fn">useProjects</code>, <code class="fn">useProject</code>, <code class="fn">useProjectActions</code></td><td><code class="path">src/hooks/projectHooks.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>필수값 검증·에러 표시·제출 중 상태·실패 표시</td><td><code class="path">src/lib/projectForm.js</code></td><td><code class="fn">validateProjectForm</code>, <code class="comp">Button</code></td><td><code class="path">src/pages/projectPages.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>상태 변경 → 화면 변화 3곳 이상</td><td>8장</td><td>필터, 미리보기, 알림 외</td><td><code class="path">src/pages/projectPages.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>Supabase 원격 데이터 CRUD</td><td><code class="path">src/lib/projectsApi.js</code>, <code class="path">supabase/01_schema.sql</code></td><td>CRUD 함수 5개</td><td><code class="path">src/lib/projectsApi.test.js</code></td><td><span class="b mock">모의 검증</span> <span class="b wait">실제 연결 필요</span></td></tr>
+      <tr><td>보너스: 전역 상태(Context)</td><td><code class="path">src/contexts</code></td><td>테마·언어·알림·로그인</td><td><code class="path">src/contexts/displaySettings.test.jsx</code></td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>보너스: 메모이제이션</td><td>목록·대표 프로젝트·Context</td><td><code>useMemo</code>, <code>useCallback</code></td><td>—</td><td><span class="b ok">구현</span></td></tr>
+      <tr><td>보너스: 인증 + 보호 라우트</td><td><code class="path">src/lib/authApi.js</code>, <code class="path">src/components/auth/ProtectedRoute.jsx</code></td><td><code class="comp">ProtectedRoute</code></td><td><code class="path">src/pages/authFlow.test.jsx</code></td><td><span class="b mock">모의 검증</span> <span class="b wait">실제 연결 필요</span></td></tr>
+      <tr><td><code>.env</code>로 키 관리, GitHub에 키 없음</td><td><code class="path">.gitignore</code>, <code class="path">.env.example</code></td><td><code class="fn">getSupabase</code></td><td>커밋 기록 검사</td><td><span class="b ok">검증 완료</span></td></tr>
+      <tr><td>배포 URL에서 CRUD 동작</td><td><code class="path">vercel.json</code></td><td>—</td><td>—</td><td><span class="b wait">실제 연결 필요</span></td></tr>
+      <tr><td>README에 실행 방법·기술 스택</td><td><code class="path">README.md</code></td><td>—</td><td>—</td><td><span class="b ok">검증 완료</span></td></tr>
+    </tbody></table></div>
+</section>
+
+<!-- 14 ─────────────────────────────────────────── -->
+<section class="chapter" id="tests">
+  <p class="eyebrow">14 · TESTS</p>
+  <h2>주요 자동 테스트와 테스트 방법</h2>
+  <p class="lead">Vitest(테스트 실행기)와 Testing Library(사용자처럼 화면을 찾고 클릭)를 씁니다. <strong>자동 테스트는 실제 Supabase·GitHub·Formspree에 요청하지 않습니다</strong> — <code class="path">src/test/setup.js</code>가 실제 네트워크 요청을 막고, 가짜 데이터로 화면 흐름만 확인합니다.</p>
+  <div class="grid three">
+    <div class="card"><strong>실행</strong><br><code>npm test</code><br><small>171개 · 20개 파일</small></div>
+    <div class="card"><strong>코드 규칙 검사</strong><br><code>npm run lint</code></div>
+    <div class="card"><strong>배포용 빌드</strong><br><code>npm run build</code></div>
+  </div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>테스트 파일</th><th>개수</th><th>확인하는 것</th></tr></thead><tbody>
+      <tr><td><code class="path">src/App.test.jsx</code></td><td>11</td><td>라우트·Not Found·공통 레이아웃·메뉴·맨 위로 버튼</td></tr>
+      <tr><td><code class="path">src/components/ui/ui.test.jsx</code></td><td>25</td><td>재사용 UI의 props별 동작, 확인 창 포커스</td></tr>
+      <tr><td><code class="path">src/contexts/displaySettings.test.jsx</code></td><td>7</td><td>테마 Auto·저장·시스템 변경, 언어 전환·저장</td></tr>
+      <tr><td><code class="path">src/pages/projectPages.test.jsx</code></td><td>18</td><td>목록 필터, 상세, 삭제 확인, 등록 검사·미리보기·저장 중, 시간 초과 뒤 같은 id, 수정</td></tr>
+      <tr><td><code class="path">src/pages/authFlow.test.jsx</code></td><td>9</td><td>방문자 제한, 보호 라우트, 로그인 성공·실패, 로그아웃</td></tr>
+      <tr><td><code class="path">src/pages/securityHardening.test.jsx</code></td><td>11</td><td>관리자 아닌 계정, 연속 클릭, HTML·<code>javascript:</code> 삽입, 영어 문구</td></tr>
+      <tr><td><code class="path">src/lib/projectsApi.test.js</code></td><td>14</td><td>가짜 Supabase로 CRUD 요청 모양, 중복 id 처리, 0행 원인 구분, 시간 초과</td></tr>
+      <tr><td><code class="path">src/lib/request.test.js</code></td><td>28</td><td>시간 제한, 안전한 주소 판별, 이미지 주소 규칙, UUID</td></tr>
+      <tr><td><code class="path">src/lib/schemaSync.test.js</code></td><td>5</td><td>SQL 테이블 ↔ 코드 필드·분류·글자 수·주소 규칙 일치</td></tr>
+      <tr><td><code class="path">src/hooks/projectHooks.test.jsx</code></td><td>5</td><td>데이터 훅의 상태 변화</td></tr>
+      <tr><td>그 외 10개 파일</td><td>38</td><td>오류 변환, 폼 검사, 번역 사전, 타이핑, 문의 폼, GitHub, 홈, 설정 누락 안내</td></tr>
+    </tbody></table></div>
+  <details>
+    <summary>테스트 코드 예 — 필터를 바꾸면 목록이 바뀌는지</summary>
+    <div class="body"><p>실제 사용자처럼 버튼을 찾아 누르고(<code>user.click</code>), 화면에 보이는 글자로 결과를 확인합니다. 데이터는 가짜(<code>mockProjects</code>)입니다.</p>
+      <figure class="code"><figcaption><span class="path">src/pages/projectPages.test.jsx</span></figcaption><pre data-src="src/pages/projectPages.test.jsx"><code>it(&quot;로딩 → 카드 목록, 필터를 바꾸면 목록과 개수가 바뀐다&quot;, async () =&gt; {
+  api.fetchProjects.mockResolvedValue(mockProjects);
+  const user = userEvent.setup();
+  renderAt(&quot;/projects&quot;);
+
+  expect(screen.getByText(&quot;프로젝트를 불러오는 중입니다.&quot;)).toBeInTheDocument();
+  expect(await screen.findByRole(&quot;heading&quot;, { name: aiProject.title })).toBeInTheDocument();
+  expect(screen.getByText(&quot;2개의 프로젝트를 표시하고 있습니다.&quot;)).toBeInTheDocument();
+
+  await user.click(screen.getByRole(&quot;button&quot;, { name: &quot;교육&quot; }));
+
+  expect(screen.queryByRole(&quot;heading&quot;, { name: aiProject.title })).not.toBeInTheDocument();
+  expect(screen.getByRole(&quot;heading&quot;, { name: eduProject.title })).toBeInTheDocument();
+  expect(screen.getByText(&quot;1개의 프로젝트를 표시하고 있습니다.&quot;)).toBeInTheDocument();
+
+  await user.click(screen.getByRole(&quot;button&quot;, { name: &quot;창업&quot; }));
+  expect(screen.getByText(&quot;이 분류에 해당하는 프로젝트가 없습니다.&quot;)).toBeInTheDocument();
+});</code></pre></figure></div>
+  </details>
+</section>
+
+<!-- 15 ─────────────────────────────────────────── -->
+<section class="chapter" id="status">
+  <p class="eyebrow">15 · STATUS</p>
+  <h2>현재 구현된 기능과 실제 연결 미검증 기능</h2>
+  <div class="note"><strong>정리:</strong> 코드 구현과 모의(가짜 데이터) 테스트는 끝났습니다. 실제 Supabase DB·로그인·RLS와 배포 사이트에서는 아직 한 번도 검증되지 않았습니다.</div>
+  <div class="grid two">
+    <div class="card"><h4 style="margin-top:0"><span class="b ok">검증 완료</span> 서버 없이 확인 가능한 기능</h4><ul>
+      <li>8개 화면 이동, 404, 새로고침</li><li>KR/EN 전환과 저장</li><li>Light/Dark/Auto와 저장</li><li>타이핑·스크롤 등장 효과</li><li>반응형(PC·태블릿·모바일), 모바일 메뉴</li><li>폼 입력 검사, 미리보기, 저장 중 표시</li><li>로딩·오류·빈 상태 화면</li><li>키보드 이동, 확인 창 포커스</li></ul></div>
+    <div class="card"><h4 style="margin-top:0"><span class="b mock">모의 검증</span> 가짜 API·로컬 DB로만 확인</h4><ul>
+      <li>등록·조회·수정·삭제 전체 흐름</li><li>로그인·로그아웃, 관리자 아닌 계정 차단</li><li>연속 클릭·시간 초과 뒤 중복 방지</li><li>SQL 실행과 RLS 정책 논리 (로컬 PostgreSQL)</li><li>GitHub 카드 성공 화면 (자동 테스트)</li><li>문의 폼 전송 (가짜 응답)</li></ul></div>
+  </div>
+  <div class="card"><h4 style="margin-top:0"><span class="b wait">실제 연결 필요</span> 사용자가 직접 설정한 뒤 확인할 것</h4>
+    <ol><li>실제 Supabase에 SQL 실행 → <code class="path">supabase/05_verify_rls.sql</code> 결과 "✅ RLS 점검 통과"</li>
+      <li>실제 관리자 로그인 후 시험용 프로젝트로 등록·수정·삭제</li>
+      <li>Vercel 배포 주소에서 같은 시험 반복</li>
+      <li>문의 폼 실제 전송, 사파리·실제 휴대폰 화면</li></ol>
+    <p>자세한 순서: <code class="path">docs/OWNER_CHECKLIST.md</code>, 시연 순서: <code class="path">docs/DEMO_GUIDE.md</code></p></div>
+</section>
+
+<!-- 부록 ─────────────────────────────────────────── -->
+<section class="chapter" id="glossary">
+  <p class="eyebrow">APPENDIX · GLOSSARY</p>
+  <h2>용어 사전</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>용어</th><th>쉬운 설명</th></tr></thead><tbody>
+      <tr><td>SPA</td><td>HTML 한 장에서 주소에 따라 화면만 갈아 끼우는 웹앱. 새로고침 없이 이동</td></tr>
+      <tr><td>컴포넌트</td><td>화면 조각을 돌려주는 함수. 이름은 대문자로 시작</td></tr>
+      <tr><td>JSX</td><td>JavaScript 안에 HTML처럼 쓰는 문법 (<code>&lt;Button&gt;</code>)</td></tr>
+      <tr><td>props</td><td>부모가 자식에게 주는 읽기 전용 값</td></tr>
+      <tr><td>state</td><td>컴포넌트가 기억하는 값. 바뀌면 화면이 다시 그려짐</td></tr>
+      <tr><td>훅(Hook)</td><td><code>use</code>로 시작하는 React 기능 또는 직접 만든 상태 로직 함수</td></tr>
+      <tr><td>effect</td><td>화면을 그린 뒤에 할 일 (데이터 요청, 이벤트 구독)</td></tr>
+      <tr><td>Context</td><td>앱 전체가 함께 쓰는 값의 보관함</td></tr>
+      <tr><td>CRUD</td><td>Create 등록 · Read 조회 · Update 수정 · Delete 삭제</td></tr>
+      <tr><td>RLS</td><td>Row Level Security. DB가 요청마다 "이 사람이 이 행을 바꿔도 되나"를 검사하는 규칙</td></tr>
+      <tr><td>anon 키</td><td>브라우저에 공개되는 Supabase 공개 키. 보호는 RLS가 맡음</td></tr>
+      <tr><td>UUID</td><td>겹칠 일이 거의 없는 36자 고유 번호. 프로젝트 id로 사용</td></tr>
+      <tr><td>Mock (모의)</td><td>테스트를 위해 진짜 대신 쓰는 가짜 데이터·가짜 서버</td></tr>
+    </tbody></table></div>
+  <p style="color:var(--muted);font-size:.85rem;margin-top:30px">이 설명서는 인터넷 연결 없이 열리는 파일 하나입니다. 외부 글꼴·스크립트를 쓰지 않습니다.</p>
+</section>
+
+</div>
+</main>
+<button class="backtop" type="button" id="backtop" aria-label="맨 위로">↑</button>
+
+<script>
+(function () {
+  var body = document.body;
+  var tocToggle = document.getElementById("toc-toggle");
+  var scrim = document.getElementById("scrim");
+  var links = Array.prototype.slice.call(document.querySelectorAll("#toc a"));
+
+  function setToc(open) {
+    body.classList.toggle("toc-open", open);
+    tocToggle.setAttribute("aria-expanded", String(open));
+    scrim.hidden = !open;
+  }
+  tocToggle.addEventListener("click", function () { setToc(!body.classList.contains("toc-open")); });
+  scrim.addEventListener("click", function () { setToc(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") setToc(false); });
+  links.forEach(function (a) { a.addEventListener("click", function () { setToc(false); }); });
+
+  // 모두 펼치기 · 접기
+  function setAll(open) { document.querySelectorAll("main details").forEach(function (d) { d.open = open; }); }
+  document.getElementById("expand-all").addEventListener("click", function () { setAll(true); });
+  document.getElementById("collapse-all").addEventListener("click", function () { setAll(false); });
+
+  // 함수 링크(#fn-...)로 이동하면 그 상자를 펼친다
+  function openTarget(hash) {
+    if (!hash || hash.length < 2) return;
+    var el = document.getElementById(decodeURIComponent(hash.slice(1)));
+    if (!el) return;
+    var d = el.closest("details");
+    while (d) { d.open = true; d = d.parentElement ? d.parentElement.closest("details") : null; }
+    el.scrollIntoView();
+  }
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest('a[href^="#fn-"]');
+    if (!a) return;
+    e.preventDefault();
+    history.pushState(null, "", a.getAttribute("href"));
+    openTarget(a.getAttribute("href"));
+  });
+  window.addEventListener("hashchange", function () { openTarget(location.hash); });
+  if (location.hash) openTarget(location.hash);
+
+  // 지금 읽는 장을 목차에 표시
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
+  if ("IntersectionObserver" in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        links.forEach(function (a) { a.setAttribute("aria-current", String(a.getAttribute("href") === "#" + entry.target.id)); });
+      });
+    }, { rootMargin: "-10% 0px -80% 0px" });
+    sections.forEach(function (s) { observer.observe(s); });
+  }
+
+  // 설명서 테마 (자동 → 밝게 → 어둡게)
+  var themeBtn = document.getElementById("theme-toggle");
+  var order = ["auto", "light", "dark"];
+  var names = { auto: "자동", light: "밝게", dark: "어둡게" };
+  function currentTheme() { return document.documentElement.dataset.theme || "auto"; }
+  function applyTheme(t) {
+    if (t === "auto") delete document.documentElement.dataset.theme; else document.documentElement.dataset.theme = t;
+    themeBtn.textContent = "테마: " + names[t];
+    try { if (t === "auto") localStorage.removeItem("b12-guide-theme"); else localStorage.setItem("b12-guide-theme", t); } catch (e) {}
+  }
+  applyTheme(currentTheme());
+  themeBtn.addEventListener("click", function () { applyTheme(order[(order.indexOf(currentTheme()) + 1) % order.length]); });
+
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  document.getElementById("backtop").addEventListener("click", function () { window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" }); });
+})();
+</script>
+</body>
+</html>
