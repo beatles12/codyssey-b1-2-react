@@ -129,6 +129,7 @@ describe("영어 모드의 공통 버튼 문구", () => {
     setMockSession(null);
     localStorage.setItem("portfolio-language", "en");
     api.fetchProjects.mockRejectedValue(new TypeError("Failed to fetch"));
+    fetch.mockResolvedValue({ ok: true, json: async () => [] });
     renderAt("/projects");
 
     expect(await screen.findByRole("alert")).toHaveTextContent("Cannot reach the network.");

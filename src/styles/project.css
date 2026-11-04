@@ -351,3 +351,27 @@ html[lang="en"] .project-summary {
 .project-grid.stagger > :nth-child(5) { animation-delay: 0.62s; }
 .project-grid.stagger > :nth-child(6) { animation-delay: 0.7s; }
 .project-grid.stagger > :nth-child(n + 7) { animation-delay: 0.78s; }
+
+/* 프로젝트 출처 라벨: Supabase 관리 프로젝트와 GitHub 공개 저장소를 구분 */
+.source-label {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.repo-block + .repo-block,
+.state-box + .repo-block,
+.project-grid + .repo-block {
+  margin-top: 40px;
+}
+
+/* 아래에 GitHub 카드가 이어지는 목록 화면에서는 "등록된 프로젝트 없음"을 작게 보여준다 */
+.source-label + .state-empty {
+  padding: 28px 20px;
+}
+
+.source-label + .state-empty .empty-mark {
+  display: none;
+}

@@ -6,9 +6,12 @@ import useScrolled from "../../hooks/useScrolled.js";
 import useToast from "../../hooks/useToast.js";
 import DisplayControls from "./DisplayControls.jsx";
 
+// B1-1과 같은 메뉴 순서. isSection은 홈 안의 섹션(#)으로 이동하는 링크.
 const NAV_ITEMS = [
   { to: "/about", labelKey: "nav.about" },
+  { to: "/#expertise", labelKey: "nav.expertise", isSection: true },
   { to: "/projects", labelKey: "nav.work" },
+  { to: "/#contact", labelKey: "nav.contact", isSection: true },
 ];
 
 /** 로고·메뉴·설정 버튼을 담은 상단 헤더. 로그인하면 Logout, 관리자면 New 메뉴가 생긴다. */
@@ -40,18 +43,16 @@ function Header() {
           S<span>.</span>
         </Link>
         <ul id="nav-menu" className={`nav-menu${isMenuOpen ? " active" : ""}`}>
-          {NAV_ITEMS.map(item => (
-            <li key={item.to}>
-              <NavLink to={item.to} onClick={closeMenu}>
-                {t(item.labelKey)}
-              </NavLink>
-            </li>
-          ))}
-          <li>
-            <Link to="/#contact" onClick={closeMenu}>
-              {t("nav.contact")}
-            </Link>
-          </li>
+          {NAV_ITEMS.map(item => {
+            const MenuLink = item.isSection ? Link : NavLink;
+            return (
+              <li key={item.to}>
+                <MenuLink to={item.to} onClick={closeMenu}>
+                  {t(item.labelKey)}
+                </MenuLink>
+              </li>
+            );
+          })}
           {isAdmin && (
             <li>
               <NavLink to="/projects/new" onClick={closeMenu}>

@@ -529,3 +529,39 @@ html[lang="en"] .contact-copy h2 {
     bottom: 45px;
   }
 }
+
+/* B1-1 원본 여백·높이 복원 (style.css의 섹션 여백 규칙과 같은 값) */
+.contact-botanical {
+  position: absolute;
+  right: -20px;
+  bottom: -55px;
+  z-index: 1;
+  width: 220px;
+  fill: rgba(187, 174, 225, 0.15);
+  stroke: var(--lavender);
+  stroke-width: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .about,
+  .skills,
+  .projects {
+    padding-top: 28px;
+  }
+}
+
+@media (min-width: 768px) {
+  .about,
+  .skills,
+  .projects {
+    padding: clamp(76px, 6vw, 92px) 0;
+  }
+}
+
+@media (min-width: 1024px) {
+  .skills {
+    min-height: calc(100svh - 80px);
+  }
+}

@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import GithubRepoList from "../components/project/GithubRepoList.jsx";
 import ProjectList from "../components/project/ProjectList.jsx";
 import Button from "../components/ui/Button.jsx";
 import DataStatus from "../components/ui/DataStatus.jsx";
@@ -35,18 +36,13 @@ function ProjectListPage() {
     </Button>
   );
 
-  const githubButton = (
-    <Button to="/about#github" icon="→">
-      {t("projects.viewGithub")}
-    </Button>
-  );
-
   return (
     <section className="page-section">
       <div className="enter">
         <SectionHeading eyebrow={t("projects.eyebrow")} title={t("projects.title")} description={t("projects.description")} isTyping />
       </div>
       <div className="enter enter-delay-1">
+        <p className="source-label">{t("work.sourceManaged")}</p>
         <DataStatus
           retryLabel={t("common.retry")}
           isLoading={isLoading}
@@ -56,7 +52,7 @@ function ProjectListPage() {
           loadingMessage={t("projects.loading")}
           emptyMessage={t("projects.empty")}
           emptyDescription={isAdmin ? t("projects.emptyAdminHint") : t("projects.emptyHint")}
-          emptyAction={createButton || githubButton}
+          emptyAction={createButton}
         >
           <div className="list-toolbar">
             <div>
@@ -77,6 +73,7 @@ function ProjectListPage() {
             />
           )}
         </DataStatus>
+        <GithubRepoList />
       </div>
     </section>
   );

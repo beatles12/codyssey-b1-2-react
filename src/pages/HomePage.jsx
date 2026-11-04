@@ -2,6 +2,7 @@ import AboutSection from "../components/home/AboutSection.jsx";
 import ContactSection from "../components/home/ContactSection.jsx";
 import ExpertiseSection from "../components/home/ExpertiseSection.jsx";
 import FeaturedProjects from "../components/home/FeaturedProjects.jsx";
+import GithubRepoList from "../components/project/GithubRepoList.jsx";
 import HeroSection from "../components/home/HeroSection.jsx";
 import WorkSection from "../components/home/WorkSection.jsx";
 
@@ -14,6 +15,7 @@ function HomePage() {
       <ExpertiseSection number="03" />
       <WorkSection number="04">
         <FeaturedProjects />
+        <GithubRepoList />
       </WorkSection>
       <ContactSection number="05" />
     </>

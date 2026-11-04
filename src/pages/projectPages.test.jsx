@@ -45,6 +45,7 @@ describe("목록 화면 (/projects)", () => {
 
   it("Supabase 설정이 없으면 원인을 알려 주고 다시 시도할 수 있다", async () => {
     api.fetchProjects.mockRejectedValueOnce(new AppError("config")).mockResolvedValueOnce(mockProjects);
+    fetch.mockResolvedValue({ ok: true, json: async () => [] });
     const user = userEvent.setup();
     renderAt("/projects");
 
@@ -295,14 +296,17 @@ describe("WORK 페이지 화면 개선", () => {
     expect(container.querySelector(".project-grid")).toHaveClass("stagger");
   });
 
-  it("방문자에게 빈 목록이면 안내 설명과 GitHub 기록 링크를 보여준다", async () => {
+  it("방문자에게 빈 목록이면 안내 설명을 보이고, 아래에 GitHub 공개 저장소를 출처와 함께 보여준다", async () => {
     setMockSession(null);
     api.fetchProjects.mockResolvedValue([]);
+    fetch.mockResolvedValue({ ok: true, json: async () => [{ name: "codyssey-quiz-game", description: "", language: "Python", html_url: "https://github.com/beatles12/codyssey-quiz-game" }] });
     renderAt("/projects");
 
     expect(await screen.findByText("아직 등록된 프로젝트가 없습니다.")).toBeInTheDocument();
-    expect(screen.getByText(/그동안 GitHub에 남긴 학습 기록/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /GitHub 기록 보기/ })).toHaveAttribute("href", "/about#github");
+    expect(screen.getByText(/아래에서 GitHub에 공개한 프로젝트/)).toBeInTheDocument();
+    expect(screen.getByText("직접 관리하는 프로젝트 · Supabase")).toBeInTheDocument();
+    expect(screen.getByText("GitHub 공개 저장소 · GitHub API로 자동 표시")).toBeInTheDocument();
+    expect(await screen.findByRole("link", { name: /codyssey-quiz-game GitHub 저장소 열기/ })).toHaveAttribute("target", "_blank");
   });
 
   it("필터 결과가 없으면 전체 보기 버튼으로 필터를 되돌린다", async () => {
@@ -324,6 +328,6 @@ describe("WORK 페이지 화면 개선", () => {
     renderAt("/projects");
 
     expect(await screen.findByText("No projects yet.")).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /View GitHub records/ })).toBeInTheDocument();
+    expect(screen.getByText("Public GitHub repositories · loaded via GitHub API")).toBeInTheDocument();
   });
 });

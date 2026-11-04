@@ -411,3 +411,32 @@ ol {
 .back-to-top:hover {
   transform: translateY(-3px);
 }
+
+/* B1-1과 같은 섹션 여백 단계: 모바일 76px · 태블릿 92px · 노트북 108px · 넓은 화면 125px */
+@media (max-width: 767px) {
+  :root {
+    --section: 76px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --section: 92px;
+  }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  :root {
+    --section: 108px;
+  }
+}
+
+/* 하위 페이지(목록·상세·로그인 등)의 첫 섹션 위 공백을 줄인다. 홈은 Hero가 첫 요소라 영향 없음 */
+.page > .page-section:first-child {
+  padding-top: clamp(48px, 6vw, 72px);
+}
+
+/* 메뉴로 #섹션에 이동할 때 제목이 고정 헤더에 가려지지 않게 한다 (B1-1과 같은 값) */
+section[id] {
+  scroll-margin-top: 90px;
+}

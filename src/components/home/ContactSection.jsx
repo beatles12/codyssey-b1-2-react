@@ -16,6 +16,13 @@ function ContactSection({ number }) {
           <small>{contact.subtitle}</small>
         </div>
         <ContactForm />
+        <svg className="contact-botanical" viewBox="0 0 240 320" aria-hidden="true">
+          <path d="M111 311C120 242 127 184 153 118C168 80 190 48 215 22" />
+          <path d="M134 186C97 164 72 137 57 103" />
+          <ellipse cx="201" cy="48" rx="19" ry="47" transform="rotate(38 201 48)" />
+          <ellipse cx="74" cy="124" rx="18" ry="42" transform="rotate(-45 74 124)" />
+          <ellipse cx="163" cy="125" rx="17" ry="40" transform="rotate(41 163 125)" />
+        </svg>
       </div>
     </section>
   );
