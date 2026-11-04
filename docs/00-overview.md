@@ -72,7 +72,7 @@ NotFoundPage "*"   ── SectionHeading, Button ×2
 > 이 프로젝트는 React 18과 Vite로 만든 단일 페이지 애플리케이션입니다. React Router로 8개의 화면 경로를 구성했고, 프로젝트 데이터는 Supabase(PostgreSQL)에 저장합니다.
 > 데이터 요청은 `lib/projectsApi.js`에 모으고, `useProjects`·`useProject`·`useProjectActions` 커스텀 훅이 로딩·오류·제출 상태를 관리합니다. 화면은 재사용 UI 컴포넌트에 props를 넘겨 그리며, 로딩·오류·빈 상태는 `DataStatus` 하나로 통일했습니다.
 > 테마·언어·알림·로그인은 Context로 전역 관리합니다. 관리자 권한은 화면에서 버튼을 숨기는 것과 별개로, Supabase Row Level Security 정책이 DB 단계에서 관리자만 쓰기를 허용하도록 설계했습니다.
-> Vitest와 Testing Library로 171개의 자동 테스트를 작성했으며, 실제 서버 대신 가짜 응답을 사용해 화면 흐름을 검증합니다.
+> Vitest와 Testing Library로 187개의 자동 테스트를 작성했으며, 실제 서버 대신 가짜 응답을 사용해 화면 흐름을 검증합니다.
 
 ## 6. 30초 핵심 설명
 

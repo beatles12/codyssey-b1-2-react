@@ -14,7 +14,7 @@ B1-1 개인 포트폴리오(순수 HTML·CSS·JS)를 **React SPA**로 재구성�
 | 항목 | 상태 |
 | --- | --- |
 | 화면·라우팅·상태 관리·폼·인증 코드 | 구현 완료 |
-| 자동 테스트 | 171개 통과 (Mock 데이터 기준) |
+| 자동 테스트 | 187개 통과 (Mock 데이터 기준) |
 | 브라우저 실전 검증 | 46/46 통과 (가짜 API, PC·태블릿·모바일) |
 | 실제 Supabase 연결 | ⏳ 사용자 설정 필요 → [docs/supabase-setup.md](docs/supabase-setup.md) |
 | 배포 | ⏳ 승인 후 |
@@ -49,6 +49,7 @@ npm run dev
 | `npm run lint` | 코드 검사 |
 | `npm run build` | 배포용 빌드 (`dist/`) |
 | `npm run preview` | 빌드 결과 확인 |
+| `npm run check:supabase` | `.env`의 Supabase 연결·RLS 차단 여부 점검 (데이터를 바꾸지 않음) |
 
 Supabase 연결: `.env.example`을 복사해 `.env`를 만들고 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`를 채웁니다. `.env`는 GitHub에 올라가지 않습니다. 자세한 순서는 [docs/supabase-setup.md](docs/supabase-setup.md).
 
@@ -109,6 +110,7 @@ docs/               초보자용 기술 설명서
 | [START_HERE](docs/START_HERE.md) | 가장 먼저 확인할 것 |
 | [프로그램 기술설명서 (HTML)](docs/B1-2_program_guide.html) | 구조도·함수 사전·흐름도를 한 파일로 (브라우저로 열기, 인터넷 불필요) |
 | [DEMO_GUIDE](docs/DEMO_GUIDE.md) | 시연 순서, 화면별 관련 코드, 오류 시 확인할 것 |
+| [DEPLOY_CHECKLIST](docs/DEPLOY_CHECKLIST.md) | 실제 DB 검증 순서, Vercel 설정값·환경변수, 배포 후 확인표 |
 | [OWNER_CHECKLIST](docs/OWNER_CHECKLIST.md) | 직접 해야 할 설정만 순서대로 (Windows 초보자용) |
 | [00 개요](docs/00-overview.md) | B1-1과 차이, React 선택 이유, 구조도, 30초 설명 |
 | [01 React 기초](docs/01-react-basics.md) | React vs JS, props / state / useEffect, Context, 커스텀 훅 |

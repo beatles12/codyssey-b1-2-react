@@ -7,7 +7,7 @@
 | 항목 | 상태 |
 | --- | --- |
 | 공식 요구사항 코드 구현 | ✅ 전부 구현 (미구현 0) |
-| 자동 테스트 | ✅ 171개 통과 / 실패 0 (가짜 API) |
+| 자동 테스트 | ✅ 187개 통과 / 실패 0 (가짜 API) |
 | 브라우저 실전 검증 | ✅ 46/46 통과 (가짜 API, PC·태블릿·모바일) |
 | SQL 파일 | ✅ 로컬 PostgreSQL 모의 환경에서 실행·권한 확인 (위험한 설정에서도 실제 데이터 보존 확인) / ⏳ 실제 Supabase 미실행 |
 | 실제 Supabase CRUD·로그인·RLS | ⏳ 직접 설정 후 확인 필요 |
@@ -61,6 +61,8 @@ http://localhost:5173 에서
 | 7 | [security-review.md](security-review.md) | 관리자 권한은 어떻게 지켜지나요? RLS 검토와 직접 테스트 절차 |
 
 시연용: [DEMO_GUIDE.md](DEMO_GUIDE.md)(발표 순서·화면별 코드·오류 확인)
+
+배포용: [DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md)(실제 DB 검증 → Vercel 설정 → 배포 후 확인)
 
 설정용 문서: [OWNER_CHECKLIST.md](OWNER_CHECKLIST.md)(직접 할 일), [supabase-setup.md](supabase-setup.md)(자세한 설명·문제 해결), [security-audit.md](security-audit.md)(의존성·배포 전 체크리스트)
 

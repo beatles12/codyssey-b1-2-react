@@ -41,8 +41,9 @@ npm run dev
 | `npm run lint` | 코드 규칙 검사 (훅 사용 규칙 포함) |
 | `npm run build` | 배포용 파일을 `dist/`에 생성 |
 | `npm run preview` | 빌드 결과를 로컬에서 확인 |
+| `npm run check:supabase` | 실제 Supabase 연결 점검 (조회·차단 확인만, 데이터 변경 없음) |
 
-## 4. 자동 테스트 구성 (171개, 20개 파일)
+## 4. 자동 테스트 구성 (187개, 22개 파일)
 
 > 자동 테스트는 **실제 Supabase·GitHub·Formspree에 요청하지 않습니다.** 가짜(Mock) 데이터와 가짜 응답으로 화면 흐름을 검증합니다. (`src/test/setup.js`가 실제 네트워크 요청을 막습니다.) 실제 서버 연결은 [OWNER_CHECKLIST.md](OWNER_CHECKLIST.md) 5단계에서 따로 확인합니다.
 
@@ -66,6 +67,8 @@ npm run dev
 | `src/hooks/projectHooks.test.jsx` | useProjects / useProject / useProjectActions 상태 변화 |
 | `src/pages/projectPages.test.jsx` | 목록 필터, 상세, 삭제 확인, 등록 검사·미리보기·저장 중, 시간 초과 뒤 재저장 시 같은 id, 수정 |
 | `src/pages/authFlow.test.jsx` | 방문자 제한, 보호 라우트, 로그인 성공·실패, 로그아웃 |
+| `scripts/supabaseKey.test.js` | Supabase 키 종류 판별, 비밀키면 빌드 중단 |
+| `scripts/check-supabase.test.js` | `npm run check:supabase` 점검 결과 해석 (가짜 응답, 삭제 시험은 없는 id만) |
 | `src/pages/securityHardening.test.jsx` | 관리자 아닌 계정, 로그아웃 후 차단, 연속 클릭, HTML·`javascript:` 삽입, 영어 공통 문구 |
 
 ## 5. 직접 확인하기 (체크리스트)

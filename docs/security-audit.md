@@ -30,6 +30,7 @@ npm audit --omit=dev   # 실제 사이트에 들어가는 패키지만 검사 (0
 | `service_role` 키 사용 | 없음 |
 | Formspree 폼 ID `mvkzqbrk` | 코드에 기본값으로 있음. B1-1 공개 사이트에 이미 노출된 **공개 식별자**이며 비밀키가 아님. `VITE_FORMSPREE_ID`로 바꿀 수 있음 |
 | `.env` 커밋 여부 | `.gitignore`로 제외, `.env.example`만 커밋 |
+| 비밀키를 공개용 변수에 넣는 실수 | `VITE_SUPABASE_ANON_KEY`가 `sb_secret_…`이거나 service_role JWT면 빌드가 멈춤 (`scripts/supabaseKey.js`, `vite.config.js`). Vercel 빌드에도 적용 |
 
 ## 3. 배포 전 체크리스트
 

@@ -35,7 +35,7 @@ npm install
 
 - **정상 화면**: 마지막에 `added ... packages` 문구
 - **오류: `git` / `npm`을 찾을 수 없음** → https://git-scm.com , https://nodejs.org (LTS) 설치 후 PowerShell을 껐다 다시 열기
-- ✅ `npm test` 실행 시 `Tests 171 passed` 확인
+- ✅ `npm test` 실행 시 `Tests 187 passed` 확인
 
 ---
 
@@ -126,7 +126,9 @@ VITE_FORMSPREE_ID=
 
 5. 저장(Ctrl+S) → PowerShell에서 `git status` 실행 → **`.env`가 목록에 없어야 정상** (.gitignore로 제외됨)
 
-- ✅ `.env` 작성, `git status`에 `.env` 안 보임
+6. 연결 점검 (데이터를 바꾸지 않음): `npm run check:supabase` → 모든 줄이 ✅이면 정상
+
+- ✅ `.env` 작성, `git status`에 `.env` 안 보임, `check:supabase` 통과
 
 ---
 
@@ -199,6 +201,8 @@ npm run dev
 ---
 
 ## 6단계. Vercel 배포
+
+> 설정값·환경변수·배포 브랜치 선택은 [DEPLOY_CHECKLIST.md](DEPLOY_CHECKLIST.md) 3단계에 정리되어 있습니다.
 
 1. https://vercel.com → **Sign Up** → **Continue with GitHub**
 2. **Add New…** → **Project** → `codyssey-b1-2-react` 옆 **Import**
