@@ -161,7 +161,7 @@ npm run dev
 npm test
 ```
 
-**보여줄 것**: 마지막 줄 `Tests 187 passed` / `Test Files 22 passed`
+**보여줄 것**: 마지막 줄 `Tests 191 passed` / `Test Files 22 passed`
 **설명 포인트**: 실제 서버 대신 가짜 데이터로 등록·수정·삭제·로그인·권한 차단·연속 클릭·악성 입력까지 화면 흐름을 검증합니다. 대표 파일은 `src/pages/projectPages.test.jsx`, `src/pages/authFlow.test.jsx`, `src/pages/securityHardening.test.jsx`입니다.
 
 ---

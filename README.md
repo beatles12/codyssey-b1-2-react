@@ -5,7 +5,7 @@ B1-1 개인 포트폴리오(순수 HTML·CSS·JS)를 **React SPA**로 재구성�
 
 - **B1-1 원본:** https://github.com/beatles12/codyssey-b1-1-portfolio (읽기 전용 참고)
 - **이 저장소:** https://github.com/beatles12/codyssey-b1-2-react
-- **배포 URL:** 아직 없음 (Vercel 배포 준비 완료, 승인 후 진행)
+- **배포 URL:** https://codyssey-b1-2-react-three.vercel.app
 
 > 처음이라면 **[docs/START_HERE.md](docs/START_HERE.md)** 부터 읽어 주세요.
 
@@ -14,10 +14,28 @@ B1-1 개인 포트폴리오(순수 HTML·CSS·JS)를 **React SPA**로 재구성�
 | 항목 | 상태 |
 | --- | --- |
 | 화면·라우팅·상태 관리·폼·인증 코드 | 구현 완료 |
-| 자동 테스트 | 187개 통과 (Mock 데이터 기준) |
-| 브라우저 실전 검증 | 46/46 통과 (가짜 API, PC·태블릿·모바일) |
-| 실제 Supabase 연결 | ⏳ 사용자 설정 필요 → [docs/supabase-setup.md](docs/supabase-setup.md) |
-| 배포 | ⏳ 승인 후 |
+| 자동 테스트 | 191개 통과 (Mock 데이터 기준) |
+| 브라우저 실전 검증 | 46/46 통과 (가짜 API, PC·태블릿·모바일) + WORK 페이지 개선 화면 확인 |
+| 실제 Supabase 연동 (CRUD·관리자 인증·RLS) | ✅ 실제 프로젝트에서 검증 완료 (소유자 직접 검증) |
+| Vercel 배포 | ✅ https://codyssey-b1-2-react-three.vercel.app (작업 브랜치 `claude/epic-clarke-mmra67`이 GitHub 기본 브랜치 → Production) |
+
+### 공식 요구사항 충족 현황
+
+| 요구사항 | 상태 |
+| --- | --- |
+| React 18 이상 SPA, 라우트 5개 이상(8개), 목록·상세·Not Found | ✅ 구현 + 자동 테스트 |
+| 공통 레이아웃, pages / components / hooks·lib 분리 | ✅ 구현 + 자동 테스트 |
+| 재사용 컴포넌트 8개 이상 (UI 13 + 프로젝트 4) | ✅ 구현 + 자동 테스트 |
+| 커스텀 훅 (`useProjects`, `useProject`, `useProjectActions`) | ✅ 구현 + 자동 테스트 |
+| 폼 검증·에러 표시·제출 중 상태·실패 표시 | ✅ 구현 + 자동 테스트 |
+| 로딩·에러·빈 상태 공통 처리 (`DataStatus`) | ✅ 구현 + 자동 테스트 |
+| 상태 변경 → 화면 변화 3곳 이상 | ✅ 구현 + 자동 테스트 |
+| Supabase 원격 데이터 CRUD | ✅ 실제 DB 검증 완료 |
+| 보너스: Context·메모이제이션·인증 + 보호 라우트(RLS) | ✅ 구현, 인증·RLS 실제 검증 완료 |
+| 외부 접속 가능한 배포 URL에서 CRUD 동작 | ✅ 배포 완료 (https://codyssey-b1-2-react-three.vercel.app) |
+| README 실행 방법·기술 스택, `.env`로 키 관리 | ✅ |
+
+자세한 근거: [docs/05-requirements.md](docs/05-requirements.md)
 
 ## 기술 스택
 

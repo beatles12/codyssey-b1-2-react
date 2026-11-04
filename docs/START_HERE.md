@@ -2,16 +2,16 @@
 
 ## 1. 지금 상태 (정확히)
 
-> **코드 구현과 모의(가짜 데이터) 테스트는 끝났습니다. 실제 서비스(실제 Supabase DB·로그인·배포)에서는 아직 한 번도 검증되지 않았습니다.**
+> **코드 구현·자동 테스트가 끝났고, 실제 Supabase 연동(CRUD·관리자 인증·RLS)과 Vercel 배포까지 소유자가 검증했습니다.** 배포 URL: https://codyssey-b1-2-react-three.vercel.app
 
 | 항목 | 상태 |
 | --- | --- |
 | 공식 요구사항 코드 구현 | ✅ 전부 구현 (미구현 0) |
-| 자동 테스트 | ✅ 187개 통과 / 실패 0 (가짜 API) |
+| 자동 테스트 | ✅ 191개 통과 / 실패 0 (가짜 API) |
 | 브라우저 실전 검증 | ✅ 46/46 통과 (가짜 API, PC·태블릿·모바일) |
-| SQL 파일 | ✅ 로컬 PostgreSQL 모의 환경에서 실행·권한 확인 (위험한 설정에서도 실제 데이터 보존 확인) / ⏳ 실제 Supabase 미실행 |
-| 실제 Supabase CRUD·로그인·RLS | ⏳ 직접 설정 후 확인 필요 |
-| Vercel 배포 | ⏳ 승인·설정 필요 |
+| SQL 파일 | ✅ 로컬 모의 환경 검증 + ✅ 실제 Supabase 적용·RLS 확인 (소유자) |
+| 실제 Supabase CRUD·로그인·RLS | ✅ 검증 완료 (소유자) |
+| Vercel 배포 | ✅ https://codyssey-b1-2-react-three.vercel.app |
 | main 브랜치 | 없음 (작업은 `claude/epic-clarke-mmra67` 브랜치에만 있음) |
 
 ## 2. 오늘 할 일 (순서대로)

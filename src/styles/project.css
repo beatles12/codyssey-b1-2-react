@@ -321,3 +321,33 @@ html[lang="en"] .project-summary {
 .form-alert {
   overflow-wrap: anywhere;
 }
+
+/* WORK 페이지 등장 효과: 처음 그릴 때 아래에서 떠오른다.
+   fill-mode backwards: 끝난 뒤에는 원래 스타일로 돌아가 카드 hover 효과를 방해하지 않는다.
+   움직임 줄이기 설정이면 global.css 규칙이 animation을 꺼서 바로 보인다. */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+.enter {
+  animation: rise-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+}
+
+.enter-delay-1 {
+  animation-delay: 0.18s;
+}
+
+.project-grid.stagger > * {
+  animation: rise-in 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  animation-delay: 0.3s;
+}
+
+.project-grid.stagger > :nth-child(2) { animation-delay: 0.38s; }
+.project-grid.stagger > :nth-child(3) { animation-delay: 0.46s; }
+.project-grid.stagger > :nth-child(4) { animation-delay: 0.54s; }
+.project-grid.stagger > :nth-child(5) { animation-delay: 0.62s; }
+.project-grid.stagger > :nth-child(6) { animation-delay: 0.7s; }
+.project-grid.stagger > :nth-child(n + 7) { animation-delay: 0.78s; }

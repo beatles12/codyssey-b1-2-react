@@ -35,7 +35,7 @@ npm install
 
 - **정상 화면**: 마지막에 `added ... packages` 문구
 - **오류: `git` / `npm`을 찾을 수 없음** → https://git-scm.com , https://nodejs.org (LTS) 설치 후 PowerShell을 껐다 다시 열기
-- ✅ `npm test` 실행 시 `Tests 187 passed` 확인
+- ✅ `npm test` 실행 시 `Tests 191 passed` 확인
 
 ---
 

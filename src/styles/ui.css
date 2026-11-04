@@ -125,6 +125,45 @@
   text-align: center;
 }
 
+.state-empty {
+  gap: 10px;
+  padding: 64px 24px;
+  border-style: solid;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(187, 174, 225, 0.22), transparent 60%),
+    var(--soft);
+}
+
+.empty-mark {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 6px;
+  fill: var(--lavender-pale);
+  stroke: var(--lavender-deep);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.empty-title {
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 600;
+  word-break: keep-all;
+}
+
+.empty-description {
+  max-width: 420px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+.empty-action {
+  margin-top: 10px;
+}
+
 .state-error {
   border-color: var(--danger);
   color: var(--danger);

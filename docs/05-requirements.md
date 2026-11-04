@@ -17,10 +17,10 @@
 | 분류 | 개수 |
 | --- | --- |
 | A. 구현 + 검증 완료 | 22 |
-| B. 실제 환경 검증 필요 | 6 |
+| B. 실제 환경 검증 (2026-11-04 완료) | 6 |
 | C. 미구현 | 0 |
 
-**공식 요구사항 코드 구현률 100% / 실제 서비스 환경 검증률 약 79% (22/28)** — 남은 6개는 모두 Supabase·Vercel 실제 연결이 있어야 확인할 수 있는 항목입니다.
+**공식 요구사항 코드 구현률 100% / 실제 서비스 환경 검증 28/28 완료** — B 항목 6개는 소유자가 실제 Supabase 프로젝트와 Vercel 배포(https://codyssey-b1-2-react-three.vercel.app)에서 검증했습니다.
 
 ---
 
@@ -130,16 +130,19 @@
 
 ---
 
-## B. 구현 완료, 실제 환경 검증 필요
+## B. 실제 환경 검증 항목 — 완료
 
-| # | 요구사항 | 준비된 것 | 지금까지 확인 | 남은 확인 (사용자) |
+> 2026-11-04 소유자 보고: 실제 Supabase 연동, 관리자 인증, CRUD, RLS 검증, Vercel 배포 완료. 배포 URL: https://codyssey-b1-2-react-three.vercel.app
+> (작업 환경에서는 네트워크 정책상 vercel.app 접속이 막혀 있어, Vercel의 GitHub 배포 상태 기록으로 배포 성공을 확인했습니다.)
+
+| # | 요구사항 | 준비된 것 | 모의 검증 | 실제 검증 |
 | --- | --- | --- | --- | --- |
-| B1 | Supabase 원격 데이터 기준 **목록·상세 조회** | `projectsApi.fetchProjects/fetchProjectById`, `01_schema.sql` | 가짜 Supabase 응답 테스트, SQL 로컬 모의 실행 | OWNER_CHECKLIST 5-2 |
-| B2 | 원격 **등록·수정** (폼 → 제출 → 이동) | `createProject/updateProject` | 가짜 API 브라우저 확인 | OWNER_CHECKLIST 5-3 (4~7) |
-| B3 | 원격 **삭제** → 목록 갱신 | `deleteProject` | 가짜 API 브라우저 확인 | OWNER_CHECKLIST 5-3 (8~9) |
-| B4 | 보너스: **Supabase Auth 로그인** + RLS 권한 | `authApi`, `02_policies.sql`, `05_verify_rls.sql` | 가짜 로그인 브라우저 확인, RLS 로컬 모의 실행(안전·위험 설정 모두) | OWNER_CHECKLIST 3·5-1 |
-| B5 | **외부 접속 가능한 배포 URL** | `vercel.json`, 빌드 성공 | 로컬 빌드·미리보기 | OWNER_CHECKLIST 6 |
-| B6 | **배포 URL에서 CRUD 모두 동작** (환경변수 누락 없음) | 환경변수 안내 | — | OWNER_CHECKLIST 6-7 |
+| B1 | Supabase 원격 데이터 기준 **목록·상세 조회** | `projectsApi.fetchProjects/fetchProjectById`, `01_schema.sql` | 가짜 Supabase 응답 테스트, SQL 로컬 모의 실행 | ✅ 완료 (소유자 검증) |
+| B2 | 원격 **등록·수정** (폼 → 제출 → 이동) | `createProject/updateProject` | 가짜 API 브라우저 확인 | ✅ 완료 (소유자 검증) |
+| B3 | 원격 **삭제** → 목록 갱신 | `deleteProject` | 가짜 API 브라우저 확인 | ✅ 완료 (소유자 검증) |
+| B4 | 보너스: **Supabase Auth 로그인** + RLS 권한 | `authApi`, `02_policies.sql`, `05_verify_rls.sql` | 가짜 로그인 브라우저 확인, RLS 로컬 모의 실행(안전·위험 설정 모두) | ✅ 완료 (소유자 검증) |
+| B5 | **외부 접속 가능한 배포 URL** | `vercel.json`, 빌드 성공 | 로컬 빌드·미리보기 | ✅ 완료 (소유자 검증) |
+| B6 | **배포 URL에서 CRUD 모두 동작** (환경변수 누락 없음) | 환경변수 안내 | — | ✅ 완료 (소유자 검증) |
 
 - **보여줄 화면(연결 후)**: 관리자 로그인 → 등록 → Supabase Table Editor에 행이 생긴 것 → 수정 → 삭제 → 로그아웃 후 버튼 사라짐
 - **핵심 원리**: 브라우저는 `anon` 키로 Supabase REST API를 부르고, 로그인하면 사용자 토큰이 함께 갑니다. DB는 RLS 정책으로 요청마다 `is_admin()`을 검사해 쓰기를 허락하거나 거절합니다.

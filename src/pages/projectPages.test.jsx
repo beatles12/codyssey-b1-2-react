@@ -282,3 +282,48 @@ describe("홈 Work 섹션", () => {
     expect(cards[0]).toHaveAccessibleName(`${aiProject.title} 상세 보기`);
   });
 });
+
+describe("WORK 페이지 화면 개선", () => {
+  it("제목은 타이핑 제목이고, 제목·목록 영역과 카드에 등장 효과 클래스가 붙는다", async () => {
+    api.fetchProjects.mockResolvedValue(mockProjects);
+    const { container } = renderAt("/projects");
+
+    const heading = await screen.findByRole("heading", { level: 1, name: "Projects" });
+    expect(heading).toHaveAttribute("aria-label", "Projects");
+    expect(container.querySelectorAll(".page-section > .enter")).toHaveLength(2);
+    await screen.findByRole("heading", { name: aiProject.title });
+    expect(container.querySelector(".project-grid")).toHaveClass("stagger");
+  });
+
+  it("방문자에게 빈 목록이면 안내 설명과 GitHub 기록 링크를 보여준다", async () => {
+    setMockSession(null);
+    api.fetchProjects.mockResolvedValue([]);
+    renderAt("/projects");
+
+    expect(await screen.findByText("아직 등록된 프로젝트가 없습니다.")).toBeInTheDocument();
+    expect(screen.getByText(/그동안 GitHub에 남긴 학습 기록/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /GitHub 기록 보기/ })).toHaveAttribute("href", "/about#github");
+  });
+
+  it("필터 결과가 없으면 전체 보기 버튼으로 필터를 되돌린다", async () => {
+    api.fetchProjects.mockResolvedValue(mockProjects);
+    const user = userEvent.setup();
+    renderAt("/projects");
+
+    await user.click(await screen.findByRole("button", { name: "창업" }));
+    await user.click(screen.getByRole("button", { name: "전체 보기" }));
+
+    expect(screen.getByText("2개의 프로젝트를 표시하고 있습니다.")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "All" })).toHaveAttribute("aria-pressed", "true");
+  });
+
+  it("영어로 바꾸면 빈 화면 문구도 영어로 바뀐다", async () => {
+    setMockSession(null);
+    localStorage.setItem("portfolio-language", "en");
+    api.fetchProjects.mockResolvedValue([]);
+    renderAt("/projects");
+
+    expect(await screen.findByText("No projects yet.")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /View GitHub records/ })).toBeInTheDocument();
+  });
+});

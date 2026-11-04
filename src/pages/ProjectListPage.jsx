@@ -12,7 +12,10 @@ import { CATEGORIES } from "../lib/projectForm.js";
 
 const ALL = "all";
 
-/** "/projects" 목록 화면. 분류 필터(state)를 바꾸면 보이는 카드가 바로 바뀐다. 등록 버튼은 관리자에게만 보인다. */
+/**
+ * "/projects" 목록 화면. 분류 필터(state)를 바꾸면 보이는 카드가 바로 바뀐다. 등록 버튼은 관리자에게만 보인다.
+ * 제목은 타이핑되고, 제목 → 목록 → 카드 순서로 차례로 떠오른다 (움직임 줄이기 설정이면 바로 표시).
+ */
 function ProjectListPage() {
   const { t } = useLanguage();
   const { isAdmin } = useAuth();
@@ -32,30 +35,49 @@ function ProjectListPage() {
     </Button>
   );
 
+  const githubButton = (
+    <Button to="/about#github" icon="→">
+      {t("projects.viewGithub")}
+    </Button>
+  );
+
   return (
     <section className="page-section">
-      <SectionHeading eyebrow={t("projects.eyebrow")} title={t("projects.title")} description={t("projects.description")} />
-      <DataStatus
-        retryLabel={t("common.retry")}
-        isLoading={isLoading}
-        error={t(error)}
-        isEmpty={projects.length === 0}
-        onRetry={reload}
-        loadingMessage={t("projects.loading")}
-        emptyMessage={t("projects.empty")}
-        emptyAction={createButton}
-      >
-        <div className="list-toolbar">
-          <div>
-            <p className="list-count" role="status">
-              {t("projects.count", { count: visibleProjects.length })}
-            </p>
-            <FilterBar label={t("projects.filterLabel")} options={filterOptions} value={category} onChange={setCategory} />
+      <div className="enter">
+        <SectionHeading eyebrow={t("projects.eyebrow")} title={t("projects.title")} description={t("projects.description")} isTyping />
+      </div>
+      <div className="enter enter-delay-1">
+        <DataStatus
+          retryLabel={t("common.retry")}
+          isLoading={isLoading}
+          error={t(error)}
+          isEmpty={projects.length === 0}
+          onRetry={reload}
+          loadingMessage={t("projects.loading")}
+          emptyMessage={t("projects.empty")}
+          emptyDescription={isAdmin ? t("projects.emptyAdminHint") : t("projects.emptyHint")}
+          emptyAction={createButton || githubButton}
+        >
+          <div className="list-toolbar">
+            <div>
+              <p className="list-count" role="status">
+                {t("projects.count", { count: visibleProjects.length })}
+              </p>
+              <FilterBar label={t("projects.filterLabel")} options={filterOptions} value={category} onChange={setCategory} />
+            </div>
+            {createButton}
           </div>
-          {createButton}
-        </div>
-        {visibleProjects.length > 0 ? <ProjectList projects={visibleProjects} /> : <EmptyState message={t("projects.emptyFiltered")} />}
-      </DataStatus>
+          {visibleProjects.length > 0 ? (
+            <ProjectList projects={visibleProjects} isStaggered />
+          ) : (
+            <EmptyState
+              message={t("projects.emptyFiltered")}
+              description={t("projects.emptyFilteredHint")}
+              action={<Button onClick={() => setCategory(ALL)}>{t("projects.showAll")}</Button>}
+            />
+          )}
+        </DataStatus>
+      </div>
     </section>
   );
 }

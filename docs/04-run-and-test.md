@@ -43,7 +43,7 @@ npm run dev
 | `npm run preview` | 빌드 결과를 로컬에서 확인 |
 | `npm run check:supabase` | 실제 Supabase 연결 점검 (조회·차단 확인만, 데이터 변경 없음) |
 
-## 4. 자동 테스트 구성 (187개, 22개 파일)
+## 4. 자동 테스트 구성 (191개, 22개 파일)
 
 > 자동 테스트는 **실제 Supabase·GitHub·Formspree에 요청하지 않습니다.** 가짜(Mock) 데이터와 가짜 응답으로 화면 흐름을 검증합니다. (`src/test/setup.js`가 실제 네트워크 요청을 막습니다.) 실제 서버 연결은 [OWNER_CHECKLIST.md](OWNER_CHECKLIST.md) 5단계에서 따로 확인합니다.
 
