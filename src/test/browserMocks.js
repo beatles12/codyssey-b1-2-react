@@ -40,3 +40,11 @@ window.IntersectionObserver = class {
 
 window.scrollTo = () => {};
 Element.prototype.scrollIntoView = () => {};
+
+window.ResizeObserver = class {
+  observe() {}
+
+  unobserve() {}
+
+  disconnect() {}
+};

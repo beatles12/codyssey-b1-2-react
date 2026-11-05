@@ -1,4 +1,4 @@
-import { screen } from "@testing-library/react";
+import { screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App.jsx";
 import * as api from "./lib/projectsApi.js";
@@ -42,13 +42,18 @@ describe("라우팅", () => {
     expect(screen.getByRole("contentinfo")).toBeInTheDocument();
   });
 
-  it("네비게이션 링크를 누르면 페이지가 바뀐다", async () => {
+  it("메뉴는 B1-1처럼 홈의 섹션(#)으로 이동하는 링크 4개이고, 홈의 버튼으로 /projects에 들어간다", async () => {
     const user = userEvent.setup();
     renderAt("/");
 
-    await user.click(screen.getByRole("link", { name: "Work" }));
+    const menu = within(document.querySelector("#nav-menu"));
+    expect(menu.getAllByRole("link").map(link => link.getAttribute("href"))).toEqual(["/#about", "/#expertise", "/#work", "/#contact"]);
 
-    expect(screen.getByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
+    await user.click(menu.getByRole("link", { name: "Work" }));
+    expect(screen.getByRole("heading", { level: 1, name: "불편함 속에서 서비스는 시작됩니다." })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("link", { name: /전체 프로젝트 보기/ }));
+    expect(await screen.findByRole("heading", { level: 1, name: "Projects" })).toBeInTheDocument();
   });
 
   it("메뉴 버튼을 누르면 모바일 메뉴가 열리고 닫힌다", async () => {

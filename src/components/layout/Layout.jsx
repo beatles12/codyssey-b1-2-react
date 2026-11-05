@@ -10,8 +10,26 @@ function Layout() {
 
   useEffect(() => {
     const target = hash ? document.getElementById(hash.slice(1)) : null;
-    if (target) target.scrollIntoView();
-    else window.scrollTo(0, 0);
+    if (!target) {
+      window.scrollTo(0, 0);
+      return undefined;
+    }
+
+    target.scrollIntoView();
+    // GitHub 카드 등이 늦게 불러와져 아래 내용의 높이가 바뀌면 목적지가 밀리므로,
+    // 잠깐(2.5초) 높이가 바뀔 때마다 즉시 다시 맞춘다. 사용자가 직접 스크롤하면 멈춘다.
+    const realign = () => target.scrollIntoView({ behavior: "instant" });
+    const observer = new ResizeObserver(realign);
+    observer.observe(document.body);
+    const stop = () => observer.disconnect();
+    const timerId = setTimeout(stop, 2500);
+    ["wheel", "touchmove", "keydown"].forEach(name => window.addEventListener(name, stop, { once: true, passive: true }));
+
+    return () => {
+      clearTimeout(timerId);
+      stop();
+      ["wheel", "touchmove", "keydown"].forEach(name => window.removeEventListener(name, stop));
+    };
   }, [pathname, hash]);
 
   return (

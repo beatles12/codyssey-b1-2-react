@@ -1,17 +1,17 @@
 import { useState } from "react";
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth.js";
 import useLanguage from "../../hooks/useLanguage.js";
 import useScrolled from "../../hooks/useScrolled.js";
 import useToast from "../../hooks/useToast.js";
 import DisplayControls from "./DisplayControls.jsx";
 
-// B1-1과 같은 메뉴 순서. isSection은 홈 안의 섹션(#)으로 이동하는 링크.
+// B1-1처럼 메뉴는 홈의 섹션으로 부드럽게 이동한다. (/about, /projects 라우트는 그대로 있고 홈의 버튼·링크로 들어간다)
 const NAV_ITEMS = [
-  { to: "/about", labelKey: "nav.about" },
-  { to: "/#expertise", labelKey: "nav.expertise", isSection: true },
-  { to: "/projects", labelKey: "nav.work" },
-  { to: "/#contact", labelKey: "nav.contact", isSection: true },
+  { to: "/#about", labelKey: "nav.about" },
+  { to: "/#expertise", labelKey: "nav.expertise" },
+  { to: "/#work", labelKey: "nav.work" },
+  { to: "/#contact", labelKey: "nav.contact" },
 ];
 
 /** 로고·메뉴·설정 버튼을 담은 상단 헤더. 로그인하면 Logout, 관리자면 New 메뉴가 생긴다. */
@@ -22,6 +22,7 @@ function Header() {
   const { user, isAdmin, signOut } = useAuth();
   const showToast = useToast();
   const navigate = useNavigate();
+  const { pathname, hash } = useLocation();
 
   const closeMenu = () => setIsMenuOpen(false);
 
@@ -43,16 +44,13 @@ function Header() {
           S<span>.</span>
         </Link>
         <ul id="nav-menu" className={`nav-menu${isMenuOpen ? " active" : ""}`}>
-          {NAV_ITEMS.map(item => {
-            const MenuLink = item.isSection ? Link : NavLink;
-            return (
-              <li key={item.to}>
-                <MenuLink to={item.to} onClick={closeMenu}>
-                  {t(item.labelKey)}
-                </MenuLink>
-              </li>
-            );
-          })}
+          {NAV_ITEMS.map(item => (
+            <li key={item.to}>
+              <Link className={hash === item.to.slice(1) && pathname === "/" ? "active" : ""} to={item.to} onClick={closeMenu}>
+                {t(item.labelKey)}
+              </Link>
+            </li>
+          ))}
           {isAdmin && (
             <li>
               <NavLink to="/projects/new" onClick={closeMenu}>

@@ -531,6 +531,11 @@ html[lang="en"] .contact-copy h2 {
 }
 
 /* B1-1 원본 여백·높이 복원 (style.css의 섹션 여백 규칙과 같은 값) */
+.focus-card {
+  width: 350px;
+  max-width: 88%;
+}
+
 .contact-botanical {
   position: absolute;
   right: -20px;
